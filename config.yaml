@@ -1,0 +1,10 @@
+PORT: 9090
+MYSQL:
+  DB_USERNAME: root
+  DB_PASSWORD: "123"
+  BASE_URL: localhost
+  DB_PORT: 3306
+  DB_NAME: bookstore
+SQLITE:
+  DB_FILE: data/bookstore.db
+  DB_MEMORY: file::memory:?cache=shared
