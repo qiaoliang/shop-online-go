@@ -13,7 +13,10 @@ import (
 func InitRouter() {
 	port := viper.Get("PORT").(int)
 	r := gin.Default()
+
 	r.Use(Cors())
+
+	r.StaticFS("/pic/banners",http.Dir("./static/banners"))
 
 	r.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{

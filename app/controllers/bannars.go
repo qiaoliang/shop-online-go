@@ -9,9 +9,9 @@ import (
 
 func FetchBanners(c *gin.Context) {
 	result := initBannerData()
-	c.JSON(http.StatusOK, gin.H{"data": &result})
+	c.JSON(http.StatusOK, gin.H{"code":0,"data": &result,"msg":"OK"})
 }
-func initBannerData() models.Responsable {
+func initBannerData() []models.Banner {
 	bans := []models.Banner{}
 	ban1 := &models.Banner{
 		0,
@@ -19,7 +19,7 @@ func initBannerData() models.Responsable {
 		222083,
 		"https://gitee.com/joeshu/v-shop",
 		0,
-		"https://dcdn.it120.cc/2022/05/05/ac956ae3-151f-418e-b0e9-fadd76a9ea6d.jpeg",
+		"http://localhost:9090/pic/banners/b7225946.jpeg",
 		"跳转gitee v-shop",
 		0,
 		"q",
@@ -28,8 +28,22 @@ func initBannerData() models.Responsable {
 		1605,
 	}
 
-	bans = append(bans, *ban1)
 
-	res := models.Responsable{0,bans,"OK"}
-	return res
+	ban2 := &models.Banner{
+		1,
+		"2022-05-05 11:26:09",
+		222084,
+		"https://gitee.com/joeshu/v-shop",
+		0,
+		"http://localhost:9090/pic/banners/b7225947.jpeg",
+		"跳转gitee v-shop",
+		0,
+		"q",
+		"p",
+		"s",
+		1606,
+	}
+	bans = append(bans, *ban1)
+	bans = append(bans, *ban2)
+	return bans
 }
