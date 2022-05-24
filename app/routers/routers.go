@@ -16,7 +16,7 @@ func InitRouter() {
 
 	r.Use(Cors())
 
-	r.StaticFS("/pic/banners",http.Dir("./static/banners"))
+	r.StaticFS("/pic",http.Dir("./static"))
 
 	r.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
@@ -25,6 +25,7 @@ func InitRouter() {
 	})
 	v1 := r.Group("/v1")
 	v1.GET("/banner/list",controllers.FetchBanners)
+	v1.POST("/goods/list",controllers.FetchGoodsList)
 
 	r.GET("/books", controllers.FindBooks)
 	r.POST("/books", controllers.CreateBook)
