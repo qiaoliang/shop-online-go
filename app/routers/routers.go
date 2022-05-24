@@ -26,6 +26,8 @@ func InitRouter() {
 	v1 := r.Group("/v1")
 	v1.GET("/banner/list",controllers.FetchBanners)
 	v1.POST("/goods/list",controllers.FetchGoodsList)
+	v1.POST("/user/m/login",controllers.UserLogin)
+
 
 	r.GET("/books", controllers.FindBooks)
 	r.POST("/books", controllers.CreateBook)
