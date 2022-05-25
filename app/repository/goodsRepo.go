@@ -6,15 +6,31 @@ import (
 
 func InitGoodsList() [] models.GoodsItem {
 	items := []models.GoodsItem{}
+
+    store:=models.GoodsStockInfo{0,0,2,"状态信息码。1为已下架"};
+    picA :=models.Picture{"g7227946-01","http://localhost:9090/pic/goods/g7227946-01.jpeg"}
+    picB :=models.Picture{"g7227946-02","http://localhost:9090/pic/goods/g7227946-02.jpeg"}
+    pics := make([]models.Picture,0)
+    pics = append(pics,picA)
+    pics = append(pics,picB)
+    var detail = models.GoodsDetail{
+			0,				//"Id"
+			pics,			//"Pics"
+			0,			//"ItemId":
+			store,		//"StockInfo":
+			"0",		//"Logistics":
+			"contents", //"Content":
+		}
 	items1 := &models.GoodsItem{
 		0,        			//id
-		"持续交付 1.0 ",		//name
+		"持续交付 1.0",		//name
 		0,        			//catalogueId
 		"1", 				//recommandStatus
 		"http://localhost:9090/pic/goods/g7225946.jpeg",//picURL
 		"66.0",				//MinPrice
 		"99.0",				//originalPrice
-		models.GoodsDetail{},
+		detail,
+
 	}
 	items2 := &models.GoodsItem{
 		1,        			//id

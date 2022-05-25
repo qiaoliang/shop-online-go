@@ -51,15 +51,15 @@ func GetGoodsDetail(c *gin.Context) {
 	})
 }
 
-func getItemDetail(id uint,token string) models.GoodsItem {
+func getItemDetail(id uint,token string) models.GoodsDetail {
 	goods:=repository.InitGoodsList();
 
 	for _, item := range goods {
 		if sameAs(id,item){
-			return item;
+			return item.GoodsDetail;
 		}
 	}
-	return models.GoodsItem{}
+	return models.GoodsDetail{}
 }
 
 func sameAs(id uint, item models.GoodsItem) bool{
