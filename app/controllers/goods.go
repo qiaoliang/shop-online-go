@@ -30,6 +30,39 @@ func FetchGoodsList(c *gin.Context) {
 	})
 }
 
+func GetGoodsDetail(c *gin.Context) {
+
+	// params
+	token := c.PostForm("token")
+    idStr := c.PostForm("id")
+    idUint,_:= strconv.Atoi(idStr)
+    id := uint(idUint)
+
+    result:=getItem(id,token)
+
+
+    // response
+	c.JSON(http.StatusOK, gin.H{
+		"code":0,
+		"data":&result,
+		"msg":"OK",
+	})
+}
+
+func getItem(id uint,token string) models.GoodsItem {
+	goods:=initGoodsList();
+	for _, item := range goods {
+		if sameAs(id,item){
+			return item;
+		}
+	}
+	return models.GoodsItem{}
+}
+
+func sameAs(id uint, item models.GoodsItem) bool{
+	return id == item.Id
+}
+
 func getGoods(page string,pageSize string,catalogueId uint) [] models.GoodsItem {
 	goods:=initGoodsList();
 	result:=goods[:0] //我们利用传过来的slice重新创建一个slice，底层不会重新创建数组

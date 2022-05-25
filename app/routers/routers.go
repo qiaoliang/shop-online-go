@@ -32,7 +32,10 @@ func InitRouter() {
 	v1.GET("/user/amount",controllers.GetUserAmount)
 	v1.GET("/order/statistics",controllers.GetOrderStatistics)
 	v1.GET("/discounts/statistics",controllers.DiscountStatistics)
+	v1.GET("/discounts/coupons",controllers.Coupons)
+
 	v1.GET("/shop/goods/category/all",controllers.FetchCatalogues)
+	v1.GET("/shop/goods/detail",controllers.GetGoodsDetail)
 	v1.GET("/shopping-cart/info",controllers.GetShopingCart)
 
 
