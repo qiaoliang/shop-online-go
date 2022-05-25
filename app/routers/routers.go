@@ -27,6 +27,15 @@ func InitRouter() {
 	v1.GET("/banner/list",controllers.FetchBanners)
 	v1.POST("/goods/list",controllers.FetchGoodsList)
 	v1.POST("/user/m/login",controllers.UserLogin)
+	v1.GET("/user/detail",controllers.GetUserDetail)
+	v1.GET("/user/modify",controllers.UpdateUserInfo)
+	v1.GET("/user/amount",controllers.GetUserAmount)
+	v1.GET("/order/statistics",controllers.GetOrderStatistics)
+	v1.GET("/discounts/statistics",controllers.DiscountStatistics)
+	v1.GET("/shop/goods/category/all",controllers.FetchCatalogues)
+	v1.GET("/shopping-cart/info",controllers.GetShopingCart)
+
+
 
 
 	r.GET("/books", controllers.FindBooks)

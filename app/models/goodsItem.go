@@ -3,8 +3,9 @@ package models
 type GoodsItem struct {
 	Id          	uint        `json:"id"`
  	Name			string		`json:"name"`
+ 	CatalogueId		uint		`json:"catalogueId"`
  	RecommendStatus string      `json:"recommendStatus"`
 	PicUrl			string		`json:"pic"`
 	MinPrice    	string    	`json:"minPrice"`
-	OriginalPrice 	string 		`json:"originalPrice"`
+	RiginalPrice 	string 		`json:"originalPrice"`
 }
