@@ -37,7 +37,7 @@ func InitRouter() {
 	v1.GET("/shop/goods/category/all",controllers.FetchCatalogues)
 	v1.GET("/shop/goods/detail",controllers.GetGoodsDetail)
 	v1.GET("/shopping-cart/info",controllers.GetShopingCart)
-
+	v1.POST("/shopping-cart/add",controllers.PutIntoCart)
 
 
 
