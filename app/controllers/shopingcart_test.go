@@ -11,17 +11,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TestOne(t *testing.T) {
+func Test_add_one_item_to_shoppingcart_for_a_token(t *testing.T) {
 
-	gin.SetMode(gin.TestMode)
-	router := gin.New()
-	v1 := router.Group("/v1")
-	v1.POST("/shopping-cart/add", PutIntoCart)
+	router := setupTestRouter()
 
 	//构建参数
 	data := url.Values{}
-	data.Set("token", "anyToken")
-	data.Add("goodsid", "1")
+	data.Set("token", "iamToken7896554")
+	data.Add("goodsId", "1")
 	data.Add("number", "5")
 
 	req, _ := http.NewRequest("POST", "/v1/shopping-cart/add", bytes.NewBufferString(data.Encode()))
@@ -39,9 +36,30 @@ func TestOne(t *testing.T) {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	exp := "{\"code\":0,\"data\":null,\"msg\":\"OK\"}"
+	exp := `{"code":0,"data":{"token":"iamToken7896554","goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
 
 	if exp != string(body) {
-		t.Fatalf("resp.StatusCode=%v, Content-Type=%v, expected=%v actual=%v\n", resp.StatusCode, resp.Header.Get("Content-Type"), exp, string(body))
+		t.Fatalf("exp=%v, actual = %v", exp, string(body))
 	}
+}
+
+func setupTestRouter() *gin.Engine {
+	gin.SetMode(gin.TestMode)
+	router := gin.New()
+	v1 := router.Group("/v1")
+	v1.GET("/banner/list", FetchBanners)
+	v1.POST("/goods/list", FetchGoodsList)
+	v1.POST("/user/m/login", UserLogin)
+	v1.GET("/user/detail", GetUserDetail)
+	v1.GET("/user/modify", UpdateUserInfo)
+	v1.GET("/user/amount", GetUserAmount)
+	v1.GET("/order/statistics", GetOrderStatistics)
+	v1.GET("/discounts/statistics", DiscountStatistics)
+	v1.GET("/discounts/coupons", Coupons)
+
+	v1.GET("/shop/goods/category/all", FetchCatalogues)
+	v1.GET("/shop/goods/detail", GetGoodsDetail)
+	v1.GET("/shopping-cart/info", GetShopingCart)
+	v1.POST("/shopping-cart/add", PutIntoCart)
+	return router
 }

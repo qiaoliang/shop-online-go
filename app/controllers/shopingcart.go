@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"bookstore/app/repository"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -10,20 +11,28 @@ import (
 )
 
 func PutIntoCart(c *gin.Context) {
+	token := c.PostForm("token")
 
-	token := c.Param("token")
-	goodsId := c.Param("goodsId")
-	number := c.Param("number")
+	goodsId := c.PostForm("goodsId")
+
+	number := c.PostForm("number")
 	id64, err1 := strconv.ParseUint(goodsId, 10, 32)
+
 	vlm64, err2 := strconv.ParseUint(number, 10, 32)
 	var result *repository.Cart
-	if err1 == nil && err2 == nil {
-		result = repository.GetCartsInstance().AddOrderIntoCart(token, uint(id64), uint(vlm64))
-	} else {
+	if err1 != nil || err2 != nil {
 		fmt.Println("error format of params for " + number)
 		result = nil
+	} else {
+		result = repository.GetCartsInstance().AddOrderIntoCart(token, uint(id64), uint(vlm64))
 	}
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
+	m := make(map[string]interface{})
+	v, _ := json.Marshal(&result) //v：[]byte类型
+	m["result"] = v
+	//bytes, _ := json.Marshal(&m)
+	//fmt.Println(string(bytes))
+
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
 func GetShopingCart(c *gin.Context) {

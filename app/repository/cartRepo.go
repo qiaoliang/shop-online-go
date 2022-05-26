@@ -1,33 +1,58 @@
 package repository
 
+import "fmt"
+
 type Cart struct {
-	token string
-	goods map[uint]uint
+	Token string     `json:"token"`
+	Pairs []ItemPair `json:"goods"`
+}
+type ItemPair struct {
+	GoodsId uint `json:"goodsId"`
+	Volume  uint `json:"number"`
 }
 
 func NewCart(token string) *Cart {
-	return &Cart{token, make(map[uint]uint, 0)}
+	return &Cart{token, make([]ItemPair, 0)}
 }
-func (c Cart) getVolumefor(goodsid uint) uint {
-	return c.goods[goodsid]
-}
-
-func (c Cart) addItem(goodsid uint, volume uint) {
-	if c.goods == nil {
-		c.goods = make(map[uint]uint)
+func (c *Cart) getVolumefor(goodsid uint) uint {
+	if len(c.Pairs) == 0 {
+		return uint(0)
 	}
-	c.goods[goodsid] += volume
+	for _, item := range c.Pairs {
+		if item.GoodsId == goodsid {
+			return item.Volume
+		}
+	}
+	return 0
 }
 
-func (c Cart) getToken() string {
-	return c.token
-}
-func (c Cart) getVolumeById(id uint) uint {
-	return c.goods[id]
+func (c *Cart) addItem(id uint, count uint) {
+	for i, item := range c.Pairs {
+		if c.Pairs[i].GoodsId == id {
+			c.Pairs[i].Volume = uint(item.Volume + count)
+			return
+		}
+	}
+	c.Pairs = append(c.Pairs, ItemPair{id, count})
+
 }
 
-func (c Cart) getGoods() map[uint]uint {
-	return c.goods
+func (c *Cart) getToken() string {
+	return c.Token
+}
+func (c *Cart) getVolumeById(id uint) uint {
+	if len(c.Pairs) == 0 {
+		return uint(0)
+	}
+
+	for _, item := range c.Pairs {
+		v := item
+		fmt.Println(v.GoodsId)
+		if v.GoodsId == id {
+			return item.Volume
+		}
+	}
+	return uint(0)
 }
 
 type CartRepo struct {
@@ -43,19 +68,19 @@ func GetCartsInstance() *CartRepo {
 	return cartRepo
 }
 
-func (cr CartRepo) size() int {
+func (cr *CartRepo) size() int {
 	return len(cr.carts)
 }
 
-func (cs CartRepo) AddOrderIntoCart(token string, goodsId uint, volume uint) *Cart {
+func (cs *CartRepo) AddOrderIntoCart(token string, goodsId uint, volume uint) *Cart {
 	if _, ok := cs.carts[token]; !ok {
 		cs.carts[token] = NewCart(token)
 	}
 	cs.carts[token].addItem(goodsId, volume)
-	return cs.carts[token]
-
+	ct := cs.carts[token]
+	return ct
 }
-func (cs CartRepo) getCartBy(token string) *Cart {
+func (cs *CartRepo) GetCartBy(token string) *Cart {
 	if _, ok := cs.carts[token]; !ok {
 		return nil
 	}
