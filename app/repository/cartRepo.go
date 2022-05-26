@@ -47,11 +47,13 @@ func (cr CartRepo) size() int {
 	return len(cr.carts)
 }
 
-func (cs CartRepo) AddOrderIntoCart(token string, goodsId uint, volume uint) {
+func (cs CartRepo) AddOrderIntoCart(token string, goodsId uint, volume uint) *Cart {
 	if _, ok := cs.carts[token]; !ok {
 		cs.carts[token] = NewCart(token)
 	}
 	cs.carts[token].addItem(goodsId, volume)
+	return cs.carts[token]
+
 }
 func (cs CartRepo) getCartBy(token string) *Cart {
 	if _, ok := cs.carts[token]; !ok {
