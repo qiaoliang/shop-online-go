@@ -2,52 +2,60 @@ package repository
 
 import "fmt"
 
-type Cart struct {
-	Token string     `json:"token"`
-	Pairs []ItemPair `json:"goods"`
+type CartInfo struct {
+	Token           string     `json:"token"`
+	Infos           string     `json:"cartInfo"`
+	NewItemQuantity uint       `json:"number"`
+	Items           []CartItem `json:"items"`
+	Pairs           []ItemPair `json:"goods"`
 }
+
+type CartItem struct {
+	Key             uint     `json:"key"`
+	Pic             string   `json:"pic"`
+	Status          uint     `json:"status"` // === 1 【失效】
+	Name            string   `json:"name"`
+	Sku             []string `json:"sku"`
+	Price           uint     `json:"price"`
+	Quantity        uint     `json:"number"`
+	Selected        string   `json:"selected"`
+	OptionValueName string   `json:"optionValueName"`
+}
+
 type ItemPair struct {
 	GoodsId uint `json:"goodsId"`
 	Volume  uint `json:"number"`
 }
 
-func NewCart(token string) *Cart {
-	return &Cart{token, make([]ItemPair, 0)}
+func (ci *CartInfo) NewCartItem(key uint, quantity uint) CartItem {
+	sku := []string{"sku1", "sku3"}
+	item := CartItem{key, "http://localhost:9090/pic/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	return item
 }
-func (c *Cart) getVolumefor(goodsid uint) uint {
-	if len(c.Pairs) == 0 {
-		return uint(0)
-	}
-	for _, item := range c.Pairs {
-		if item.GoodsId == goodsid {
-			return item.Volume
-		}
-	}
-	return 0
+func (ci *CartInfo) getToken() string {
+	return ci.Token
 }
-
-func (c *Cart) addItem(id uint, count uint) {
-	for i, item := range c.Pairs {
-		if c.Pairs[i].GoodsId == id {
-			c.Pairs[i].Volume = uint(item.Volume + count)
+func (ci *CartInfo) Update(key uint, quantity uint) {
+	for i, _ := range ci.Items {
+		it := &ci.Items[i]
+		if it.Key == key {
+			fmt.Printf("find same token and key, %v and %v\n", key, quantity)
+			it.Quantity = it.Quantity + quantity
+			ci.Pairs[i] = ItemPair{key, quantity}
 			return
 		}
 	}
-	c.Pairs = append(c.Pairs, ItemPair{id, count})
-
+	ci.Items = append(ci.Items, ci.NewCartItem(key, quantity))
+	ci.Pairs = append(ci.Pairs, ItemPair{key, quantity})
 }
 
-func (c *Cart) getToken() string {
-	return c.Token
-}
-func (c *Cart) getVolumeById(id uint) uint {
+func (c *CartInfo) getVolumeById(id uint) uint {
 	if len(c.Pairs) == 0 {
 		return uint(0)
 	}
 
 	for _, item := range c.Pairs {
 		v := item
-		fmt.Println(v.GoodsId)
 		if v.GoodsId == id {
 			return item.Volume
 		}
@@ -56,33 +64,47 @@ func (c *Cart) getVolumeById(id uint) uint {
 }
 
 type CartRepo struct {
-	carts map[string]*Cart
+	cartInfos map[string]*CartInfo
 }
 
 var cartRepo *CartRepo
 
 func GetCartsInstance() *CartRepo {
 	if cartRepo == nil {
-		cartRepo = &CartRepo{make(map[string]*Cart, 0)}
+		cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
 	}
 	return cartRepo
 }
 
-func (cr *CartRepo) size() int {
-	return len(cr.carts)
-}
+var mycount = 0
 
-func (cs *CartRepo) AddOrderIntoCart(token string, goodsId uint, volume uint) *Cart {
-	if _, ok := cs.carts[token]; !ok {
-		cs.carts[token] = NewCart(token)
+func (cs *CartRepo) AddOrderIntoCart(token string, goodsId uint, quantity uint) *CartInfo {
+
+	if _, ok := cs.cartInfos[token]; !ok {
+		mycount++
+		fmt.Printf(" this is the number: %v\n", mycount)
+		cs.cartInfos[token] = cs.createCartInfo(token, goodsId, quantity)
+		fmt.Printf(" goods number is : %v\n", len(cs.cartInfos[token].Items))
+		return cs.cartInfos[token]
 	}
-	cs.carts[token].addItem(goodsId, volume)
-	ct := cs.carts[token]
-	return ct
+	cs.cartInfos[token].Update(goodsId, quantity)
+	return cs.cartInfos[token]
 }
-func (cs *CartRepo) GetCartBy(token string) *Cart {
-	if _, ok := cs.carts[token]; !ok {
+func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
+	if _, ok := cs.cartInfos[token]; !ok {
 		return nil
 	}
-	return cs.carts[token]
+	return cs.cartInfos[token]
+}
+
+func (cs *CartRepo) createCartInfo(token string, key uint, quantity uint) *CartInfo {
+	sku := []string{"sku1", "sku3"}
+	item := CartItem{key, "http://localhost:9090/pic/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	items := make([]CartItem, 0)
+	items = append(items, item)
+	ip := make([]ItemPair, 0)
+	ip = append(ip, ItemPair{key, quantity})
+	cartInfo := CartInfo{token, "iamInfos", quantity, items, ip}
+	cs.cartInfos[token] = &cartInfo
+	return &cartInfo
 }
