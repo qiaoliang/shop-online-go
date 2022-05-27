@@ -47,6 +47,7 @@ func SetupRouter(r *gin.Engine) {
 	v1.GET("/shop/goods/detail", controllers.GetGoodsDetail)
 	v1.GET("/shopping-cart/info", controllers.GetShopingCart)
 	v1.POST("/shopping-cart/add", controllers.PutIntoCart)
+	v1.POST("/shopping-cart/modifyNumber", controllers.UpdateShoppingCart)
 
 	r.GET("/books", controllers.FindBooks)
 	r.POST("/books", controllers.CreateBook)
