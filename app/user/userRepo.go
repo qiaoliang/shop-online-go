@@ -1,20 +1,42 @@
 package user
 
-import "bookstore/app/utils"
+import (
+	"bookstore/app/utils"
+	"fmt"
+	"sync"
+)
 
-type UserRepo interface {
-	CreateUser(mobile string) *User
-}
+var once sync.Once
 
 type MemoryUserRepo struct {
-	repo map[string]*User
+	userlist map[string]User
 }
 
-func (*MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) *User {
+var userRepo *MemoryUserRepo
+
+func GetUserRepoInstance() *MemoryUserRepo {
+	if userRepo == nil {
+		once.Do(
+			func() {
+				fmt.Println("Creating single instance now.")
+				userRepo = &MemoryUserRepo{}
+				userRepo.userlist = make(map[string]User)
+			})
+	} else {
+		fmt.Println("Single instance already created.")
+	}
+
+	return userRepo
+}
+
+func (r *MemoryUserRepo) TotalUsers() int {
+	return len(r.userlist)
+}
+func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) *User {
 
 	userId := "userId" + utils.GenerateStr(10)
 	avatarUrl := "" + utils.GenerateAavatarStr()
-	usr := &User{
+	usr := User{
 		Id:        userId,
 		Password:  pwd,
 		Mobile:    mobile,
@@ -26,6 +48,6 @@ func (*MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) *U
 		UserInfo:  "FakeUserInfo",
 		UserLevel: 0,
 	}
-
-	return usr
+	r.userlist[userId] = usr
+	return &usr
 }
