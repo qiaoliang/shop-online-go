@@ -8,3 +8,4 @@ MYSQL:
 SQLITE:
   DB_FILE: data/bookstore.db
   DB_MEMORY: file::memory:?cache=shared
+STATIC_PIC_URI: http://localhost:9090/pic

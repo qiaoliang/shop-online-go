@@ -45,6 +45,9 @@ func DbMigrate() {
 	fmt.Println("migration completed!")
 }
 
+func StaticPicURI() string {
+	return viper.Get("STATIC_PIC_URI").(string)
+}
 func getDbURI() string {
 	dbcfg := config{
 		User:   viper.Get("MYSQL.DB_USERNAME").(string),
