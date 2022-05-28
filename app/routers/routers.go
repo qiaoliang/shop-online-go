@@ -4,7 +4,11 @@ import (
 	"net/http"
 	"strconv"
 
-	"bookstore/app/controllers"
+	ad "bookstore/app/ad/banner"
+	"bookstore/app/goods"
+	"bookstore/app/order"
+	cart "bookstore/app/shoppingcart"
+	"bookstore/app/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -33,27 +37,30 @@ func InitRouter() {
 
 func SetupRouter(r *gin.Engine) {
 	v1 := r.Group("/v1")
-	v1.GET("/banner/list", controllers.FetchBanners)
-	v1.POST("/goods/list", controllers.FetchGoodsList)
-	v1.POST("/user/m/login", controllers.UserLogin)
-	v1.GET("/user/detail", controllers.GetUserDetail)
-	v1.GET("/user/modify", controllers.UpdateUserInfo)
-	v1.GET("/user/amount", controllers.GetUserAmount)
-	v1.GET("/order/statistics", controllers.GetOrderStatistics)
-	v1.GET("/discounts/statistics", controllers.DiscountStatistics)
-	v1.GET("/discounts/coupons", controllers.Coupons)
+	v1.GET("/banner/list", ad.FetchBanners)
 
-	v1.GET("/shop/goods/category/all", controllers.FetchCatalogues)
-	v1.GET("/shop/goods/detail", controllers.GetGoodsDetail)
-	v1.GET("/shopping-cart/info", controllers.GetShopingCart)
-	v1.POST("/shopping-cart/add", controllers.PutIntoCart)
-	v1.POST("/shopping-cart/modifyNumber", controllers.UpdateShoppingCart)
+	v1.POST("/user/m/login", user.UserLogin)
+	v1.GET("/user/detail", user.GetUserDetail)
+	v1.GET("/user/modify", user.UpdateUserInfo)
+	v1.GET("/user/amount", user.GetUserAmount)
 
-	r.GET("/books", controllers.FindBooks)
-	r.POST("/books", controllers.CreateBook)
-	r.GET("/books/:id", controllers.FindBook)
-	r.PATCH("/books/:id", controllers.UpdateBook)
-	r.DELETE("/books/:id", controllers.DeleteBook)
+	v1.GET("/order/statistics", order.GetOrderStatistics)
+	v1.GET("/discounts/statistics", order.DiscountStatistics)
+	v1.GET("/discounts/coupons", order.Coupons)
+
+	v1.GET("/shop/goods/category/all", goods.FetchCatalogues)
+	v1.GET("/shop/goods/detail", goods.GetGoodsDetail)
+	v1.POST("/goods/list", goods.FetchGoodsList)
+
+	v1.GET("/shopping-cart/info", cart.GetShopingCart)
+	v1.POST("/shopping-cart/add", cart.PutIntoCart)
+	v1.POST("/shopping-cart/modifyNumber", cart.UpdateShoppingCart)
+
+	r.GET("/books", goods.FindBooks)
+	r.POST("/books", goods.CreateBook)
+	r.GET("/books/:id", goods.FindBook)
+	r.PATCH("/books/:id", goods.UpdateBook)
+	r.DELETE("/books/:id", goods.DeleteBook)
 }
 
 func allowCrossDomainAccess() gin.HandlerFunc {

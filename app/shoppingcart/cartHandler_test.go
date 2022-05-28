@@ -1,4 +1,4 @@
-package controllers
+package cart
 
 import (
 	"bytes"
@@ -107,18 +107,7 @@ func setupTestRouter() *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
-	v1.GET("/banner/list", FetchBanners)
-	v1.POST("/goods/list", FetchGoodsList)
-	v1.POST("/user/m/login", UserLogin)
-	v1.GET("/user/detail", GetUserDetail)
-	v1.GET("/user/modify", UpdateUserInfo)
-	v1.GET("/user/amount", GetUserAmount)
-	v1.GET("/order/statistics", GetOrderStatistics)
-	v1.GET("/discounts/statistics", DiscountStatistics)
-	v1.GET("/discounts/coupons", Coupons)
 
-	v1.GET("/shop/goods/category/all", FetchCatalogues)
-	v1.GET("/shop/goods/detail", GetGoodsDetail)
 	v1.GET("/shopping-cart/info", GetShopingCart)
 	v1.POST("/shopping-cart/add", PutIntoCart)
 	v1.POST("/shopping-cart/modifyNumber", UpdateShoppingCart)

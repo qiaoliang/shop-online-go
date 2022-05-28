@@ -1,4 +1,4 @@
-package models
+package goods
 
 type Book struct {
 	ID     uint   `json:"id" gorm:"primary_key"`

@@ -1,7 +1,6 @@
-package controllers
+package ad
 
 import (
-	"bookstore/app/models"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,11 +8,11 @@ import (
 
 func FetchBanners(c *gin.Context) {
 	result := initBannerData()
-	c.JSON(http.StatusOK, gin.H{"code":0,"data": &result,"msg":"OK"})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
-func initBannerData() []models.Banner {
-	bans := []models.Banner{}
-	ban1 := &models.Banner{
+func initBannerData() []Banner {
+	bans := []Banner{}
+	ban1 := &Banner{
 		0,
 		"2022-05-05 11:26:09",
 		222083,
@@ -28,8 +27,7 @@ func initBannerData() []models.Banner {
 		1605,
 	}
 
-
-	ban2 := &models.Banner{
+	ban2 := &Banner{
 		1,
 		"2022-05-05 11:26:09",
 		222084,
