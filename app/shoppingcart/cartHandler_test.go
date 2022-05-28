@@ -17,7 +17,7 @@ func Test_add_one_item_to_shoppingcart_for_a_token(t *testing.T) {
 
 	//构建参数
 	data := url.Values{}
-	data.Set("token", "iamToken7896554")
+	data.Set("token", "iamTestToken7896554")
 	data.Add("goodsId", "1")
 	data.Add("number", "5")
 
@@ -36,7 +36,7 @@ func Test_add_one_item_to_shoppingcart_for_a_token(t *testing.T) {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	exp := `{"code":0,"data":{"token":"iamToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"pic":"http://localhost:9090/pic/goods/g7227946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"pic":"http://localhost:9090/pic/goods/g7227946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
 
 	if exp != string(body) {
 		t.Fatalf("exp=%v, actual = %v", exp, string(body))
@@ -48,7 +48,7 @@ func Test_update_volume_of_item_in_shoppingcart_for_a_token(t *testing.T) {
 
 	//构建参数
 	data := url.Values{}
-	data.Set("token", "iamToken7896554")
+	data.Set("token", "iamTestToken7896554")
 	data.Add("key", "1")
 	data.Add("number", "5")
 
@@ -67,7 +67,7 @@ func Test_update_volume_of_item_in_shoppingcart_for_a_token(t *testing.T) {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	exp := `{"code":0,"data":{"token":"iamToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"pic":"http://localhost:9090/pic/goods/g7227946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"pic":"http://localhost:9090/pic/goods/g7227946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
 
 	if exp != string(body) {
 		t.Fatalf("exp=%v, actual = %v", exp, string(body))

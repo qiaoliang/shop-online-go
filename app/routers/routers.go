@@ -4,9 +4,10 @@ import (
 	"net/http"
 	"strconv"
 
-	ad "bookstore/app/ad/banner"
+	banner "bookstore/app/ad/banner"
 	"bookstore/app/goods"
 	"bookstore/app/order"
+	"bookstore/app/security"
 	cart "bookstore/app/shoppingcart"
 	"bookstore/app/user"
 
@@ -37,9 +38,15 @@ func InitRouter() {
 
 func SetupRouter(r *gin.Engine) {
 	v1 := r.Group("/v1")
-	v1.GET("/banner/list", ad.FetchBanners)
 
-	v1.POST("/user/m/login", user.UserLogin)
+	v1.GET("/verification/pic/get", security.GetCapChar)
+	v1.GET("/verification/pic/check", security.VerifyCapChar)
+	v1.GET("/verification/sms/get", security.GetSMSCode)
+
+	v1.GET("/banner/list", banner.FetchBanners)
+
+	v1.POST("/user/m/register", user.Register)
+	v1.POST("/user/m/login", user.Login)
 	v1.GET("/user/detail", user.GetUserDetail)
 	v1.GET("/user/modify", user.UpdateUserInfo)
 	v1.GET("/user/amount", user.GetUserAmount)

@@ -8,8 +8,8 @@ import (
 func Test_add_one_goods_into_an_empty_Cart(t *testing.T) {
 	cartRepo = nil
 	cartRepo = GetCartsInstance()
-	expected := "IamToken"
-	c := cartRepo.AddOrderIntoCart("IamToken", 1, 10)
+	expected := "IamTestToken"
+	c := cartRepo.AddOrderIntoCart("IamTestToken", 1, 10)
 	if expected != c.getToken() {
 		t.Fatalf("should get token from a cart, expected=%v actual=%v\n", expected, c.getToken())
 	}
