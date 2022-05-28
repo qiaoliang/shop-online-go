@@ -40,7 +40,7 @@ func (ci *CartInfo) Update(key uint, quantity uint) {
 		it := &ci.Items[i]
 		if it.Key == key {
 			fmt.Printf("find same token and key, %v and %v\n", key, quantity)
-			it.Quantity = it.Quantity + quantity
+			it.Quantity = quantity
 			ci.Pairs[i] = ItemPair{key, quantity}
 			return
 		}
@@ -76,20 +76,25 @@ func GetCartsInstance() *CartRepo {
 	return cartRepo
 }
 
-var mycount = 0
-
 func (cs *CartRepo) AddOrderIntoCart(token string, goodsId uint, quantity uint) *CartInfo {
 
 	if _, ok := cs.cartInfos[token]; !ok {
-		mycount++
-		fmt.Printf(" this is the number: %v\n", mycount)
 		cs.cartInfos[token] = cs.createCartInfo(token, goodsId, quantity)
-		fmt.Printf(" goods number is : %v\n", len(cs.cartInfos[token].Items))
 		return cs.cartInfos[token]
 	}
 	cs.cartInfos[token].Update(goodsId, quantity)
 	return cs.cartInfos[token]
 }
+func (cs *CartRepo) UpdateQuantityOfGoodsInCate(token string, goodsId uint, quantity uint) *CartInfo {
+
+	if _, ok := cs.cartInfos[token]; !ok {
+		cs.cartInfos[token] = cs.createCartInfo(token, goodsId, quantity)
+		return cs.cartInfos[token]
+	}
+	cs.cartInfos[token].Update(goodsId, quantity)
+	return cs.cartInfos[token]
+}
+
 func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 	if _, ok := cs.cartInfos[token]; !ok {
 		return nil
