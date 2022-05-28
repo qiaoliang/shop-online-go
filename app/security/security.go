@@ -1,6 +1,7 @@
 package security
 
 import (
+	"bookstore/app/configs"
 	"fmt"
 	"image/color"
 	"net/http"
@@ -24,7 +25,7 @@ func VerifyCapChar(c *gin.Context) {
 }
 func GetCapChar(c *gin.Context) {
 	//key := c.DefaultQuery("key", "noKey") // key is a timestump from client
-	pic := "http://localhost:9090/pic/captcha.jpeg"
+	pic := configs.StaticPicURI() + "/captcha.jpeg"
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": pic, "msg": "OK"})
 }
 

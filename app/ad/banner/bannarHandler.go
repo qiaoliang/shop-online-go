@@ -1,6 +1,7 @@
 package ad
 
 import (
+	"bookstore/app/configs"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +19,7 @@ func initBannerData() []Banner {
 		222083,
 		"https://gitee.com/joeshu/v-shop",
 		0,
-		"http://localhost:9090/pic/banners/b7225946.jpeg",
+		configs.StaticPicURI() + "/banners/b7225946.jpeg",
 		"跳转gitee v-shop",
 		0,
 		"q",
@@ -33,7 +34,7 @@ func initBannerData() []Banner {
 		222084,
 		"https://gitee.com/joeshu/v-shop",
 		0,
-		"http://localhost:9090/pic/banners/b7225947.jpeg",
+		configs.StaticPicURI() + "/banners/b7225947.jpeg",
 		"跳转gitee v-shop",
 		0,
 		"q",

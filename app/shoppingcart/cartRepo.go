@@ -1,6 +1,9 @@
 package cart
 
-import "fmt"
+import (
+	"bookstore/app/configs"
+	"fmt"
+)
 
 type CartInfo struct {
 	Token           string     `json:"token"`
@@ -29,7 +32,7 @@ type ItemPair struct {
 
 func (ci *CartInfo) NewCartItem(key uint, quantity uint) CartItem {
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{key, "http://localhost:9090/pic/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	item := CartItem{key, configs.StaticPicURI() + "/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	return item
 }
 func (ci *CartInfo) getToken() string {
@@ -104,7 +107,7 @@ func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 
 func (cs *CartRepo) createCartInfo(token string, key uint, quantity uint) *CartInfo {
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{key, "http://localhost:9090/pic/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	item := CartItem{key, configs.StaticPicURI() + "/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	items := make([]CartItem, 0)
 	items = append(items, item)
 	ip := make([]ItemPair, 0)

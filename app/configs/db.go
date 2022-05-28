@@ -14,12 +14,13 @@ import (
 	"gorm.io/gorm"
 )
 
-type config struct {
-	User   string
-	Passwd string
-	Addr   string
-	Port   int
-	DBName string
+type Config struct {
+	User      string
+	Passwd    string
+	Addr      string
+	Port      int
+	DBName    string
+	StaticPic string
 }
 
 var DB *gorm.DB
@@ -45,19 +46,24 @@ func DbMigrate() {
 	fmt.Println("migration completed!")
 }
 
+var config Config
+
 func StaticPicURI() string {
-	return viper.Get("STATIC_PIC_URI").(string)
+	return config.StaticPic
 }
+
 func getDbURI() string {
-	dbcfg := config{
-		User:   viper.Get("MYSQL.DB_USERNAME").(string),
-		Passwd: viper.Get("MYSQL.DB_PASSWORD").(string),
-		Addr:   viper.Get("MYSQL.BASE_URL").(string),
-		Port:   viper.Get("MYSQL.DB_PORT").(int),
-		DBName: viper.Get("MYSQL.DB_NAME").(string),
+	config = Config{
+		User:      viper.Get("MYSQL.DB_USERNAME").(string),
+		Passwd:    viper.Get("MYSQL.DB_PASSWORD").(string),
+		Addr:      viper.Get("MYSQL.BASE_URL").(string),
+		Port:      viper.Get("MYSQL.DB_PORT").(int),
+		DBName:    viper.Get("MYSQL.DB_NAME").(string),
+		StaticPic: viper.Get("MYSQL.STATIC_PIC_URI").(string),
 	}
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-		dbcfg.User, dbcfg.Passwd, dbcfg.Addr, dbcfg.Port, dbcfg.DBName)
+		config.User, config.Passwd, config.Addr, config.Port, config.DBName)
+	fmt.Println(config.StaticPic)
 	return dsn
 }
 func InitMysqlDB() {
