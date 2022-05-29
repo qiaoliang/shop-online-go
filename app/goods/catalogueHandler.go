@@ -7,7 +7,7 @@ import (
 )
 
 func FetchCatalogues(c *gin.Context) {
-	token := c.Param("token")
+	token := c.Query("token")
 
 	result := initCataloguesData(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})

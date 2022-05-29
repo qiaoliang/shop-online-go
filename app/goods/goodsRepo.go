@@ -1,22 +1,28 @@
 package goods
 
-import "bookstore/app/configs"
+import (
+	"bookstore/app/configs"
+	"sync"
+)
 
-var goodsRepo GoodsRepo
+var lockGR = &sync.Mutex{}
+var goodsRepo *GoodsRepo
+
+func NewGoodsRepo() *GoodsRepo {
+	lockGR.Lock()
+	defer lockGR.Unlock()
+	if goodsRepo == nil {
+		goodsRepo = &GoodsRepo{}
+	}
+
+	return goodsRepo
+}
 
 type GoodsRepo struct {
 	items []GoodsItem
 }
 
-func NewGoodsRepo() *GoodsRepo {
-	goodsRepo := GoodsRepo{}
-	goodsRepo.initRepo()
-	return &goodsRepo
-}
-func (gr *GoodsRepo) initRepo() {
-	goodsRepo.items = make([]GoodsItem, 0)
-}
-func (gr *GoodsRepo) creatData() []GoodsItem {
+func (gr *GoodsRepo) loadGoods() []GoodsItem {
 
 	picA := Picture{"g7227946-01", configs.Cfg.StaticPicURI() + "/goods/g7227946-01.jpeg"}
 	picB := Picture{"g7227946-02", configs.Cfg.StaticPicURI() + "/goods/g7227946-02.jpeg"}
@@ -135,9 +141,4 @@ func (gr *GoodsRepo) creatData() []GoodsItem {
 }
 func (gr *GoodsRepo) GetGoodsList() []GoodsItem {
 	return gr.items
-}
-func InitGoodsRepo() []GoodsItem {
-	NewGoodsRepo()
-	goodsRepo.initRepo()
-	return goodsRepo.GetGoodsList()
 }
