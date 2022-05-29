@@ -28,7 +28,7 @@ func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	configs.NewConfig(utils.GetConfigFileForTest())
 }
 
-func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_token() {
+func (st *ShoppingCartHandlerSuite) Should_add_one_item_to_shoppingcart_for_a_token() {
 
 	data := url.Values{}
 	data.Set("token", "iamTestToken7896554")
@@ -53,7 +53,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_toke
 	st.Equal(exp, string(body), "should same.")
 }
 
-func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_for_a_token() {
+func (st *ShoppingCartHandlerSuite) Should_update_volume_of_item_in_shoppingcart_for_a_token() {
 	//构建参数
 	data := url.Values{}
 	data.Set("token", "iamTestToken7896554")
@@ -84,22 +84,27 @@ func (st *ShoppingCartHandlerSuite) Test_get_cart_for_unexisted_token() {
 	data := url.Values{}
 	data.Set("token", "UnexistedToken")
 
-	req, _ := http.NewRequest("GET", "/v1/shopping-cart/info", bytes.NewBufferString(data.Encode()))
+	//构建返回值
+	//调用请求接口
+	body := st.httpRequest(data, "GET")
+
+	exp := `{"code":0,"data":"","msg":"OK"}`
+	st.Equal(exp, string(body), "should same.")
+}
+
+func (st *ShoppingCartHandlerSuite) httpRequest(data url.Values, reqMethod string) []byte {
+	req, _ := http.NewRequest(reqMethod, "/v1/shopping-cart/info", bytes.NewBufferString(data.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 
-	//构建返回值
 	w := httptest.NewRecorder()
 
-	//调用请求接口
 	st.router.ServeHTTP(w, req)
 	st.True(w.Code == http.StatusOK, "should return Http OK.")
 
 	resp := w.Result()
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
-
-	exp := `{"code":0,"data":"","msg":"OK"}`
-	st.Equal(exp, string(body), "should same.")
+	return body
 }
 
 func setupTestRouter() *gin.Engine {
