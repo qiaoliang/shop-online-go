@@ -3,10 +3,6 @@ package cart
 import (
 	"bookstore/app/configs"
 	"bookstore/app/utils"
-	"bytes"
-	"io/ioutil"
-	"net/http"
-	"net/http/httptest"
 	"net/url"
 	"testing"
 
@@ -28,7 +24,7 @@ func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	configs.NewConfig(utils.GetConfigFileForTest())
 }
 
-func (st *ShoppingCartHandlerSuite) Should_add_one_item_to_shoppingcart_for_a_token() {
+func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_token() {
 
 	data := url.Values{}
 	data.Set("token", "iamTestToken7896554")
@@ -63,21 +59,6 @@ func (st *ShoppingCartHandlerSuite) Test_get_cart_for_unexisted_token() {
 
 	exp := `{"code":0,"data":"","msg":"OK"}`
 	st.Equal(exp, string(body), "should same.")
-}
-
-func (st *ShoppingCartHandlerSuite) httpRequest(data url.Values, reqMethod string, reqURL string) []byte {
-	req, _ := http.NewRequest(reqMethod, reqURL, bytes.NewBufferString(data.Encode()))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
-
-	w := httptest.NewRecorder()
-
-	st.router.ServeHTTP(w, req)
-	st.True(w.Code == http.StatusOK, "should return Http OK.")
-
-	resp := w.Result()
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	return body
 }
 
 func setupTestRouter() *gin.Engine {

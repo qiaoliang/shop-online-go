@@ -22,8 +22,9 @@ func GetConfigFileForTest() string {
 
 func HttpRequest(r *gin.Engine, data url.Values, reqMethod string, reqURL string) []byte {
 	req, _ := http.NewRequest(reqMethod, reqURL, bytes.NewBufferString(data.Encode()))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
-
+	if reqMethod == "POST" {
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+	}
 	w := httptest.NewRecorder()
 
 	r.ServeHTTP(w, req)

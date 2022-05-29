@@ -24,7 +24,7 @@ func (st *UserHandlerSuite) SetupSuite() {
 	configs.NewConfig(utils.GetConfigFileForTest())
 }
 
-func (st *UserHandlerSuite) Test_login_with_admin() {
+func (st *UserHandlerSuite) Should_login_with_admin() {
 
 	data := url.Values{}
 	data.Set("deviceId", "deviceId-7654321")
@@ -34,8 +34,8 @@ func (st *UserHandlerSuite) Test_login_with_admin() {
 
 	body := utils.HttpRequest(st.router, data, "GET", "/v1/user/m/login")
 
-	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"pic":"http://localhost:9090/pic/goods/g7227946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
-	st.Equal(exp, string(body), "should same.")
+	exp := "密码错误"
+	st.Contains(string(body), exp)
 }
 
 func setupTestRouter() *gin.Engine {

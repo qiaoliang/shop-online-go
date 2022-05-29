@@ -19,7 +19,6 @@ func Login(c *gin.Context) {
 	if found == nil {
 		result = map[string]string{"token": "UserLogin"}
 		msg = "用户名或密码错误"
-		code = 700
 	} else {
 		result = map[string]string{"token": found.Mobile}
 	}
