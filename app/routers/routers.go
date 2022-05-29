@@ -50,6 +50,7 @@ func SetupRouter(r *gin.Engine) {
 	v1.GET("/user/detail", user.GetUserDetail)
 	v1.GET("/user/modify", user.UpdateUserInfo)
 	v1.GET("/user/amount", user.GetUserAmount)
+	v1.GET("/user/logout", user.GetUserDetail)
 
 	v1.GET("/order/statistics", order.GetOrderStatistics)
 	v1.GET("/discounts/statistics", order.DiscountStatistics)

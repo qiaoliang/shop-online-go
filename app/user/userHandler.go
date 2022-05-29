@@ -8,10 +8,29 @@ import (
 )
 
 func Login(c *gin.Context) {
-	result := initUserData()
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
+	deviceId := c.GetString("deviceId")     //"16533880163937665988"
+	deviceName := c.GetString("deviceName") //"PC"
+	mobile := c.GetString("mobile")         //"13911057997"
+	pwd := c.GetString("pwd")               //"1212121212"
+	found := GetUserService().login(deviceId, deviceName, mobile, pwd)
+	var result map[string]string
+	msg := "OK"
+	code := 0
+	if found == nil {
+		result = map[string]string{"token": "UserLogin"}
+		msg = "用户名或密码错误"
+		code = 700
+	} else {
+		result = map[string]string{"token": found.Mobile}
+	}
+	fmt.Println(result["token"])
+	c.JSON(http.StatusOK, gin.H{"code": code, "data": &result, "msg": msg})
 }
-
+func Logout(c *gin.Context) {
+	token, _ := c.GetQuery("token")
+	GetUserService().logout(token)
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
+}
 func UpdateUserInfo(c *gin.Context) {
 	token, ok := c.GetQuery("token")
 	if !ok {
@@ -91,7 +110,4 @@ func fetchUserData(token string) interface{} {
 	//userLevel: NonNullable<UserLevel>;
 	return map[string]string{"token": token, "userLevel": userLevel, "userInfo": userInfo, "UserState": UserState}
 
-}
-func initUserData() interface{} {
-	return map[string]string{"token": "UserLogin"}
 }
