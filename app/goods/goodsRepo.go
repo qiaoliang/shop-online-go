@@ -8,7 +8,7 @@ import (
 var lockGR = &sync.Mutex{}
 var goodsRepo *GoodsRepo
 
-func NewGoodsRepo() *GoodsRepo {
+func GetGoodsRepo() *GoodsRepo {
 	lockGR.Lock()
 	defer lockGR.Unlock()
 	if goodsRepo == nil {

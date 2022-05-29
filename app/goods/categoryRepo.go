@@ -9,7 +9,7 @@ type CategoryRepo struct {
 	cates []Category
 }
 
-func NewCategorRepo() *CategoryRepo {
+func GetCategoryRepo() *CategoryRepo {
 	lockCR.Lock()
 	defer lockCR.Unlock()
 	if cateRepo == nil {

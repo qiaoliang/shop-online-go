@@ -28,7 +28,7 @@ func (st *GoodsRepositoryTestSuite) SetupSuite() {
 
 func (st *GoodsRepositoryTestSuite) SetupTest() {
 	goodsRepo = nil
-	NewGoodsRepo()
+	GetGoodsRepo()
 }
 
 func (st *GoodsRepositoryTestSuite) Test_should_initial_empty_goodRepo() {
