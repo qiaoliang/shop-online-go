@@ -34,7 +34,7 @@ func (ur *UserServiceTestSuite) SetupTest() {
 }
 
 func (suite *UserServiceTestSuite) Test_admin_login() {
-	user := userService.login("diviceid", "deviceName", "13900007997", "1234")
+	user := GetUserService().login("diviceid", "deviceName", "13900007997", "1234")
 	suite.Equal("13900007997", user.Mobile, "Should found Admin directly.")
 	suite.Equal("1234", user.Password, "Should get Default pwd 1234 for Admin .")
 	suite.Equal("13900007997", userService.userOnline["token"], "should find admin online")

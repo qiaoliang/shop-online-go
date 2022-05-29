@@ -24,7 +24,24 @@ func (st *UserHandlerSuite) SetupSuite() {
 	configs.NewConfig(utils.GetConfigFileForTest())
 }
 
-func (st *UserHandlerSuite) Should_login_with_admin() {
+// This will run right before the test starts
+// and receives the suite and test names as input
+func (ur *UserHandlerSuite) BeforeTest(suiteName, testName string) {}
+
+// This will run after test finishes
+// and receives the suite and test names as input
+func (ur *UserHandlerSuite) AfterTest(suiteName, testName string) {}
+
+// This will run before each test in the suite
+func (ur *UserHandlerSuite) SetupTest() {
+	userService = nil
+	userRepo = nil
+	userService = GetUserService()
+	userRepo = GetUserRepoInstance()
+
+}
+
+func (st *UserHandlerSuite) Test_login_with_admin() {
 
 	data := url.Values{}
 	data.Set("deviceId", "deviceId-7654321")
@@ -34,8 +51,7 @@ func (st *UserHandlerSuite) Should_login_with_admin() {
 
 	body := utils.HttpRequest(st.router, data, "GET", "/v1/user/m/login")
 
-	exp := "密码错误"
-	st.Contains(string(body), exp)
+	st.Contains(string(body), "13900007997", "should return admin")
 }
 
 func setupTestRouter() *gin.Engine {
