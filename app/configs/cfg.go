@@ -1,6 +1,7 @@
 package configs
 
 import (
+	"bookstore/app/utils"
 	"database/sql"
 	"fmt"
 
@@ -23,11 +24,28 @@ type Config struct {
 	StaticPic string
 }
 
+func NewConfig(cfgfile string) {
+	if !utils.IsPathExist(cfgfile) {
+		fmt.Println("config file " + cfgfile + " is NOT existed")
+		panic(cfgfile + "is NOT existed.")
+	}
+	viper.SetConfigFile(cfgfile)
+	viper.ReadInConfig()
+	Cfg = Config{
+		User:      viper.Get("MYSQL.DB_USERNAME").(string),
+		Passwd:    viper.Get("MYSQL.DB_PASSWORD").(string),
+		Addr:      viper.Get("MYSQL.BASE_URL").(string),
+		Port:      viper.Get("MYSQL.DB_PORT").(int),
+		DBName:    viper.Get("MYSQL.DB_NAME").(string),
+		StaticPic: viper.Get("MYSQL.STATIC_PIC_URI").(string),
+	}
+}
+
 var DB *gorm.DB
 var err error
 
-func DbMigrate() {
-	dsn := getDbURI() + "?multiStatements=true"
+func (cfg *Config) DbMigrate() {
+	dsn := cfg.getDbURI() + "?multiStatements=true"
 
 	db, _ := sql.Open("mysql", dsn)
 	driver, _ := mysql.WithInstance(db, &mysql.Config{})
@@ -46,29 +64,22 @@ func DbMigrate() {
 	fmt.Println("migration completed!")
 }
 
-var config Config
+var Cfg Config
 
-func StaticPicURI() string {
-	return config.StaticPic
+func (cfg *Config) StaticPicURI() string {
+	return cfg.StaticPic
 }
 
-func getDbURI() string {
-	config = Config{
-		User:      viper.Get("MYSQL.DB_USERNAME").(string),
-		Passwd:    viper.Get("MYSQL.DB_PASSWORD").(string),
-		Addr:      viper.Get("MYSQL.BASE_URL").(string),
-		Port:      viper.Get("MYSQL.DB_PORT").(int),
-		DBName:    viper.Get("MYSQL.DB_NAME").(string),
-		StaticPic: viper.Get("MYSQL.STATIC_PIC_URI").(string),
-	}
+func (cfg *Config) getDbURI() string {
+
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-		config.User, config.Passwd, config.Addr, config.Port, config.DBName)
-	fmt.Println(config.StaticPic)
+		cfg.User, cfg.Passwd, cfg.Addr, cfg.Port, cfg.DBName)
+	fmt.Println(cfg.StaticPic)
 	return dsn
 }
-func InitMysqlDB() {
+func (cfg *Config) InitMysqlDB() {
 
-	dsn := getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
 
 	DB, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
 

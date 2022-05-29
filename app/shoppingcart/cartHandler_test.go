@@ -1,11 +1,14 @@
 package cart
 
 import (
+	"bookstore/app/configs"
 	"bytes"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"path/filepath"
+	"runtime"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -23,9 +26,15 @@ func TestShoppingCartHandlerSuite(t *testing.T) {
 
 func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	st.router = setupTestRouter()
+
+	_, filename, _, _ := runtime.Caller(0)
+	path, _ := filepath.Abs(filename)
+	path = filepath.Dir(path)
+	configs.NewConfig(path + "/../../config.yaml")
 }
 
-func (st *ShoppingCartHandlerSuite) Should_add_one_item_to_shoppingcart_for_a_token() {
+func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_token() {
+
 	data := url.Values{}
 	data.Set("token", "iamTestToken7896554")
 	data.Add("goodsId", "1")
