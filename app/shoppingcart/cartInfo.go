@@ -39,7 +39,7 @@ func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
 func (ci *CartInfo) Update(key uint, quantity uint) {
-	for i, _ := range ci.Items {
+	for i := range ci.Items {
 		it := &ci.Items[i]
 		if it.Key == key {
 			fmt.Printf("find same token and key, %v and %v\n", key, quantity)

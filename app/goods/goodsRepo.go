@@ -2,8 +2,22 @@ package goods
 
 import "bookstore/app/configs"
 
-func InitGoodsList() []GoodsItem {
-	items := []GoodsItem{}
+var goodsRepo GoodsRepo
+
+type GoodsRepo struct {
+	items []GoodsItem
+}
+
+func NewGoodsRepo() *GoodsRepo {
+	goodsRepo := GoodsRepo{}
+	goodsRepo.initRepo()
+	return &goodsRepo
+}
+func (gr *GoodsRepo) initRepo() {
+	goodsRepo.items = make([]GoodsItem, 0)
+}
+func (gr *GoodsRepo) creatData() []GoodsItem {
+
 	picA := Picture{"g7227946-01", configs.Cfg.StaticPicURI() + "/goods/g7227946-01.jpeg"}
 	picB := Picture{"g7227946-02", configs.Cfg.StaticPicURI() + "/goods/g7227946-02.jpeg"}
 	pics := make([]Picture, 0)
@@ -65,10 +79,10 @@ func InitGoodsList() []GoodsItem {
 		"129.0", //originalPrice
 		GoodsDetail{},
 	}
-	items = append(items, *items1)
-	items = append(items, *items2)
-	items = append(items, *items3)
-	items = append(items, *items4)
+	gr.items = append(gr.items, *items1)
+	gr.items = append(gr.items, *items2)
+	gr.items = append(gr.items, *items3)
+	gr.items = append(gr.items, *items4)
 
 	// add the second catalouge
 
@@ -112,9 +126,18 @@ func InitGoodsList() []GoodsItem {
 		"129.0", //originalPrice
 		GoodsDetail{},
 	}
-	items = append(items, *items5)
-	items = append(items, *items6)
-	items = append(items, *items7)
-	items = append(items, *items8)
-	return items
+	gr.items = append(gr.items, *items5)
+	gr.items = append(gr.items, *items6)
+	gr.items = append(gr.items, *items7)
+	gr.items = append(gr.items, *items8)
+	return gr.GetGoodsList()
+
+}
+func (gr *GoodsRepo) GetGoodsList() []GoodsItem {
+	return gr.items
+}
+func InitGoodsRepo() []GoodsItem {
+	NewGoodsRepo()
+	goodsRepo.initRepo()
+	return goodsRepo.GetGoodsList()
 }

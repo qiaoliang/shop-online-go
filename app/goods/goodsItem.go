@@ -1,7 +1,7 @@
 package goods
 
 type GoodsItem struct {
-	Id              uint        `json:"id"`
+	Id              uint        `json:"id"` //商品Id
 	Name            string      `json:"name"`
 	CatalogueId     uint        `json:"catalogueId"`
 	RecommendStatus string      `json:"recommendStatus"`

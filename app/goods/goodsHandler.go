@@ -48,8 +48,9 @@ func GetGoodsDetail(c *gin.Context) {
 }
 
 func getItemDetail(id uint, token string) GoodsDetail {
-	goods := InitGoodsList()
-
+	gr := NewGoodsRepo()
+	gr.creatData()
+	goods := gr.GetGoodsList()
 	for _, item := range goods {
 		if sameAs(id, item) {
 			return item.GoodsDetail
@@ -63,7 +64,8 @@ func sameAs(id uint, item GoodsItem) bool {
 }
 
 func getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {
-	goods := InitGoodsList()
+	gr := NewGoodsRepo()
+	goods := gr.creatData()
 	result := goods[:0] //我们利用传过来的slice重新创建一个slice，底层不会重新创建数组
 	for _, item := range goods {
 		if isA(catalogueId, item) {
