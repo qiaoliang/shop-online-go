@@ -16,14 +16,14 @@ func Login(c *gin.Context) {
 	user := GetUserService().login(deviceId, deviceName, mobile, pwd)
 
 	if user == nil {
-		user = &User{}
+		user = NoUser()
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "ok"})
 }
 func Logout(c *gin.Context) {
 	token, _ := c.GetQuery("token")
 	GetUserService().logout(token)
-	user := &User{}
+	user := NoUser()
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 func UpdateUserInfo(c *gin.Context) {
@@ -41,7 +41,7 @@ func UpdateUserInfo(c *gin.Context) {
 
 	user := updateUser(token)
 	if user == nil {
-		user = &User{}
+		user = NoUser()
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
@@ -61,7 +61,7 @@ func Register(c *gin.Context) {
 		autoLogin, code, mobile, nick, pwd)
 	user := GetUserService().RegisterNewUser(mobile, nick, pwd)
 	if user == nil {
-		user = &User{}
+		user = NoUser()
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
@@ -78,12 +78,12 @@ func GetUserAmount(c *gin.Context) {
 }
 
 func updateUser(token string) *User {
-	return &User{}
+	return NoUser()
 
 }
 
 func fetchUserAmount(token string) interface{} {
-	return &User{}
+	return NoUser()
 	//return map[string]string{"token": "fetchUserAmount", "amount": "amount 0"}
 
 }
@@ -97,7 +97,7 @@ func GetUserDetail(c *gin.Context) {
 
 	user := GetUserService().findUserByMobile(token)
 	if user == nil {
-		user = &User{}
+		user = NoUser()
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
@@ -105,7 +105,7 @@ func userToVM(user *User) UserVM {
 	return UserVM{
 		user.Mobile,
 		*user,
-		user.UserLevel,
+		*user.UserLevel,
 	}
 }
 func checkVerifyCode(code string) bool {

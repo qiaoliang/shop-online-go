@@ -62,7 +62,7 @@ func (st *UserHandlerSuite) Test_Register_User() {
 	data.Add("code", "5678")
 
 	body := utils.HttpRequest(st.router, data, "POST", "/v1/user/m/register")
-	exp := `{"code":0,"data":{"token":"newUser","base":{"userId":"userIdnl8x7lipma","pwd":"天下无贼","mobile":"newUser","nick":"secret","avatarUrl":"http://localhost:9090/pic/avatar/d.jpeg","province":"未知","city":"未知","autoLogin":0,"userInfo":"FakeUserInfo","userLevel":0},"userLevel":0},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"newUser","base":{"id":"userIdnl8x7lipma","pwd":"天下无贼","mobile":"newUser","nick":"secret","avatarUrl":"http://localhost:9090/pic/avatar/d.jpeg","province":"未知","city":"未知","autoLogin":0,"userInfo":"FakeUserInfo","userLevel":{"id":1,"name":"Green"}},"userLevel":{"id":1,"name":"Green"}},"msg":"OK"}`
 	st.Equal(exp, string(body), "should rigister successfully")
 
 }

@@ -58,7 +58,7 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 		City:      "未知",
 		AutoLogin: 0,
 		UserInfo:  "FakeUserInfo",
-		UserLevel: 0,
+		UserLevel: &LEVELGREEN,
 	}
 	return r.userlist[mobile], nil
 }
