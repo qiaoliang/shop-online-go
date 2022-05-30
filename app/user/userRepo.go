@@ -3,6 +3,7 @@ package user
 import (
 	"bookstore/app/configs"
 	"bookstore/app/utils"
+	"errors"
 	"fmt"
 	"sync"
 )
@@ -31,7 +32,7 @@ func (r *MemoryUserRepo) TotalUsers() int {
 }
 
 func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
-	found := userRepo.findUserByMobile(mobile)
+	found := r.findUserByMobile(mobile)
 	if found == nil || found.Password != pwd {
 		return nil
 	}
@@ -41,8 +42,10 @@ func (r *MemoryUserRepo) findUserByMobile(mobile string) *User {
 	return userRepo.userlist[mobile]
 }
 
-func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) *User {
-
+func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) (user *User, err error) {
+	if r.findUser(mobile, pwd) != nil {
+		return nil, errors.New("hello,error")
+	}
 	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
 	avatarUrl := configs.Cfg.AvatarPicPrefix() + utils.GenerateAavatarStr()
 	r.userlist[mobile] = &User{
@@ -57,7 +60,7 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 		UserInfo:  "FakeUserInfo",
 		UserLevel: 0,
 	}
-	return r.userlist[mobile]
+	return r.userlist[mobile], nil
 }
 func (r *MemoryUserRepo) CreateAdmin(mobile string, pwd string) {
 	r.CreateUser(mobile, pwd, "超级塞亚人")

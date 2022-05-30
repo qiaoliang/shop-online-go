@@ -37,7 +37,7 @@ func (ur *UserRepoTestSuite) SetupTest() {
 
 func (suite *UserRepoTestSuite) Test_create_user() {
 	suite.Equal(1, userRepo.TotalUsers())
-	user := userRepo.CreateUser("mobile1", "pwd1", "nickname2")
+	user, _ := userRepo.CreateUser("mobile1", "pwd1", "nickname2")
 
 	suite.Equal(2, userRepo.TotalUsers())
 	suite.Equal("mobile1", user.Mobile)

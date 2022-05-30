@@ -36,11 +36,15 @@ func (s *UserService) findUser(mobile string, pwd string) *User {
 	user := GetUserRepoInstance().findUser(mobile, pwd)
 	return user
 }
-func (s *UserService) CreateUser(mobile string, pwd string, nickname string) *User {
+func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string) *User {
 	if GetUserRepoInstance().findUser(mobile, pwd) != nil {
 		return nil
 	}
 
-	newUser := GetUserRepoInstance().CreateUser(mobile, pwd, nickname)
+	newUser, err := GetUserRepoInstance().CreateUser(mobile, pwd, nickname)
+	if err != nil {
+		return nil
+	}
+	s.userOnline["token"] = mobile
 	return newUser
 }
