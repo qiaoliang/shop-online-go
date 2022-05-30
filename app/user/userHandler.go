@@ -60,6 +60,7 @@ func Register(c *gin.Context) {
 	}
 	fmt.Printf("autoLogin = %v, code = %v, mobile = %v, nick = '%v, pwd = '%v'\n",
 		autoLogin, code, mobile, nick, pwd)
+	GetUserService().CreateUser(mobile, nick, pwd)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
 }
 func checkVerifyCode(code string) bool {

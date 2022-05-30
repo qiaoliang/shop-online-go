@@ -31,16 +31,20 @@ func (r *MemoryUserRepo) TotalUsers() int {
 }
 
 func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
-	found := userRepo.userlist[mobile]
+	found := userRepo.findUserByMobile(mobile)
 	if found == nil || found.Password != pwd {
 		return nil
 	}
 	return found
 }
+func (r *MemoryUserRepo) findUserByMobile(mobile string) *User {
+	return userRepo.userlist[mobile]
+}
+
 func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) *User {
 
 	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
-	avatarUrl := fmt.Sprintf("%v/avata/%v", configs.Cfg.StaticPicURI(), utils.GenerateAavatarStr())
+	avatarUrl := configs.Cfg.AvatarPicPrefix() + utils.GenerateAavatarStr()
 	r.userlist[mobile] = &User{
 		Id:        userId,
 		Password:  pwd,

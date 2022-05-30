@@ -25,7 +25,7 @@ func VerifyCapChar(c *gin.Context) {
 }
 func GetCapChar(c *gin.Context) {
 	//key := c.DefaultQuery("key", "noKey") // key is a timestump from client
-	pic := configs.Cfg.StaticPicURI() + "/captcha.jpeg"
+	pic := configs.Cfg.StaticPicPrefix() + "/captcha.jpeg"
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": pic, "msg": "OK"})
 }
 

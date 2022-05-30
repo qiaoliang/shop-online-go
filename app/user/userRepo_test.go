@@ -1,6 +1,8 @@
 package user
 
 import (
+	"bookstore/app/configs"
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -47,5 +49,8 @@ func (suite *UserRepoTestSuite) Test_find_user() {
 	userRepo.CreateUser("mobile", "pwd", "nickname")
 	result := userRepo.findUser("mobile", "pwd")
 	suite.NotEmpty(result)
+	pattern := configs.Cfg.AvatarPicPrefix() + "[a-l]\\.jpeg$"
+	reg, _ := regexp.Compile(pattern)
+	reg.MatchString(result.AvatarUrl)
 	suite.Equal("mobile", result.Mobile)
 }

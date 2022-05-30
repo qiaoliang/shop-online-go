@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,7 +21,6 @@ func Test_generate_String(t *testing.T) {
 }
 func Test_generate_Aavatar(t *testing.T) {
 	str := GenerateAavatarStr()
-	assert.Equal(t, 1, len(str))
-	seed := "abcdefchigkl"
-	assert.Containsf(t, seed, str, "%v should be in %v\n", str, seed)
+	reg, _ := regexp.Compile(`^[a-l]\.jpeg$`)
+	assert.True(t, reg.MatchString(str), "Should be a jpeg file")
 }

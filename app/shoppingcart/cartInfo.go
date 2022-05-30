@@ -32,7 +32,7 @@ type ItemPair struct {
 
 func (ci *CartInfo) NewCartItem(key uint, quantity uint) CartItem {
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{key, configs.Cfg.StaticPicURI() + "/goods/g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	item := CartItem{key, configs.Cfg.GoodsPicPrefix() + "g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	return item
 }
 func (ci *CartInfo) getToken() string {

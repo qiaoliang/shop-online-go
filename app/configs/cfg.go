@@ -66,8 +66,18 @@ func (cfg *Config) DbMigrate() {
 
 var Cfg Config
 
-func (cfg *Config) StaticPicURI() string {
+func (cfg *Config) StaticPicPrefix() string {
 	return cfg.StaticPic
+}
+func (cfg *Config) BannerPicPrefix() string {
+	return fmt.Sprintf("%v/banners/", cfg.StaticPicPrefix())
+}
+func (cfg *Config) GoodsPicPrefix() string {
+	return fmt.Sprintf("%v/goods/", cfg.StaticPicPrefix())
+}
+func (cfg *Config) AvatarPicPrefix() string {
+	return fmt.Sprintf("%v/avatar/", cfg.StaticPicPrefix())
+
 }
 
 func (cfg *Config) getDbURI() string {
