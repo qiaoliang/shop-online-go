@@ -53,13 +53,25 @@ func (st *UserHandlerSuite) Test_login_with_admin() {
 
 	st.Contains(string(body), "13900007997", "should return admin")
 }
+func (st *UserHandlerSuite) Test_Register_User() {
+	data := url.Values{}
+	data.Set("mobile", "newUser")
+	data.Add("pwd", "secret")
+	data.Add("nick", "天下无贼")
+	data.Add("autoLogin", "1")
+	data.Add("code", "5678")
 
+	body := utils.HttpRequest(st.router, data, "POST", "/v1/user/m/register")
+	exp := `{"code":0,"data":{"token":"newUser","base":{"userId":"userIdnl8x7lipma","pwd":"天下无贼","mobile":"newUser","nick":"secret","avatarUrl":"http://localhost:9090/pic/avatar/d.jpeg","province":"未知","city":"未知","autoLogin":0,"userInfo":"FakeUserInfo","userLevel":0},"userLevel":0},"msg":"OK"}`
+	st.Equal(exp, string(body), "should rigister successfully")
+
+}
 func setupTestRouter() *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
 
 	v1.POST("/user/m/login", Login)
-
+	v1.POST("/user/m/register", Register)
 	return router
 }

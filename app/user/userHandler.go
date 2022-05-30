@@ -13,22 +13,18 @@ func Login(c *gin.Context) {
 	mobile := c.PostForm("mobile")         //"13911057997"
 	pwd := c.PostForm("pwd")               //"1212121212"
 
-	found := GetUserService().login(deviceId, deviceName, mobile, pwd)
-	var result map[string]string
-	msg := "OK"
-	code := 0
-	if found == nil {
-		result = map[string]string{"token": "UserLogin"}
-		msg = "用户名或密码错误"
-	} else {
-		result = map[string]string{"token": found.Mobile}
+	user := GetUserService().login(deviceId, deviceName, mobile, pwd)
+
+	if user == nil {
+		user = &User{}
 	}
-	c.JSON(http.StatusOK, gin.H{"code": code, "data": &result, "msg": msg})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "ok"})
 }
 func Logout(c *gin.Context) {
 	token, _ := c.GetQuery("token")
 	GetUserService().logout(token)
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
+	user := &User{}
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 func UpdateUserInfo(c *gin.Context) {
 	token, ok := c.GetQuery("token")
@@ -43,8 +39,11 @@ func UpdateUserInfo(c *gin.Context) {
 	city := c.Param("city")
 	fmt.Println(token, nick, avatarUrl, province, city)
 
-	result := updateUser(token)
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
+	user := updateUser(token)
+	if user == nil {
+		user = &User{}
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 func Register(c *gin.Context) {
 	autoLogin := c.PostForm("autoLogin") //true
@@ -54,30 +53,17 @@ func Register(c *gin.Context) {
 	pwd := c.PostForm("pwd")             //  "F1ref0x0820"
 
 	if !checkVerifyCode(code) {
-		//TODO 验证码失败，需要反回消息
-		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
+		//TODO 验证码失败，需要返回消息
+		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "验证码失败，需要返回消息", "msg": "OK"})
 		return
 	}
 	fmt.Printf("autoLogin = %v, code = %v, mobile = %v, nick = '%v, pwd = '%v'\n",
 		autoLogin, code, mobile, nick, pwd)
-	GetUserService().RegisterNewUser(mobile, nick, pwd)
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
-}
-func checkVerifyCode(code string) bool {
-	//TODO 需要校验注册的图片验证码
-	return true
-}
-func GetUserDetail(c *gin.Context) {
-
-	token, ok := c.GetQuery("token")
-	if !ok {
-		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
-		return
+	user := GetUserService().RegisterNewUser(mobile, nick, pwd)
+	if user == nil {
+		user = &User{}
 	}
-
-	result := fetchUserData(token)
-	//base = {}, userLevel = {}
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 
 func GetUserAmount(c *gin.Context) {
@@ -91,31 +77,38 @@ func GetUserAmount(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
-func updateUser(token string) interface{} {
-	return map[string]string{"token": "updateUser", "userInfo": "UserInfo 0"}
+func updateUser(token string) *User {
+	return &User{}
 
 }
 
 func fetchUserAmount(token string) interface{} {
-	return map[string]string{"token": "fetchUserAmount", "amount": "amount 0"}
+	return &User{}
+	//return map[string]string{"token": "fetchUserAmount", "amount": "amount 0"}
 
 }
-func fetchUserData(token string) interface{} {
-	base := "1"
+func GetUserDetail(c *gin.Context) {
 
-	userLevel := "1"
-	// id?: number;
-	// [key: string]: any;
+	token, ok := c.GetQuery("token")
+	if !ok {
+		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
+		return
+	}
 
-	userInfo := base
-	// id?: number;
-	//nick?: string;
-	//avatar?: string;
-	//[key: string]: any;
-	UserState := "0"
-	//token: string;
-	//userInfo: NonNullable<UserInfo>;
-	//userLevel: NonNullable<UserLevel>;
-	return map[string]string{"token": token, "userLevel": userLevel, "userInfo": userInfo, "UserState": UserState}
-
+	user := GetUserService().findUserByMobile(token)
+	if user == nil {
+		user = &User{}
+	}
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
+}
+func userToVM(user *User) UserVM {
+	return UserVM{
+		user.Mobile,
+		*user,
+		user.UserLevel,
+	}
+}
+func checkVerifyCode(code string) bool {
+	//TODO 需要校验注册的图片验证码
+	return true
 }

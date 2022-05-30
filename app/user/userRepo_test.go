@@ -45,7 +45,7 @@ func (suite *UserRepoTestSuite) Test_create_user() {
 	suite.Equal(3, userRepo.TotalUsers())
 }
 
-func (suite *UserRepoTestSuite) Test_find_user() {
+func (suite *UserRepoTestSuite) Test_find_user_by_mobile_and_pwd() {
 	userRepo.CreateUser("mobile", "pwd", "nickname")
 	result := userRepo.findUser("mobile", "pwd")
 	suite.NotEmpty(result)
@@ -53,4 +53,11 @@ func (suite *UserRepoTestSuite) Test_find_user() {
 	reg, _ := regexp.Compile(pattern)
 	reg.MatchString(result.AvatarUrl)
 	suite.Equal("mobile", result.Mobile)
+}
+func (suite *UserRepoTestSuite) Test_retriveUserByMobile() {
+	userRepo.CreateUser("mobile", "pwd", "nickname")
+	result := userRepo.retriveUserByMobile("mobile")
+	suite.NotEmpty(result)
+	result = userRepo.retriveUserByMobile("noexistedUser")
+	suite.True(result == nil)
 }

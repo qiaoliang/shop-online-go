@@ -6,6 +6,9 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
+var AdminMobile = "13900007997"
+var AdminPwd = "1234"
+
 type UserServiceTestSuite struct {
 	suite.Suite
 }
@@ -34,8 +37,32 @@ func (ur *UserServiceTestSuite) SetupTest() {
 }
 
 func (suite *UserServiceTestSuite) Test_admin_login() {
-	user := GetUserService().login("diviceid", "deviceName", "13900007997", "1234")
-	suite.Equal("13900007997", user.Mobile, "Should found Admin directly.")
-	suite.Equal("1234", user.Password, "Should get Default pwd 1234 for Admin .")
-	suite.Equal("13900007997", userService.userOnline["token"], "should find admin online")
+
+	user := GetUserService().login("diviceid", "deviceName", AdminMobile, "1234")
+	suite.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
+	suite.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
+	suite.Equal(AdminMobile, userService.userOnline[AdminMobile], "should find admin online")
+}
+func (suite *UserServiceTestSuite) Test_findUserByMobile() {
+	suite.loginAsAdmin()
+	suite.True(GetUserService().isOnline(AdminMobile))
+	user := GetUserService().findUserByMobile(AdminMobile)
+	suite.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
+	suite.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
+	offlineuser := GetUserService().findUserByMobile("offlineUser")
+	suite.True(offlineuser == nil)
+}
+
+func (suite *UserServiceTestSuite) Test_is_Online_after_register() {
+	n := GetUserService().RegisterNewUser("newMobile", "pwd", "nickString")
+	suite.Equal("newMobile", n.Mobile)
+	suite.True(GetUserService().isOnline("newMobile"))
+	r := GetUserService().findUser("newMobile", "pwd")
+	suite.Equal("newMobile", r.Mobile)
+	suite.Contains(r.AvatarUrl, ".jpeg")
+	suite.True(GetUserService().isOnline("newMobile"))
+}
+
+func (suite *UserServiceTestSuite) loginAsAdmin() {
+	GetUserService().login("diviceid", "deviceName", AdminMobile, AdminPwd)
 }

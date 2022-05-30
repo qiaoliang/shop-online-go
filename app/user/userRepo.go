@@ -32,13 +32,13 @@ func (r *MemoryUserRepo) TotalUsers() int {
 }
 
 func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
-	found := r.findUserByMobile(mobile)
+	found := r.retriveUserByMobile(mobile)
 	if found == nil || found.Password != pwd {
 		return nil
 	}
 	return found
 }
-func (r *MemoryUserRepo) findUserByMobile(mobile string) *User {
+func (r *MemoryUserRepo) retriveUserByMobile(mobile string) *User {
 	return userRepo.userlist[mobile]
 }
 

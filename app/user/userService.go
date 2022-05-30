@@ -20,7 +20,7 @@ type UserService struct {
 }
 
 func (us *UserService) logout(token string) {
-	if us.userOnline["token"] != "" {
+	if us.userOnline[token] != "" {
 		delete(us.userOnline, token)
 	}
 }
@@ -29,9 +29,21 @@ func (us *UserService) login(deviceId string, deviceName string, mobile string, 
 	if user == nil {
 		return nil
 	}
-	us.userOnline["token"] = mobile //should be token, rather than Mobile
+	us.userOnline[mobile] = mobile //take moble as a token
 	return user
 }
+func (r *UserService) isOnline(mobile string) bool {
+	mobileNumber := r.userOnline[mobile]
+	return mobileNumber != ""
+}
+func (r *UserService) findUserByMobile(mobile string) *User {
+	mobileNumber := r.userOnline[mobile]
+	if mobileNumber == "" {
+		return nil
+	}
+	return GetUserRepoInstance().retriveUserByMobile(mobileNumber)
+}
+
 func (s *UserService) findUser(mobile string, pwd string) *User {
 	user := GetUserRepoInstance().findUser(mobile, pwd)
 	return user
@@ -45,6 +57,6 @@ func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string
 	if err != nil {
 		return nil
 	}
-	s.userOnline["token"] = mobile
+	s.userOnline[mobile] = mobile
 	return newUser
 }
