@@ -21,7 +21,7 @@ func TestCategoryHandlerSuite(t *testing.T) {
 
 func (st *CategoryHandlerSuite) SetupSuite() {
 	st.router = st.setupTestRouter()
-	configs.NewConfig(utils.GetConfigFileForTest())
+	configs.GetConfigInstance(utils.GetConfigFileForTest())
 }
 
 func (st *CategoryHandlerSuite) Test_get_category_list() {

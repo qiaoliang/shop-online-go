@@ -9,7 +9,7 @@ func init() {
 
 }
 func main() {
-	configs.NewConfig("config.yaml")
+	configs.GetConfigInstance("config.yaml")
 	configs.Cfg.DbMigrate()
 	configs.Cfg.InitMysqlDB()
 	routers.InitRouter()

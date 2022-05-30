@@ -24,7 +24,7 @@ type Config struct {
 	StaticPic string
 }
 
-func NewConfig(cfgfile string) {
+func GetConfigInstance(cfgfile string) *Config {
 	if !utils.IsPathExist(cfgfile) {
 		fmt.Println("config file " + cfgfile + " is NOT existed")
 		panic(cfgfile + "is NOT existed.")
@@ -39,6 +39,7 @@ func NewConfig(cfgfile string) {
 		DBName:    viper.Get("MYSQL.DB_NAME").(string),
 		StaticPic: viper.Get("MYSQL.STATIC_PIC_URI").(string),
 	}
+	return &Cfg
 }
 
 var DB *gorm.DB

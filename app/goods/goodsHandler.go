@@ -1,6 +1,7 @@
 package goods
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -32,11 +33,11 @@ func FetchGoodsList(c *gin.Context) {
 func GetGoodsDetail(c *gin.Context) {
 
 	// params
-	token := c.PostForm("token")
-	idStr := c.PostForm("id")
+	token, _ := c.GetQuery("token")
+	idStr, _ := c.GetQuery("id")
 	idUint, _ := strconv.Atoi(idStr)
 	id := uint(idUint)
-
+	fmt.Printf(" goods detail token =%v, id=%v\n\n\n", token, id)
 	result := getItemDetail(id, token)
 
 	// response
@@ -50,31 +51,17 @@ func GetGoodsDetail(c *gin.Context) {
 func getItemDetail(id uint, token string) GoodsDetail {
 	gr := GetGoodsRepo()
 	gr.loadGoods()
-	goods := gr.GetGoodsList()
-	for _, item := range goods {
-		if sameAs(id, item) {
-			return item.GoodsDetail
-		}
-	}
-	return GoodsDetail{}
-}
-
-func sameAs(id uint, item GoodsItem) bool {
-	return id == item.Id
+	return gr.getItemDetail(id, token)
 }
 
 func getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {
 	gr := GetGoodsRepo()
 	goods := gr.loadGoods()
-	result := goods[:0] //我们利用传过来的slice重新创建一个slice，底层不会重新创建数组
+	result := make([]GoodsItem, 0)
 	for _, item := range goods {
-		if isA(catalogueId, item) {
+		if item.blongsTo(catalogueId) {
 			result = append(result, item)
 		}
 	}
 	return result
-}
-
-func isA(catalogueId uint, item GoodsItem) bool {
-	return catalogueId == item.CatalogueId
 }

@@ -21,7 +21,7 @@ func TestUserHandlerSuite(t *testing.T) {
 
 func (st *UserHandlerSuite) SetupSuite() {
 	st.router = setupTestRouter()
-	configs.NewConfig(utils.GetConfigFileForTest())
+	configs.GetConfigInstance(utils.GetConfigFileForTest())
 }
 
 // This will run right before the test starts

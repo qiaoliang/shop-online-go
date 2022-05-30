@@ -45,7 +45,7 @@ func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 
 func (cs *CartRepo) createCartInfo(token string, key uint, quantity uint) *CartInfo {
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{key, configs.Cfg.GoodsPicPrefix() + "g7227946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	item := CartItem{key, configs.Cfg.GoodsPicPrefix() + "g7225946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	items := make([]CartItem, 0)
 	items = append(items, item)
 	ip := make([]ItemPair, 0)
