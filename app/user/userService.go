@@ -36,6 +36,7 @@ func (s *UserService) findUser(mobile string, pwd string) *User {
 	user := GetUserRepoInstance().findUser(mobile, pwd)
 	return user
 }
-func (s *UserService) CreateUser() *User {
-	return nil
+func (s *UserService) CreateUser(mobile string, pwd string, nickname string) *User {
+	newUser := GetUserRepoInstance().CreateUser(mobile, pwd, nickname)
+	return newUser
 }

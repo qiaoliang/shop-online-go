@@ -1,7 +1,9 @@
 package user
 
 import (
+	"bookstore/app/configs"
 	"bookstore/app/utils"
+	"fmt"
 	"sync"
 )
 
@@ -37,8 +39,8 @@ func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
 }
 func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) *User {
 
-	userId := "userId" + utils.GenerateStr(10)
-	avatarUrl := "" + utils.GenerateAavatarStr()
+	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
+	avatarUrl := fmt.Sprintf("%v/avata/%v", configs.Cfg.StaticPicURI(), utils.GenerateAavatarStr())
 	r.userlist[mobile] = &User{
 		Id:        userId,
 		Password:  pwd,

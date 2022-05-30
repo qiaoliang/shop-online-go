@@ -7,7 +7,7 @@ import (
 type Util struct {
 }
 
-func GenerateStr(length int) string {
+func RandomStr(length int) string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
 	bytes := []byte(str)
 	var result []byte
@@ -21,5 +21,5 @@ func GenerateAavatarStr() string {
 	bytes := []byte(str)
 	var result []byte
 	result = append(result, bytes[rand.Intn(len(bytes))])
-	return string(result)
+	return string(result) + ".jpeg"
 }

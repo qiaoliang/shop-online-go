@@ -13,7 +13,6 @@ func Login(c *gin.Context) {
 	mobile := c.PostForm("mobile")         //"13911057997"
 	pwd := c.PostForm("pwd")               //"1212121212"
 
-	fmt.Printf("mobile = %v,  pwd=%v\n\n\n", mobile, pwd)
 	found := GetUserService().login(deviceId, deviceName, mobile, pwd)
 	var result map[string]string
 	msg := "OK"
@@ -24,7 +23,6 @@ func Login(c *gin.Context) {
 	} else {
 		result = map[string]string{"token": found.Mobile}
 	}
-	fmt.Println(result["token"])
 	c.JSON(http.StatusOK, gin.H{"code": code, "data": &result, "msg": msg})
 }
 func Logout(c *gin.Context) {
@@ -55,10 +53,18 @@ func Register(c *gin.Context) {
 	nick := c.PostForm("nick")           //  "熔岩巨兽"
 	pwd := c.PostForm("pwd")             //  "F1ref0x0820"
 
+	if !checkVerifyCode(code) {
+		//TODO 验证码失败，需要反回消息
+		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
+		return
+	}
 	fmt.Printf("autoLogin = %v, code = %v, mobile = %v, nick = '%v, pwd = '%v'\n",
 		autoLogin, code, mobile, nick, pwd)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
-
+}
+func checkVerifyCode(code string) bool {
+	//TODO 需要校验注册的图片验证码
+	return true
 }
 func GetUserDetail(c *gin.Context) {
 
