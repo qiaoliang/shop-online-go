@@ -8,10 +8,12 @@ import (
 )
 
 func Login(c *gin.Context) {
-	deviceId := c.GetString("deviceId")     //"16533880163937665988"
-	deviceName := c.GetString("deviceName") //"PC"
-	mobile := c.GetString("mobile")         //"13911057997"
-	pwd := c.GetString("pwd")               //"1212121212"
+	deviceId := c.PostForm("deviceId")     //"16533880163937665988"
+	deviceName := c.PostForm("deviceName") //"PC"
+	mobile := c.PostForm("mobile")         //"13911057997"
+	pwd := c.PostForm("pwd")               //"1212121212"
+
+	fmt.Printf("mobile = %v,  pwd=%v\n\n\n", mobile, pwd)
 	found := GetUserService().login(deviceId, deviceName, mobile, pwd)
 	var result map[string]string
 	msg := "OK"

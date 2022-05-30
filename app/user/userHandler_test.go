@@ -49,7 +49,7 @@ func (st *UserHandlerSuite) Test_login_with_admin() {
 	data.Add("mobile", "13900007997")
 	data.Add("pwd", "1234")
 
-	body := utils.HttpRequest(st.router, data, "GET", "/v1/user/m/login")
+	body := utils.HttpRequest(st.router, data, "POST", "/v1/user/m/login")
 
 	st.Contains(string(body), "13900007997", "should return admin")
 }
@@ -59,7 +59,7 @@ func setupTestRouter() *gin.Engine {
 	router := gin.New()
 	v1 := router.Group("/v1")
 
-	v1.GET("/user/m/login", Login)
+	v1.POST("/user/m/login", Login)
 
 	return router
 }
