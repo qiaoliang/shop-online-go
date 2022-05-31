@@ -12,26 +12,33 @@ Simple CRUD with [Gin](https://github.com/gin-gonic/gin) Framework
 
 # How To Run
 
-1. copy or change `config.example.yaml` to `config.yaml`
-2. config db info in `config.yml`
-3. create mysql database instance with name `bookstore` by `CREATE DATABASE bookstore;` before running. 
+1. config db info in `config.yml`
+2. create mysql database instance with name `bookstore` by `CREATE DATABASE bookstore;` before running. 
 4. run project `go run main.go` which will initial data for you by scripts under the dir `dbscripts`.
 
 # How to verify
 
-visit `http://${yourIP}:${PORT_in_config.yaml}/books`, you will see:
+visit `http://${yourIP}:${PORT_in_config.yaml}/v1/shop/goods/category/all`, you will see:
 
 ```
-{"data":[{"id":1,"title":"little prince","author":"Antoine"},{"id":2,"title":"Les Trois Mousquetaires","author":"Alexandre Dumas fils"},{"id":3,"title":"Continuous Delivery","author":"Jez"}]}
+{"code":0,"data":[{"id":0,"name":"DevOps"},{"id":1,"name":"大数据"}],"msg":"OK"}
 ```
 
 # directory structure
 * `app`: main code 
   * `configs`: Parser for config.yaml
-  * `controllers`:  Implementation of the restful APIs 
-  * `models`:  Data model
+  * `ad`:  Implementation of domain `Advertise management` 
+  * `configs`:  Implementation of Domain `system configuration` 
+  * `goods`:  Implementation of domain `goods and category` 
+  * `order`:  Implementation of domain `Order management` 
   * `routers`:  setup routers for the program
+  * `security`:  Implementation of domain `verification management` 
+  * `shoppingcart`:  Implementation of domain `shoppingcate management`
+  * `user`:  Implementation of domain `userinfo management`
+  * `utils`:  Implementation of internal utils
 * `dbscripts`:  DB scripts for migration. It is invoked by main.go
+* `resources`:  font for captCha
+* `static`:  static pictures for goods, avatars and ad banners
 * `config.yaml`: Config for the program, mainly for database
 * `main.go`: Entry of the program  
 
