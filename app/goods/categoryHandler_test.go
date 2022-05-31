@@ -3,7 +3,6 @@ package goods
 import (
 	"bookstore/app/configs"
 	"bookstore/app/utils"
-	"net/url"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -26,11 +25,10 @@ func (st *CategoryHandlerSuite) SetupSuite() {
 
 func (st *CategoryHandlerSuite) Test_get_category_list() {
 	//构建参数
-	data := url.Values{}
-	data.Set("token", "anythingIsOKByNow")
-	//构建返回值
-	//调用请求接口
-	body := utils.HttpRequest(st.router, data, "GET", "/v1/shop/goods/category/all")
+	params := map[string]string{
+		"token": "anythingIsOKByNow",
+	}
+	body := utils.HttpGet("/v1/shop/goods/category/all", params, st.router)
 
 	exp := `{"code":0,"data":[{"id":0,"name":"DevOps"},{"id":1,"name":"大数据"}],"msg":"OK"}`
 	st.Equal(exp, string(body), "should same.")

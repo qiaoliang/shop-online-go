@@ -58,7 +58,7 @@ func SetupRouter(r *gin.Engine) {
 
 	v1.GET("/shop/goods/category/all", goods.FetchCatalogues)
 	v1.GET("/shop/goods/detail", goods.GetGoodsDetail)
-	v1.GET("/shop/goods/reputation", goods.FetchItemReputation)
+	v1.POST("/shop/goods/reputation", goods.FetchItemReputation)
 	v1.POST("/goods/list", goods.FetchGoodsList)
 
 	v1.GET("/shopping-cart/info", cart.GetShopingCart)

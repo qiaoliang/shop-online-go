@@ -14,8 +14,7 @@ type CartInfo struct {
 }
 
 type CartItem struct {
-	Key             uint     `json:"key"`
-	Gid             string   `json:"gid"`
+	Gid             string   `json:"key"`
 	Pic             string   `json:"pic"`
 	Status          uint     `json:"status"` // === 1 【失效】
 	Name            string   `json:"name"`
@@ -27,40 +26,41 @@ type CartItem struct {
 }
 
 type ItemPair struct {
-	GoodsId uint `json:"goodsId"`
-	Volume  uint `json:"number"`
+	GoodsId string `json:"goodsId"`
+	Volume  uint   `json:"number"`
 }
 
-func (ci *CartInfo) NewCartItem(key uint, quantity uint) CartItem {
+func (ci *CartInfo) NewCartItem(gid string, quantity uint) CartItem {
+	//TODO: Get goods from repo.
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{key, "gid", configs.Cfg.GoodsPicPrefix() + "7225946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	item := CartItem{gid, configs.Cfg.GoodsPicPrefix() + gid + "-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	return item
 }
 func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
-func (ci *CartInfo) Update(key uint, quantity uint) {
+func (ci *CartInfo) Update(gid string, quantity uint) {
 	for i := range ci.Items {
 		it := &ci.Items[i]
-		if it.Key == key {
-			fmt.Printf("find same token and key, %v and %v\n", key, quantity)
+		if it.Gid == gid {
+			fmt.Printf("find same gid = %v \n", gid)
 			it.Quantity = quantity
-			ci.Pairs[i] = ItemPair{key, quantity}
+			ci.Pairs[i] = ItemPair{gid, quantity}
 			return
 		}
 	}
-	ci.Items = append(ci.Items, ci.NewCartItem(key, quantity))
-	ci.Pairs = append(ci.Pairs, ItemPair{key, quantity})
+	ci.Items = append(ci.Items, ci.NewCartItem(gid, quantity))
+	ci.Pairs = append(ci.Pairs, ItemPair{gid, quantity})
 }
 
-func (c *CartInfo) getVolumeById(id uint) uint {
+func (c *CartInfo) getVolumeById(gid string) uint {
 	if len(c.Pairs) == 0 {
 		return uint(0)
 	}
 
 	for _, item := range c.Pairs {
 		v := item
-		if v.GoodsId == id {
+		if v.GoodsId == gid {
 			return item.Volume
 		}
 	}

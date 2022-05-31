@@ -34,20 +34,45 @@ func GetConfigFileForTest() string {
 	return path
 }
 
-func HttpRequest(r *gin.Engine, data url.Values, reqMethod string, reqURL string) string {
-	req, _ := http.NewRequest(reqMethod, reqURL, bytes.NewBufferString(data.Encode()))
-	if reqMethod == "POST" {
-		req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+func HttpGet(reqURL string, params map[string]string, r *gin.Engine) string {
+	values := ""
+	for key, val := range params {
+		values += "&" + key + "=" + val
 	}
-	w := httptest.NewRecorder()
+	temp := values[1:]
+	values = "?" + temp
 
+	reqURL = reqURL + values
+	req, _ := http.NewRequest("GET", reqURL, nil)
+	w := httptest.NewRecorder()
 	r.ServeHTTP(w, req)
 	if w.Code != http.StatusOK {
-		fmt.Printf("Http Request Error with reqMethod = %v, reqURL = %v, data = %v\n", reqMethod, reqURL, data)
+		fmt.Printf("Http Request Error with reqMethod = %v, reqURL = %v, data = %v\n", "GET", reqURL, params)
 	}
 
 	resp := w.Result()
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 	return string(body)
+}
+
+func HttpPost(r *gin.Engine, data url.Values, reqURL string) string {
+	req, _ := http.NewRequest("POST", reqURL, bytes.NewBufferString(data.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+	w := httptest.NewRecorder()
+
+	body := doIt(r, w, req, reqURL, data)
+	return string(body)
+}
+
+func doIt(r *gin.Engine, w *httptest.ResponseRecorder, req *http.Request, reqURL string, data url.Values) []byte {
+	r.ServeHTTP(w, req)
+	if w.Code != http.StatusOK {
+		fmt.Printf("Http Request Error with reqMethod = POST, reqURL = %v, data = %v\n", reqURL, data)
+	}
+
+	resp := w.Result()
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	return body
 }

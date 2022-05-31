@@ -6,7 +6,7 @@ import (
 )
 
 type GoodsItem struct {
-	Id              uint        `json:"id"` //商品Id
+	Gid             string      `json:"id"` //商品序号Id
 	Name            string      `json:"name"`
 	CatalogueId     uint        `json:"catalogueId"`
 	RecommendStatus string      `json:"recommendStatus"`
@@ -20,13 +20,12 @@ func (gi *GoodsItem) blongsTo(cateId uint) bool {
 	return (cateId == gi.CatalogueId)
 }
 
-func (gi *GoodsItem) sameAs(gId uint) bool {
-	return (gId == gi.Id)
+func (gi *GoodsItem) sameAs(gId string) bool {
+	return (gId == gi.Gid)
 }
 
 type GoodsDetail struct {
-	Id            uint      `json:"id"`            //
-	Gid           string    `json:"gid"`           //
+	Gid           string    `json:"id"`            // 商品Id
 	Name          string    `json:"name"`          // 商品名
 	Pics          []Picture `json:"pics"`          // 商品详图
 	ItemId        uint      `json:"goodsId"`       // 商品Id

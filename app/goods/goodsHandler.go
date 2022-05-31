@@ -20,7 +20,6 @@ type ResultData struct {
 
 func FetchItemReputation(c *gin.Context) {
 	//TODO have not implemented,please fix it.
-
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"data": "",
@@ -54,11 +53,9 @@ func GetGoodsDetail(c *gin.Context) {
 
 	// params
 	token, _ := c.GetQuery("token")
-	idStr, _ := c.GetQuery("id")
-	idUint, _ := strconv.Atoi(idStr)
-	id := uint(idUint)
-	fmt.Printf(" goods detail token =%v, id=%v\n\n\n", token, id)
-	result := getItemDetail(id, token)
+	gid, _ := c.GetQuery("id")
+	fmt.Printf(" goods detail token =%v, id=%v\n\n\n", token, gid)
+	result := getItemDetail(gid, token)
 
 	// response
 	c.JSON(http.StatusOK, gin.H{
@@ -68,10 +65,10 @@ func GetGoodsDetail(c *gin.Context) {
 	})
 }
 
-func getItemDetail(id uint, token string) GoodsDetail {
+func getItemDetail(gid string, token string) GoodsDetail {
 	gr := GetGoodsRepo()
 	gr.loadGoods()
-	return gr.getItemDetail(id, token)
+	return gr.getItemDetail(gid, token)
 }
 
 func getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {

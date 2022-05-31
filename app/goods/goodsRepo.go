@@ -23,7 +23,7 @@ type GoodsRepo struct {
 	items []GoodsItem
 }
 
-func (gr *GoodsRepo) getItemDetail(id uint, token string) GoodsDetail {
+func (gr *GoodsRepo) getItemDetail(id string, token string) GoodsDetail {
 	goods := gr.GetGoodsList()
 	for _, item := range goods {
 		if item.sameAs(id) {
@@ -58,7 +58,7 @@ func (gr *GoodsRepo) loadGoods() []GoodsItem {
 	gr.items = append(gr.items, item6)
 	gr.items = append(gr.items, item7)
 	gr.items = append(gr.items, item8)
-	return gr.GetGoodsList()
+	return gr.items
 
 }
 func (gr *GoodsRepo) GetGoodsList() []GoodsItem {
@@ -74,7 +74,6 @@ func (gr *GoodsRepo) createGoods(
 	afterSale string, recommandStatus string) GoodsItem {
 
 	var detail = GoodsDetail{
-		id,        //id
 		gid,       //"gId"
 		gName,     //name
 		nil,       //"Pics"
@@ -92,7 +91,7 @@ func (gr *GoodsRepo) createGoods(
 	}
 	detail.setMultiPics(2)
 	items := &GoodsItem{
-		id,              //id
+		gid,             //id
 		gName,           //name
 		cateId,          //catalogueId
 		recommandStatus, //recommandStatus

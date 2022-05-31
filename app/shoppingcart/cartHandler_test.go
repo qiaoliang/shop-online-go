@@ -37,9 +37,9 @@ func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_toke
 	data.Add("gid", "gid")
 	data.Add("number", "5")
 
-	body := utils.HttpRequest(st.router, data, "POST", "/v1/shopping-cart/add")
+	body := utils.HttpPost(st.router, data, "/v1/shopping-cart/add")
 
-	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"gid":"gid","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":"1","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":"1","number":5}]},"msg":"OK"}`
 	st.Equal(exp, string(body), "should same.")
 }
 
@@ -56,7 +56,7 @@ func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_f
 	utils.JsonToStruct(exp, expResult)
 
 	var realResult CartJson
-	body := string(utils.HttpRequest(st.router, data, "POST", "/v1/shopping-cart/modifyNumber"))
+	body := string(utils.HttpPost(st.router, data, "/v1/shopping-cart/modifyNumber"))
 	utils.JsonToStruct(body, realResult)
 	st.EqualValues(expResult.Data, expResult.Data)
 }
@@ -68,10 +68,11 @@ func (st *ShoppingCartHandlerSuite) Test_get_cart_for_unexisted_token() {
 	utils.JsonToStruct(exp, expResult)
 
 	//构建参数
-	data := url.Values{}
-	data.Set("token", "UnexistedToken")
+	data := map[string]string{
+		"token": "UnexistedToken",
+	}
 
-	body := utils.HttpRequest(st.router, data, "GET", "/v1/shopping-cart/info")
+	body := utils.HttpGet("/v1/shopping-cart/info", data, st.router)
 
 	var realResult CartJson
 	utils.JsonToStruct(string(body), realResult)

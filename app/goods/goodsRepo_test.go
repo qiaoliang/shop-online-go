@@ -56,6 +56,6 @@ func (st *GoodsRepositoryTestSuite) Test_Create_goods_for_Shop() {
 
 func (st *GoodsRepositoryTestSuite) Test_Get_a_goods_detail() {
 	goodsRepo.loadGoods()
-	g := goodsRepo.getItemDetail(0, "token")
-	st.Equal(uint(0), g.Id)
+	g := goodsRepo.getItemDetail("g7225946", "13900007997")
+	st.Equal("g7225946", g.Gid)
 }
