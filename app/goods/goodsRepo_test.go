@@ -43,14 +43,14 @@ func (st *GoodsRepositoryTestSuite) Test_goods_load_from_() {
 	st.Equal(8, len(goodsRepo.GetGoodsList()))
 }
 func (st *GoodsRepositoryTestSuite) Test_Create_goods_for_Shop() {
-	item := goodsRepo.createGoods(0, 0, "g7227946", "持续交付1.0", 10, "册", "0", "一本DevOps的经典书。", uint(Saling), "66.0", "99.0", "1", "1")
-	st.Equal("http://localhost:9090/pic/goods/g7227946.jpeg", item.PicUrl)
+	item := goodsRepo.createGoods(0, 0, "g7225946", "持续交付1.0", 10, "册", "0", "一本DevOps的经典书。", uint(Saling), "66.0", "99.0", "1", "1")
+	st.Equal("http://localhost:9090/pic/goods/g7225946.jpeg", item.PicUrl)
 	pics := item.GoodsDetail.Pics
 	st.Equal(2, len(pics))
-	st.Equal(pics[0].Id, "g7227946-01")
-	st.Contains(pics[0].Pic, "g7227946-01")
-	st.Equal(pics[1].Id, "g7227946-02")
-	st.Contains(pics[1].Pic, "g7227946-02")
+	st.Equal(pics[0].Id, "g7225946-01")
+	st.Contains(pics[0].Pic, "g7225946-01")
+	st.Equal(pics[1].Id, "g7225946-02")
+	st.Contains(pics[1].Pic, "g7225946-02")
 
 }
 

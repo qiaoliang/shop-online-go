@@ -15,6 +15,7 @@ type CartInfo struct {
 
 type CartItem struct {
 	Key             uint     `json:"key"`
+	Gid             string   `json:"gid"`
 	Pic             string   `json:"pic"`
 	Status          uint     `json:"status"` // === 1 【失效】
 	Name            string   `json:"name"`
@@ -32,7 +33,7 @@ type ItemPair struct {
 
 func (ci *CartInfo) NewCartItem(key uint, quantity uint) CartItem {
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{key, configs.Cfg.GoodsPicPrefix() + "g7225-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
+	item := CartItem{key, "gid", configs.Cfg.GoodsPicPrefix() + "7225946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	return item
 }
 func (ci *CartInfo) getToken() string {

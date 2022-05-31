@@ -1,12 +1,32 @@
 package goods
 
 import (
+	"bookstore/app/utils"
 	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+type GoodsListJson struct {
+	utils.JsonResult
+	Data *ResultData `json:"data"`
+}
+type ResultData struct {
+	TotalRow int         `json:"totalRow"`
+	Result   []GoodsItem `json:"result"`
+}
+
+func FetchItemReputation(c *gin.Context) {
+	//TODO have not implemented,please fix it.
+
+	c.JSON(http.StatusOK, gin.H{
+		"code": 0,
+		"data": "",
+		"msg":  "OK",
+	})
+}
 
 func FetchGoodsList(c *gin.Context) {
 	// params
