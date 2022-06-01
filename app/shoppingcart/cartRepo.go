@@ -10,6 +10,9 @@ type CartRepo struct {
 
 var cartRepo *CartRepo
 
+func init() {
+	GetCartsInstance()
+}
 func GetCartsInstance() *CartRepo {
 	if cartRepo == nil {
 		cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
@@ -44,6 +47,7 @@ func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 }
 
 func (cs *CartRepo) createNewCartInfo(token string, gid string, quantity uint) *CartInfo {
+	// TODO: should create item with Real Data.
 	sku := []string{"sku1", "sku3"}
 	item := CartItem{gid, configs.Cfg.GoodsPicPrefix() + "g7225946-01.jpeg", 0, "CD1.0", sku, 66.0, quantity, "1", "valueName"}
 	items := make([]CartItem, 0)

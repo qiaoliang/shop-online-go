@@ -20,19 +20,3 @@ type UserLevel struct {
 var LEVELGREEN = UserLevel{1, "Green"}
 var LEVELRED = UserLevel{2, "Red"}
 var LEVELBlANK = UserLevel{0, "Blank"}
-
-func NoUser() *User {
-
-	return &User{
-		"BlankUser",
-		"BlankPwd",
-		"", //no Token
-		"BlankNickname",
-		"BlankAvatarUrl",
-		"BlankProvince",
-		"BlankCity",
-		0,
-		"BlankUserInfo",
-		&LEVELBlANK,
-	}
-}

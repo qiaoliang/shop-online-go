@@ -24,6 +24,14 @@ func TestShoppingCartHandlerSuite(t *testing.T) {
 	suite.Run(t, new(ShoppingCartHandlerSuite))
 }
 
+// This will run right before the test starts
+// and receives the suite and test names as input
+
+// This will run before each test in the suite
+func (st *ShoppingCartHandlerSuite) SetupTest() {
+	cartRepo = nil
+	cartRepo = GetCartsInstance()
+}
 func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	st.router = setupTestRouter()
 	configs.GetConfigInstance(utils.GetConfigFileForTest())
@@ -51,7 +59,7 @@ func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_f
 	data.Add("number", "5")
 	data.Add("gid", "gid")
 
-	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":1,"gid":"gid","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":1,"number":5}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"iamTestToken7896554","cartInfo":"iamInfos","number":5,"items":[{"key":"gid","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg","status":0,"name":"CD1.0","sku":["sku1","sku3"],"price":66,"number":5,"selected":"1","optionValueName":"valueName"}],"goods":[{"goodsId":"gid","number":5}]},"msg":"OK"}`
 	body := string(utils.HttpPost(st.router, data, "/v1/shopping-cart/modifyNumber"))
 	st.Equal(exp, string(body))
 }

@@ -22,19 +22,23 @@ func TestExampleTestSuite(t *testing.T) {
 // This will run right before the test starts
 // and receives the suite and test names as input
 func (st *CartRepositoryTestSuite) BeforeTest(suiteName, testName string) {
-	cartRepo = nil
-	cartRepo = GetCartsInstance()
+
 }
 
 // This will run after test finishes
 // and receives the suite and test names as input
-func (st *CartRepositoryTestSuite) AfterTest(suiteName, testName string) {}
+func (st *CartRepositoryTestSuite) AfterTest(suiteName, testName string) {
+	cartRepo = nil
+}
 
 // This will run before before the tests in the suite are run
 func (st *CartRepositoryTestSuite) SetupSuite() {}
 
 // This will run before each test in the suite
-func (st *CartRepositoryTestSuite) SetupTest() {}
+func (st *CartRepositoryTestSuite) SetupTest() {
+	cartRepo = nil
+	cartRepo = GetCartsInstance()
+}
 
 func (st *CartRepositoryTestSuite) Test_add_one_goods_into_an_empty_Cart() {
 

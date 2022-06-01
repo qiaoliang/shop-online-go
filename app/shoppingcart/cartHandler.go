@@ -15,12 +15,10 @@ func PutIntoCart(c *gin.Context) {
 	vlm64, err2 := strconv.ParseUint(number, 10, 32)
 	var result *CartInfo
 	if err2 != nil {
-		fmt.Println("error format of params for " + number)
 		result = nil
 	} else {
 		result = GetCartsInstance().AddOrderIntoCart(token, gid, uint(vlm64))
 	}
-	fmt.Printf("PutIntoCart~~after~~~~token is :%v \n", result.Token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
@@ -35,14 +33,17 @@ func UpdateShoppingCart(c *gin.Context) {
 }
 func GetShopingCart(c *gin.Context) {
 
-	token := c.Param("token")
+	token, err := c.GetQuery("token")
+	if !err {
+		fmt.Println("can not Parse token。")
+	}
 	cart := GetCartsInstance().GetCartByToken(token)
 	var result interface{}
 	if cart == nil {
+		fmt.Println("没有找到 token 为 " + token + " 的购物车")
 		result = ""
 	} else {
 		result = cart
 	}
-
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
