@@ -68,22 +68,62 @@ func (st *CartRepositoryTestSuite) Test_add_one_goods_into_an_empty_Cart() {
 	expVlm := uint(10)
 	st.Equal(expVlm, c.getVolumeById(gid), "should put volume into a goodsid, expected=%v actual=%v\n", expVlm, c.getVolumeById(gid))
 }
-func (st *CartRepositoryTestSuite) Test_add_more_volume_into_a_Cart_with_same_goodsid() {
-	gid := "g7225946"
-	cartRepo.AddOrderIntoCart("sameGoodsId", gid, 10)
-
-	c := cartRepo.AddOrderIntoCart("sameGoodsId", gid, 13)
-
-	st.Equal(1, len(c.Items), "should be 1, but it was %v ", len(c.Items))
-	st.Equal(uint(23), c.getVolumeById(gid), "should be 13, but it was %v", c.getVolumeById(gid))
-}
-func (st *CartRepositoryTestSuite) Test_add_another_goods_into_a_Cart_with_one_goods() {
+func (st *CartRepositoryTestSuite) Test_add_different_goods_into_the_Cart_for_same_token() {
 	gid1 := "g7225946"
-	gid2 := "g1872110"
-	cartRepo.AddOrderIntoCart("firstGoodsId", gid1, 10)
-	c := cartRepo.AddOrderIntoCart("secondGoodsId", gid2, 20)
+	gid2 := "g7225947"
+	token := "13911057997"
+	cartRepo.AddOrderIntoCart(token, gid1, 10)
+	cartRepo.AddOrderIntoCart(token, gid2, 20)
+
+	st.Equal(1, len(cartRepo.cartInfos), "should have 1 carts for same token, but it was %v ", len(cartRepo.cartInfos))
+
+	c := cartRepo.GetCartByToken(token)
+	st.Equal(2, len(c.Items), "should be 2 Items, but it was %v ", len(c.Items))
+	st.Equal(2, len(c.Pairs), "should be 2 Pairs, but it was %v ", len(c.Items))
+	its := c.Items
+
+	it := its[0]
+	st.Equal(gid1, it.Gid)
+	st.Equal(uint(10), it.Quantity)
+	st.Equal("66.0", it.Price)
+	st.Contains(it.Pic, gid1)
+
+	it = its[1]
+	st.Equal(gid2, it.Gid)
+	st.Equal(uint(20), it.Quantity)
+	st.Equal("99.0", it.Price)
+	st.Contains(it.Pic, gid2)
+
+}
+
+func (st *CartRepositoryTestSuite) Test_should_seperate_carts_for_different_tokens() {
+	gid := "g7225946"
+	t1 := "TokenOne"
+	t2 := "TokenTwo"
+	cartRepo.AddOrderIntoCart(t1, gid, 10)
+	cartRepo.AddOrderIntoCart(t2, gid, 20)
 
 	length := len(cartRepo.cartInfos)
 	st.Equal(2, length, "should have 2 tokens , but it was %v ", length)
-	st.Equal(uint(20), c.getVolumeById(gid2), "should be 20 for secondGoodsId, but it was %v", c.getVolumeById(gid2))
+
+	ci := cartRepo.GetCartByToken(t1)
+	st.Equal(t1, ci.getToken())
+	its := ci.Items
+	st.Equal(1, len(its))
+	it := its[0]
+	st.Equal(gid, it.Gid)
+	st.Equal(uint(10), it.Quantity)
+	st.Equal("66.0", it.Price)
+	st.Contains(it.Pic, gid)
+
+	ci = cartRepo.GetCartByToken(t2)
+	st.Equal(t2, ci.getToken())
+	its = ci.Items
+	st.Equal(1, len(its))
+	it = its[0]
+	st.Equal(gid, it.Gid)
+	st.Equal(uint(20), it.Quantity)
+	st.Equal("66.0", it.Price)
+	st.Contains(it.Pic, gid)
+
 }

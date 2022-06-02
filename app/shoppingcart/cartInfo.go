@@ -2,7 +2,7 @@ package cart
 
 import (
 	"bookstore/app/configs"
-	"fmt"
+	"bookstore/app/goods"
 )
 
 type CartInfo struct {
@@ -31,7 +31,6 @@ type ItemPair struct {
 }
 
 func (ci *CartInfo) NewCartItem(gid string, quantity uint) CartItem {
-	//TODO: Get goods from repo.
 	sku := []string{"sku1", "sku3"}
 	item := CartItem{gid, configs.Cfg.GoodsPicPrefix() + gid + "-01.jpeg", 0, "CD1.0", sku, "66.0", quantity, "1", "valueName"}
 	return item
@@ -40,28 +39,27 @@ func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
 
-func (ci *CartInfo) AddMore(gid string, quantity uint) {
+func (ci *CartInfo) AddMore(prod goods.GoodsDetail, quantity uint) {
 	ci.NewItemQuantity = quantity
-	for i := range ci.Items {
-		it := &ci.Items[i]
-		if it.Gid == gid {
-			it.Quantity = it.Quantity + quantity
-			ci.Pairs[i] = ItemPair{gid, it.Quantity}
-			return
-		}
+	if ci.Update(prod, quantity) {
+		return
 	}
-	fmt.Println("error. should not be here")
+	item := ci.createCartItem(prod, quantity)
+	ip := ItemPair{prod.Gid, quantity}
+	ci.Items = append(ci.Items, *item)
+	ci.Pairs = append(ci.Pairs, ip)
 }
 
-func (ci *CartInfo) Update(gid string, quantity uint) {
+func (ci *CartInfo) Update(prod goods.GoodsDetail, quantity uint) bool {
 	for i := range ci.Items {
 		it := &ci.Items[i]
-		if it.Gid == gid {
-			it.Quantity = quantity
-			ci.Pairs[i] = ItemPair{gid, quantity}
-			return
+		if it.Gid == prod.Gid {
+			it.Quantity = it.Quantity + quantity
+			ci.Pairs[i] = ItemPair{prod.Gid, it.Quantity}
+			return true
 		}
 	}
+	return false
 }
 
 func (c *CartInfo) getVolumeById(gid string) uint {
@@ -76,4 +74,22 @@ func (c *CartInfo) getVolumeById(gid string) uint {
 		}
 	}
 	return uint(0)
+}
+
+func (ci *CartInfo) createCartItem(prod goods.GoodsDetail, quantity uint) *CartItem {
+	sku := []string{"sku1", "sku3"}
+	selected := "1"
+	optionValue := "optionValueName"
+
+	item := CartItem{prod.Gid,
+		configs.Cfg.GoodsPicPrefix() + prod.Gid + ".jpeg",
+		0,
+		prod.Name,
+		sku,
+		prod.MinPrice,
+		quantity,
+		selected,
+		optionValue,
+	}
+	return &item
 }
