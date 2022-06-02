@@ -3,6 +3,7 @@ package cart
 import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
+	"fmt"
 )
 
 type CartInfo struct {
@@ -41,8 +42,7 @@ func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
 
-func (ci *CartInfo) AddMore(prod goods.GoodsDetail, quantity uint) {
-	ci.RedDot = quantity
+func (ci *CartInfo) AddMore(prod *goods.GoodsDetail, quantity uint) {
 	if ci.Update(prod, quantity) {
 		return
 	}
@@ -52,16 +52,24 @@ func (ci *CartInfo) AddMore(prod goods.GoodsDetail, quantity uint) {
 	ci.Pairs = append(ci.Pairs, ip)
 }
 
-func (ci *CartInfo) Update(prod goods.GoodsDetail, quantity uint) bool {
+func (ci *CartInfo) Update(prod *goods.GoodsDetail, quantity uint) bool {
+	fmt.Printf("quantity=%d\n", quantity)
+	fmt.Printf("查找的Gid =%s\n", prod.Gid)
+
 	for i := range ci.Items {
 		it := &ci.Items[i]
+		fmt.Printf(" Item id: quantity= %s:%d\n", it.Gid, it.Quantity)
+		fmt.Printf(" 打印已有的 pair %s:%d\n", ci.Pairs[i].GoodsId, ci.Pairs[i].Volume)
 		if it.Gid == prod.Gid {
 			updatedQuantity := it.Quantity + quantity
+			fmt.Println("updatedQuantity")
+			fmt.Println(updatedQuantity)
 			it.Quantity = updatedQuantity
 			ci.Pairs[i] = ItemPair{prod.Gid, it.Quantity}
 			return true
 		}
 	}
+	fmt.Println("没找到，不对呀")
 	return false
 }
 
@@ -79,7 +87,7 @@ func (c *CartInfo) getVolumeById(gid string) uint {
 	return uint(0)
 }
 
-func (ci *CartInfo) createCartItem(prod goods.GoodsDetail, quantity uint) *CartItem {
+func (ci *CartInfo) createCartItem(prod *goods.GoodsDetail, quantity uint) *CartItem {
 	sku := []string{"sku1", "sku3"}
 	selected := "1"
 	optionValue := "optionValueName"

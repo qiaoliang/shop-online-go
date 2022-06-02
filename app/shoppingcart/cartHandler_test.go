@@ -90,7 +90,7 @@ func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_f
 
 	data := url.Values{}
 	data.Set("token", token)
-	data.Add("gid", gid)
+	data.Add("key", gid)
 	data.Add("number", "10")
 
 	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":20,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":20}]},"msg":"OK"}`

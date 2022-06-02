@@ -18,7 +18,6 @@ func PutIntoCart(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
 		return
 	}
-	fmt.Printf("token =%v, gid = %v, number =%v\n ", token, gid, number)
 	result := GetCartsInstance().AddOrderIntoCart(token, gid, uint(vlm64))
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
@@ -26,9 +25,13 @@ func PutIntoCart(c *gin.Context) {
 func UpdateShoppingCart(c *gin.Context) {
 
 	token := c.PostForm("token")
-	gid := c.PostForm("gid")
-	number, _ := strconv.Atoi(c.PostForm("number"))
-	result := GetCartsInstance().UpdateQuantityOfGoodsInCate(token, gid, uint(number))
+	gid := c.PostForm("key") //只有这里用了Key，其它都用了gid，或 goodsId
+	numStr := c.PostForm("number")
+
+	number, _ := strconv.Atoi(numStr)
+
+	GetCartsInstance().UpdateQuantityOfGoodsInCate(token, gid, uint(number))
+	result := GetCartsInstance().cartInfos[token]
 
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }

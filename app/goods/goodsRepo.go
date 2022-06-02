@@ -23,14 +23,14 @@ type GoodsRepo struct {
 	items []GoodsItem
 }
 
-func (gr *GoodsRepo) GetItemDetail(id string) GoodsDetail {
+func (gr *GoodsRepo) GetItemDetail(id string) *GoodsDetail {
 	goods := gr.GetGoodsList()
 	for _, item := range goods {
 		if item.sameAs(id) {
-			return item.GoodsDetail
+			return &item.GoodsDetail
 		}
 	}
-	return GoodsDetail{}
+	return nil
 }
 
 func (gr *GoodsRepo) LoadGoods() []GoodsItem {

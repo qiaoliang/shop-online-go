@@ -2,7 +2,6 @@ package goods
 
 import (
 	"bookstore/app/utils"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -52,9 +51,7 @@ func FetchGoodsList(c *gin.Context) {
 func GetGoodsDetail(c *gin.Context) {
 
 	// params
-	token, _ := c.GetQuery("token")
 	gid, _ := c.GetQuery("id")
-	fmt.Printf(" goods detail token =%v, id=%v\n\n\n", token, gid)
 	result := getItemDetail(gid)
 
 	// response
@@ -65,7 +62,7 @@ func GetGoodsDetail(c *gin.Context) {
 	})
 }
 
-func getItemDetail(gid string) GoodsDetail {
+func getItemDetail(gid string) *GoodsDetail {
 	gr := GetGoodsRepo()
 	gr.LoadGoods()
 	return gr.GetItemDetail(gid)

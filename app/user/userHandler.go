@@ -29,10 +29,10 @@ func UpdateUserInfo(c *gin.Context) {
 		return
 	}
 
-	nick := c.Param("nick")
-	avatarUrl := c.Param("avatarUrl")
-	province := c.Param("province")
-	city := c.Param("city")
+	nick := c.Query("nick")
+	avatarUrl := c.Query("avatarUrl")
+	province := c.Query("province")
+	city := c.Query("city")
 	fmt.Println(token, nick, avatarUrl, province, city)
 
 	user := updateUser(token)
