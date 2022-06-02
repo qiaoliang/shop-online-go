@@ -24,14 +24,17 @@ func (cs *CartRepo) AddOrderIntoCart(token string, gid string, quantity uint) *C
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if _, ok := cs.cartInfos[token]; !ok {
 		cs.cartInfos[token] = cs.CreateCartInfoFor(token, goodsDetail, quantity)
+		cs.cartInfos[token].caculateRedDot()
 		return cs.cartInfos[token]
 	}
 	cs.cartInfos[token].AddMore(goodsDetail, quantity)
+	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
 func (cs *CartRepo) UpdateQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	cs.cartInfos[token].Update(goodsDetail, quantity)
+	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
 
@@ -39,13 +42,16 @@ func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 	if _, ok := cs.cartInfos[token]; !ok {
 		return nil
 	}
+	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
 func (cs *CartRepo) CreateCartInfoFor(token string, prod goods.GoodsDetail, quantity uint) *CartInfo {
 	items := make([]CartItem, 0)
 	ips := make([]ItemPair, 0)
-	cs.cartInfos[token] = &CartInfo{token, quantity, items, ips}
-	cs.cartInfos[token].AddMore(prod, quantity)
-	return cs.cartInfos[token]
+	ci := &CartInfo{token, quantity, items, ips}
+	ci.AddMore(prod, quantity)
+	ci.caculateRedDot()
+	cs.cartInfos[token] = ci
+	return ci
 
 }

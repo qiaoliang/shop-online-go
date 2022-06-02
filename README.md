@@ -42,14 +42,16 @@ visit `http://${yourIP}:${PORT_in_config.yaml}/v1/shop/goods/category/all`, you 
 * `config.yaml`: Config for the program, mainly for database
 * `main.go`: Entry of the program  
 
-# API
+# 应用初始化
 
-URL 的前缀都是`http://${yourHostnameOrIP}:${port}`
+* 数据不支持持久化，即：每次重新启动，所有数据重置。
+* 初始用户名为：13900007997，密码为：1234
+* SKU只有两类，分别是 `DevOps` 和 `大数据`
+* `DevOps`下有四个SKU， SKU的Id顺序为：g7225946～9，对应的图片保存在 `static` 目录下
+* `大数据`下也有四个SKU， SKU的Id顺序为：g1872110～3，对应的图片保存在 `static` 目录下
 
-方法||URI|版本|说明|
-|--|--|--|--|
-|GET    |`/books`                           |v1| fetch all books by json|
-|GET    |`/books/${id}`                     |v1| fetch one book by id|
-|POST   |`/books`                           |v1| add a new book|
-|PATCH  |`/books/${id}`                     |v1| update infomation for a book|
-|DELETE |`/books/${id}`                     |v1| delete a book|
+# 业务规则
+
+1. 「购物车」的红点一直显示，直到打开「购物车」的页面（与京东商城的逻辑一致）
+2. 「购物车」的红点数等于该登录用户购物车中的 SKU 总数（与京东商城的逻辑一致）
+3. 每次用户重新登录，只要「购物车」中有 SKU，就显示红点。
