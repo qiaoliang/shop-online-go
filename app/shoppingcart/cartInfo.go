@@ -6,10 +6,10 @@ import (
 )
 
 type CartInfo struct {
-	Token           string     `json:"token"`
-	NewItemQuantity uint       `json:"number"`
-	Items           []CartItem `json:"items"`
-	Pairs           []ItemPair `json:"goods"`
+	Token  string     `json:"token"`
+	RedDot uint       `json:"number"`
+	Items  []CartItem `json:"items"`
+	Pairs  []ItemPair `json:"goods"`
 }
 
 type CartItem struct {
@@ -39,7 +39,7 @@ func (ci *CartInfo) getToken() string {
 }
 
 func (ci *CartInfo) AddMore(prod goods.GoodsDetail, quantity uint) {
-	ci.NewItemQuantity = quantity
+	ci.RedDot = quantity
 	if ci.Update(prod, quantity) {
 		return
 	}
