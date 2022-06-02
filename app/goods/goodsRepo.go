@@ -23,7 +23,7 @@ type GoodsRepo struct {
 	items []GoodsItem
 }
 
-func (gr *GoodsRepo) getItemDetail(id string, token string) GoodsDetail {
+func (gr *GoodsRepo) GetItemDetail(id string) GoodsDetail {
 	goods := gr.GetGoodsList()
 	for _, item := range goods {
 		if item.sameAs(id) {

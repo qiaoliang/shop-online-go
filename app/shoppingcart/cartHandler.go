@@ -13,12 +13,12 @@ func PutIntoCart(c *gin.Context) {
 	gid := c.PostForm("goodsId")
 	number := c.PostForm("number")
 	vlm64, err2 := strconv.ParseUint(number, 10, 32)
-	var result *CartInfo
-	if err2 != nil {
-		result = nil
-	} else {
-		result = GetCartsInstance().AddOrderIntoCart(token, gid, uint(vlm64))
+	if token == "" || gid == "" || number == "" || err2 != nil {
+		fmt.Printf("token =%v, gid = %v, number =%v\n ", token, gid, number)
+		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
+		return
 	}
+	result := GetCartsInstance().AddOrderIntoCart(token, gid, uint(vlm64))
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 

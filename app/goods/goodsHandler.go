@@ -55,7 +55,7 @@ func GetGoodsDetail(c *gin.Context) {
 	token, _ := c.GetQuery("token")
 	gid, _ := c.GetQuery("id")
 	fmt.Printf(" goods detail token =%v, id=%v\n\n\n", token, gid)
-	result := getItemDetail(gid, token)
+	result := getItemDetail(gid)
 
 	// response
 	c.JSON(http.StatusOK, gin.H{
@@ -65,10 +65,10 @@ func GetGoodsDetail(c *gin.Context) {
 	})
 }
 
-func getItemDetail(gid string, token string) GoodsDetail {
+func getItemDetail(gid string) GoodsDetail {
 	gr := GetGoodsRepo()
 	gr.loadGoods()
-	return gr.getItemDetail(gid, token)
+	return gr.GetItemDetail(gid)
 }
 
 func getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {
