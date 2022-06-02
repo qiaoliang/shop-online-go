@@ -1,6 +1,7 @@
 package cart
 
 import (
+	"bookstore/app/goods"
 	_ "fmt"
 	"testing"
 
@@ -9,13 +10,14 @@ import (
 
 type CartRepositoryTestSuite struct {
 	suite.Suite
+	gRepo *goods.GoodsRepo
 }
 
 func (st *CartRepositoryTestSuite) TestExample() {
 	st.Equal(true, true)
 }
 
-func TestExampleTestSuite(t *testing.T) {
+func TestCartRepositoryTestSuite(t *testing.T) {
 	suite.Run(t, new(CartRepositoryTestSuite))
 }
 
@@ -38,6 +40,23 @@ func (st *CartRepositoryTestSuite) SetupSuite() {}
 func (st *CartRepositoryTestSuite) SetupTest() {
 	cartRepo = nil
 	cartRepo = GetCartsInstance()
+	st.gRepo = goods.GetGoodsRepo()
+	st.gRepo.LoadGoods()
+}
+
+func (st *CartRepositoryTestSuite) Test_Create_Cart_with_goods_For_a_Token() {
+	token := "13900007997"
+	gid := "g7225946"
+	quantity := uint(100)
+	prod := st.gRepo.GetItemDetail(gid)
+	st.Equal(gid, prod.Gid)
+	cartRepo.CreateCartInfoFor(token, prod, quantity)
+	cart := cartRepo.GetCartByToken(token)
+	st.NotNil(cart)
+	items := cart.Items
+	st.Equal(1, len(items), "should have only one item.")
+	st.Equal(gid, items[0].Gid)
+	st.Equal(quantity, items[0].Quantity)
 }
 
 func (st *CartRepositoryTestSuite) Test_add_one_goods_into_an_empty_Cart() {
@@ -56,7 +75,7 @@ func (st *CartRepositoryTestSuite) Test_add_more_volume_into_a_Cart_with_same_go
 	c := cartRepo.AddOrderIntoCart("sameGoodsId", gid, 13)
 
 	st.Equal(1, len(c.Items), "should be 1, but it was %v ", len(c.Items))
-	st.Equal(uint(13), c.getVolumeById(gid), "should be 13, but it was %v", c.getVolumeById(gid))
+	st.Equal(uint(23), c.getVolumeById(gid), "should be 13, but it was %v", c.getVolumeById(gid))
 }
 func (st *CartRepositoryTestSuite) Test_add_another_goods_into_a_Cart_with_one_goods() {
 	gid1 := "g7225946"

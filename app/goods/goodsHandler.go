@@ -67,13 +67,13 @@ func GetGoodsDetail(c *gin.Context) {
 
 func getItemDetail(gid string) GoodsDetail {
 	gr := GetGoodsRepo()
-	gr.loadGoods()
+	gr.LoadGoods()
 	return gr.GetItemDetail(gid)
 }
 
 func getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {
 	gr := GetGoodsRepo()
-	goods := gr.loadGoods()
+	goods := gr.LoadGoods()
 	result := make([]GoodsItem, 0)
 	for _, item := range goods {
 		if item.blongsTo(catalogueId) {

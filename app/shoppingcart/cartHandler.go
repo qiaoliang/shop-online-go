@@ -14,10 +14,11 @@ func PutIntoCart(c *gin.Context) {
 	number := c.PostForm("number")
 	vlm64, err2 := strconv.ParseUint(number, 10, 32)
 	if token == "" || gid == "" || number == "" || err2 != nil {
-		fmt.Printf("token =%v, gid = %v, number =%v\n ", token, gid, number)
-		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "", "msg": "OK"})
+		result := fmt.Sprintf("token =%v, gid = %v, number =%v\n ", token, gid, number)
+		c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
 		return
 	}
+	fmt.Printf("token =%v, gid = %v, number =%v\n ", token, gid, number)
 	result := GetCartsInstance().AddOrderIntoCart(token, gid, uint(vlm64))
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
@@ -27,7 +28,7 @@ func UpdateShoppingCart(c *gin.Context) {
 	token := c.PostForm("token")
 	gid := c.PostForm("gid")
 	number, _ := strconv.Atoi(c.PostForm("number"))
-	result := GetCartsInstance().AddOrderIntoCart(token, gid, uint(number))
+	result := GetCartsInstance().UpdateQuantityOfGoodsInCate(token, gid, uint(number))
 
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }

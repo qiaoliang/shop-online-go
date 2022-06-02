@@ -39,8 +39,13 @@ func (st *GoodsRepositoryTestSuite) Test_should_initial_empty_goodRepo() {
 }
 
 func (st *GoodsRepositoryTestSuite) Test_goods_load_from_() {
-	goodsRepo.loadGoods()
+	goodsRepo.LoadGoods()
 	st.Equal(8, len(goodsRepo.GetGoodsList()))
+	exp := "g7225946"
+	exp_mPrice := "66.0"
+	prod := goodsRepo.GetItemDetail(exp)
+	st.Equal(exp, prod.Gid)
+	st.Equal(exp_mPrice, prod.MinPrice)
 }
 func (st *GoodsRepositoryTestSuite) Test_Create_goods_for_Shop() {
 	item := goodsRepo.createGoods(0, 0, "g7225946", "持续交付1.0", 10, "册", "0", "一本DevOps的经典书。", uint(Saling), "66.0", "99.0", "1", "1")
@@ -51,11 +56,10 @@ func (st *GoodsRepositoryTestSuite) Test_Create_goods_for_Shop() {
 	st.Contains(pics[0].Pic, "g7225946-01")
 	st.Equal(pics[1].Id, "g7225946-02")
 	st.Contains(pics[1].Pic, "g7225946-02")
-
 }
 
 func (st *GoodsRepositoryTestSuite) Test_Get_a_goods_detail() {
-	goodsRepo.loadGoods()
+	goodsRepo.LoadGoods()
 	g := goodsRepo.GetItemDetail("g7225946")
 	st.Equal("g7225946", g.Gid)
 }

@@ -33,7 +33,7 @@ func (gr *GoodsRepo) GetItemDetail(id string) GoodsDetail {
 	return GoodsDetail{}
 }
 
-func (gr *GoodsRepo) loadGoods() []GoodsItem {
+func (gr *GoodsRepo) LoadGoods() []GoodsItem {
 	if len(gr.items) != 0 {
 		return gr.GetGoodsList()
 	}
