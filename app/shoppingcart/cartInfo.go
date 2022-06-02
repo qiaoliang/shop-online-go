@@ -7,7 +7,6 @@ import (
 
 type CartInfo struct {
 	Token           string     `json:"token"`
-	Infos           string     `json:"cartInfo"`
 	NewItemQuantity uint       `json:"number"`
 	Items           []CartItem `json:"items"`
 	Pairs           []ItemPair `json:"goods"`
@@ -54,7 +53,8 @@ func (ci *CartInfo) Update(prod goods.GoodsDetail, quantity uint) bool {
 	for i := range ci.Items {
 		it := &ci.Items[i]
 		if it.Gid == prod.Gid {
-			it.Quantity = it.Quantity + quantity
+			updatedQuantity := it.Quantity + quantity
+			it.Quantity = updatedQuantity
 			ci.Pairs[i] = ItemPair{prod.Gid, it.Quantity}
 			return true
 		}

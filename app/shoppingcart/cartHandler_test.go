@@ -47,7 +47,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_toke
 
 	body := utils.HttpPost(st.router, data, "/v1/shopping-cart/add")
 
-	exp := `{"code":0,"data":{"token":"13900007997","cartInfo":"someThing_no_use","number":5,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":5,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":5}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"13900007997","number":5,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":5,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":5}]},"msg":"OK"}`
 	st.Equal(exp, string(body), "should same.")
 }
 func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
@@ -62,7 +62,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
 
 	body := string(utils.HttpPost(st.router, data, "/v1/shopping-cart/add"))
 
-	exp := `{"code":0,"data":{"token":"13900007996","cartInfo":"someThing_no_use","number":10,"items":[{"key":"g7225947","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","status":0,"name":"持续交付2.0","sku":["sku1","sku3"],"price":"99.0","number":10,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225947","number":10}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"13900007996","number":10,"items":[{"key":"g7225947","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","status":0,"name":"持续交付2.0","sku":["sku1","sku3"],"price":"99.0","number":10,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225947","number":10}]},"msg":"OK"}`
 	st.Equal(exp, string(body))
 
 }
@@ -78,7 +78,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_more_items_in_shoppingcart_for_same
 
 	body := string(utils.HttpPost(st.router, data, "/v1/shopping-cart/add"))
 
-	exp := `{"code":0,"data":{"token":"13900007997","cartInfo":"someThing_no_use","number":10,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":15,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":15}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"13900007997","number":10,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":15,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":15}]},"msg":"OK"}`
 	st.Equal(exp, string(body))
 }
 func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_for_a_token() {
@@ -93,7 +93,7 @@ func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_f
 	data.Add("gid", gid)
 	data.Add("number", "10")
 
-	exp := `{"code":0,"data":{"token":"13900007997","cartInfo":"someThing_no_use","number":10,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":20,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":20}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"13900007997","number":10,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":20,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":20}]},"msg":"OK"}`
 	body := string(utils.HttpPost(st.router, data, "/v1/shopping-cart/modifyNumber"))
 	st.Equal(exp, string(body))
 }

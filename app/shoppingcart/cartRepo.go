@@ -44,7 +44,7 @@ func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 func (cs *CartRepo) CreateCartInfoFor(token string, prod goods.GoodsDetail, quantity uint) *CartInfo {
 	items := make([]CartItem, 0)
 	ips := make([]ItemPair, 0)
-	cs.cartInfos[token] = &CartInfo{token, "someThing_no_use", quantity, items, ips}
+	cs.cartInfos[token] = &CartInfo{token, quantity, items, ips}
 	cs.cartInfos[token].AddMore(prod, quantity)
 	return cs.cartInfos[token]
 
