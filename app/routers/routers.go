@@ -52,6 +52,10 @@ func SetupRouter(r *gin.Engine) {
 	v1.GET("/user/amount", user.GetUserAmount)
 	v1.GET("/user/logout", user.GetUserDetail)
 
+	v1.POST("/user/shipping-address/list", user.GetDeliveryAddressList)
+	v1.GET("/user/shipping-address/default", user.GetDefaultDeliveryAddress)
+	v1.POST("/user/shipping-address/add", user.AddDeliveryAddress)
+
 	v1.GET("/order/statistics", order.GetOrderStatistics)
 	v1.GET("/discounts/statistics", order.DiscountStatistics)
 	v1.GET("/discounts/coupons", order.Coupons)

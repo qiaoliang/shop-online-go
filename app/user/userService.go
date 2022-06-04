@@ -1,6 +1,9 @@
 package user
 
-import "sync"
+import (
+	"bookstore/app/addresses"
+	"sync"
+)
 
 var lockUS = &sync.Mutex{}
 var userService *UserService
@@ -59,4 +62,11 @@ func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string
 	}
 	s.userOnline[mobile] = mobile
 	return newUser
+}
+func (s *UserService) GetDeliveryAddressesFor(token string) []addresses.Address {
+	return nil
+}
+
+func (s *UserService) GetDefaultDeliveryAddress(token string) []addresses.Address {
+	return nil
 }
