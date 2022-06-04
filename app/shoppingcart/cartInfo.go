@@ -3,7 +3,6 @@ package cart
 import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
-	"fmt"
 )
 
 type CartInfo struct {
@@ -41,35 +40,48 @@ func (ci *CartInfo) NewCartItem(gid string, quantity uint) CartItem {
 func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
+func (ci *CartInfo) findItemByGid(gid string) *CartItem {
+	for i := range ci.Items {
+		it := &ci.Items[i]
+		if it.Gid == gid {
+			return it
+		}
+	}
+	return nil
+}
+func (ci *CartInfo) findPairByGid(gid string) *ItemPair {
+	for i := range ci.Pairs {
+		it := &ci.Pairs[i]
+		if it.GoodsId == gid {
+			return it
+		}
+	}
+	return nil
+}
 
 func (ci *CartInfo) AddMore(prod *goods.GoodsDetail, quantity uint) {
-	if ci.Update(prod, quantity) {
+	item := ci.findItemByGid(prod.Gid)
+	if item != nil {
+		updatedQuantity := item.Quantity + quantity
+		item.Quantity = updatedQuantity
+		ip := ci.findPairByGid(prod.Gid)
+		ip.Volume = item.Quantity
 		return
 	}
-	item := ci.createCartItem(prod, quantity)
+	item = ci.createCartItem(prod, quantity)
 	ip := ItemPair{prod.Gid, quantity}
 	ci.Items = append(ci.Items, *item)
 	ci.Pairs = append(ci.Pairs, ip)
 }
 
 func (ci *CartInfo) Update(prod *goods.GoodsDetail, quantity uint) bool {
-	fmt.Printf("quantity=%d\n", quantity)
-	fmt.Printf("查找的Gid =%s\n", prod.Gid)
-
-	for i := range ci.Items {
-		it := &ci.Items[i]
-		fmt.Printf(" Item id: quantity= %s:%d\n", it.Gid, it.Quantity)
-		fmt.Printf(" 打印已有的 pair %s:%d\n", ci.Pairs[i].GoodsId, ci.Pairs[i].Volume)
-		if it.Gid == prod.Gid {
-			updatedQuantity := it.Quantity + quantity
-			fmt.Println("updatedQuantity")
-			fmt.Println(updatedQuantity)
-			it.Quantity = updatedQuantity
-			ci.Pairs[i] = ItemPair{prod.Gid, it.Quantity}
-			return true
-		}
+	item := ci.findItemByGid(prod.Gid)
+	if item != nil {
+		item.Quantity = quantity
+		ip := ci.findPairByGid(prod.Gid)
+		ip.Volume = item.Quantity
+		return true
 	}
-	fmt.Println("没找到，不对呀")
 	return false
 }
 

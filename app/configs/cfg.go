@@ -85,7 +85,6 @@ func (cfg *Config) getDbURI() string {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		cfg.User, cfg.Passwd, cfg.Addr, cfg.Port, cfg.DBName)
-	fmt.Println(cfg.StaticPic)
 	return dsn
 }
 func (cfg *Config) InitMysqlDB() {

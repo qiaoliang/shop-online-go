@@ -41,11 +41,6 @@ func (cs *CartRepo) UpdateQuantityOfGoodsInCate(token string, gid string, quanti
 	if _, ok := cs.cartInfos[token]; !ok {
 		fmt.Printf("～～没有找到 token：%v", token)
 	}
-	fmt.Printf("～～ token：%s, gid=%s\n", token, gid)
-	for i, v := range cs.cartInfos[token].Items {
-		fmt.Printf(" 打印已有的 Item %s:%d\n", v.Gid, v.Quantity)
-		fmt.Printf(" 打印已有的 pair %s:%d\n", cs.cartInfos[token].Pairs[i].GoodsId, cs.cartInfos[token].Pairs[i].Volume)
-	}
 	cs.cartInfos[token].Update(goodsDetail, quantity)
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
