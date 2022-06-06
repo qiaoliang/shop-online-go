@@ -22,7 +22,7 @@ type UpdateBookInput struct {
 func FindBooks(c *gin.Context) {
 
 	var books []Book
-	configs.DB.Find(&books)
+	configs.Cfg.DBConnection().Find(&books)
 	c.JSON(http.StatusOK, gin.H{"data": &books})
 }
 
@@ -38,7 +38,7 @@ func CreateBook(c *gin.Context) {
 
 	//Create Book
 	book := Book{Title: input.Title, Author: input.Author}
-	configs.DB.Create(&book)
+	configs.Cfg.DBConnection().Create(&book)
 
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
@@ -49,7 +49,7 @@ func FindBook(c *gin.Context) {
 	//Validate Data
 	bookid := c.Param("id")
 	fmt.Printf("id = %v", bookid)
-	err := configs.DB.Where("id = ?", c.Param("id")).First(&book).Error
+	err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors()
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
