@@ -71,7 +71,7 @@ func (st *BookHandlerSuite) Test_Get_books_when_Books_existed() {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	exp := `{"data":{"id":1,"title":"little prince","author":"Antoine"}}`
+	exp := `{"data":[{"id":1,"title":"little prince","author":"Antoine"},{"id":2,"title":"Les Trois Mousquetaires","author":"Alexandre Dumas fils"},{"id":3,"title":"Continuous Delivery","author":"Jez"}]}`
 	st.Equal(exp, string(body), "should same.")
 }
 
