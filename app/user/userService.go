@@ -35,12 +35,12 @@ func (us *UserService) login(deviceId string, deviceName string, mobile string, 
 	us.userOnline[mobile] = mobile //take moble as a token
 	return user
 }
-func (r *UserService) isOnline(mobile string) bool {
-	mobileNumber := r.userOnline[mobile]
+func (r *UserService) isOnline(token string) bool {
+	mobileNumber := r.userOnline[token]
 	return mobileNumber != ""
 }
-func (r *UserService) findUserByMobile(mobile string) *User {
-	mobileNumber := r.userOnline[mobile]
+func (r *UserService) FindUserByToken(token string) *User {
+	mobileNumber := r.userOnline[token]
 	if mobileNumber == "" {
 		return nil
 	}

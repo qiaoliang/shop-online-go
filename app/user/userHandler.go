@@ -43,7 +43,7 @@ func UpdateUserInfo(c *gin.Context) {
 func GetDeliveryAddressList(c *gin.Context) {
 	//TODO: GetDeliveryAddressList
 	token := c.PostForm("token")
-	address := GetUserService().GetDeliveryAddressesFor(token)
+	address := GetUserService().FindUserByToken(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
 }
 
@@ -109,7 +109,7 @@ func GetUserDetail(c *gin.Context) {
 		return
 	}
 
-	user := GetUserService().findUserByMobile(token)
+	user := GetUserService().FindUserByToken(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 func userToVM(user *User) *UserVM {

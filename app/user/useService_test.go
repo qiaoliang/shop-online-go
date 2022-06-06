@@ -46,10 +46,10 @@ func (suite *UserServiceTestSuite) Test_admin_login() {
 func (suite *UserServiceTestSuite) Test_findUserByMobile() {
 	suite.loginAsAdmin()
 	suite.True(GetUserService().isOnline(AdminMobile))
-	user := GetUserService().findUserByMobile(AdminMobile)
+	user := GetUserService().FindUserByToken(AdminMobile)
 	suite.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
 	suite.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
-	offlineuser := GetUserService().findUserByMobile("offlineUser")
+	offlineuser := GetUserService().FindUserByToken("offlineUser")
 	suite.True(offlineuser == nil)
 }
 
