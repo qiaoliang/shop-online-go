@@ -30,7 +30,7 @@ func JsonToStruct(jsonStr string, data interface{}) {
 func GetConfigFileForTest() string {
 	_, filename, _, _ := runtime.Caller(0)
 	path, _ := filepath.Abs(filename)
-	path = filepath.Dir(path) + "/../../config.yaml"
+	path = filepath.Dir(path) + "/../../config-test.yaml"
 	return path
 }
 
