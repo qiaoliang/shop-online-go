@@ -62,7 +62,7 @@ func UpdateBook(c *gin.Context) {
 	var book Book
 
 	//Validate Data
-	if err := configs.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors(); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record Not Found"})
 		return
 	}

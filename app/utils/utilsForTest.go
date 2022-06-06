@@ -34,6 +34,21 @@ func GetConfigFileForTest() string {
 	return path
 }
 
+func HttpPatch(reqURL string, jsonStr []byte, r *gin.Engine) string {
+
+	req, _ := http.NewRequest("PATCH", reqURL, bytes.NewBuffer(jsonStr))
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+	return string(body)
+}
+
 func HttpGet(reqURL string, params map[string]string, r *gin.Engine) string {
 	values := ""
 	for key, val := range params {

@@ -24,6 +24,7 @@ func (cr *CategoryRepo) loadCategory() []Category {
 	cate2 := &Category{1, "大数据"}
 	cr.cates = append(cr.cates, *cate1)
 	cr.cates = append(cr.cates, *cate2)
+
 	return cr.cates
 }
 func (cr *CategoryRepo) GetList() []Category {

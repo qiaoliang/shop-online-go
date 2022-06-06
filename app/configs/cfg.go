@@ -19,6 +19,8 @@ import (
 type Config struct {
 	cfgDir string
 	DBConn *gorm.DB
+	Host   string
+	Port   string
 
 	DBUser          string
 	DBPasswd        string
@@ -44,6 +46,9 @@ func GetConfigInstance(cfgfile string) *Config {
 	viper.SetConfigFile(cfgfile)
 	viper.ReadInConfig()
 	Cfg = Config{
+
+		Host:           viper.Get("HOST").(string),
+		Port:           viper.Get("PORT").(string),
 		DBUser:         viper.Get("MYSQL.DB_USERNAME").(string),
 		DBPasswd:       viper.Get("MYSQL.DB_PASSWORD").(string),
 		DBAddr:         viper.Get("MYSQL.BASE_URL").(string),
