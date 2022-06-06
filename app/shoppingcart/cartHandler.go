@@ -18,11 +18,11 @@ func PutIntoCart(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
 		return
 	}
-	result := GetCartsInstance().AddOrderIntoCart(token, gid, uint(vlm64))
+	result := GetCartsRepo().PutItemsInCart(token, gid, uint(vlm64))
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
-func UpdateShoppingCart(c *gin.Context) {
+func ModifyNumberOfGoodsInCart(c *gin.Context) {
 
 	token := c.PostForm("token")
 	gid := c.PostForm("key") //只有这里用了Key，其它都用了gid，或 goodsId
@@ -30,8 +30,8 @@ func UpdateShoppingCart(c *gin.Context) {
 
 	number, _ := strconv.Atoi(numStr)
 
-	GetCartsInstance().UpdateQuantityOfGoodsInCate(token, gid, uint(number))
-	result := GetCartsInstance().cartInfos[token]
+	GetCartsRepo().ModifyQuantityOfGoodsInCate(token, gid, uint(number))
+	result := GetCartsRepo().cartInfos[token]
 
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
@@ -41,7 +41,7 @@ func GetShopingCart(c *gin.Context) {
 	if !err {
 		fmt.Println("can not Parse token。")
 	}
-	cart := GetCartsInstance().GetCartByToken(token)
+	cart := GetCartsRepo().GetCartByToken(token)
 	var result interface{}
 	if cart == nil {
 		fmt.Println("没有找到 token 为 " + token + " 的购物车")

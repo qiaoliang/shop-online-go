@@ -74,7 +74,7 @@ func (ci *CartInfo) AddMore(prod *goods.GoodsDetail, quantity uint) {
 	ci.Pairs = append(ci.Pairs, ip)
 }
 
-func (ci *CartInfo) Update(prod *goods.GoodsDetail, quantity uint) bool {
+func (ci *CartInfo) Modify(prod *goods.GoodsDetail, quantity uint) bool {
 	item := ci.findItemByGid(prod.Gid)
 	if item != nil {
 		item.Quantity = quantity

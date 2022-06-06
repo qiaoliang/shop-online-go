@@ -12,17 +12,23 @@ type CartRepo struct {
 var cartRepo *CartRepo
 
 func init() {
-	GetCartsInstance()
+	GetCartsRepo()
+	gR := goods.GetGoodsRepo()
+	gR.LoadGoods()
 }
-func GetCartsInstance() *CartRepo {
+func GetCartsRepo() *CartRepo {
 	if cartRepo == nil {
 		cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
 	}
 	return cartRepo
 }
 
-func (cs *CartRepo) AddOrderIntoCart(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
+	if goodsDetail == nil {
+		fmt.Println("goodsDetail is nil")
+		return nil
+	}
 	if _, ok := cs.cartInfos[token]; !ok {
 		cs.cartInfos[token] = cs.CreateCartInfoFor(token, goodsDetail, quantity)
 		cs.cartInfos[token].caculateRedDot()
@@ -32,7 +38,7 @@ func (cs *CartRepo) AddOrderIntoCart(token string, gid string, quantity uint) *C
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
-func (cs *CartRepo) UpdateQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
 
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
@@ -41,7 +47,7 @@ func (cs *CartRepo) UpdateQuantityOfGoodsInCate(token string, gid string, quanti
 	if _, ok := cs.cartInfos[token]; !ok {
 		fmt.Printf("～～没有找到 token：%v", token)
 	}
-	cs.cartInfos[token].Update(goodsDetail, quantity)
+	cs.cartInfos[token].Modify(goodsDetail, quantity)
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }

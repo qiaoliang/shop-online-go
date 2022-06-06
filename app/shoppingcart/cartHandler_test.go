@@ -31,7 +31,7 @@ func TestShoppingCartHandlerSuite(t *testing.T) {
 // This will run before each test in the suite
 func (st *ShoppingCartHandlerSuite) SetupTest() {
 	cartRepo = nil
-	cartRepo = GetCartsInstance()
+	cartRepo = GetCartsRepo()
 }
 func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	st.router = setupTestRouter()
@@ -81,19 +81,19 @@ func (st *ShoppingCartHandlerSuite) Test_add_more_items_in_shoppingcart_for_same
 	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":15,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":15}]},"msg":"OK"}`
 	st.Equal(exp, string(body))
 }
-func (st *ShoppingCartHandlerSuite) Test_update_volume_of_item_in_shoppingcart_for_a_token() {
+func (st *ShoppingCartHandlerSuite) Test_Modify_number_of_item_in_shoppingcart_for_a_token() {
 
 	initquantity := uint(10)
 	gid := "g7225946" //构建参数
 	token := "13900007997"
-	cartRepo.AddOrderIntoCart(token, gid, initquantity)
+	cartRepo.PutItemsInCart(token, gid, initquantity)
 
 	data := url.Values{}
 	data.Set("token", token)
 	data.Add("key", gid)
-	data.Add("number", "10")
+	data.Add("number", "11")
 
-	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":20,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":20}]},"msg":"OK"}`
+	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":11,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":11}]},"msg":"OK"}`
 	body := string(utils.HttpPost(st.router, data, "/v1/shopping-cart/modifyNumber"))
 	st.Equal(exp, string(body))
 }
@@ -117,6 +117,6 @@ func setupTestRouter() *gin.Engine {
 
 	v1.GET("/shopping-cart/info", GetShopingCart)
 	v1.POST("/shopping-cart/add", PutIntoCart)
-	v1.POST("/shopping-cart/modifyNumber", UpdateShoppingCart)
+	v1.POST("/shopping-cart/modifyNumber", ModifyNumberOfGoodsInCart)
 	return router
 }

@@ -39,7 +39,7 @@ func (st *CartRepositoryTestSuite) SetupSuite() {}
 // This will run before each test in the suite
 func (st *CartRepositoryTestSuite) SetupTest() {
 	cartRepo = nil
-	cartRepo = GetCartsInstance()
+	cartRepo = GetCartsRepo()
 	st.gRepo = goods.GetGoodsRepo()
 	st.gRepo.LoadGoods()
 }
@@ -63,7 +63,7 @@ func (st *CartRepositoryTestSuite) Test_add_one_goods_into_an_empty_Cart() {
 
 	expected := "IamTestToken"
 	gid := "g7225946"
-	c := cartRepo.AddOrderIntoCart("IamTestToken", gid, 10)
+	c := cartRepo.PutItemsInCart("IamTestToken", gid, 10)
 	st.Equal(expected, c.getToken(), "should get token from a cart, expected=%v actual=%v\n", expected, c.getToken())
 	expVlm := uint(10)
 	st.Equal(expVlm, c.getVolumeById(gid), "should put volume into a goodsid, expected=%v actual=%v\n", expVlm, c.getVolumeById(gid))
@@ -72,8 +72,8 @@ func (st *CartRepositoryTestSuite) Test_add_different_goods_into_the_Cart_for_sa
 	gid1 := "g7225946"
 	gid2 := "g7225947"
 	token := "13911057997"
-	cartRepo.AddOrderIntoCart(token, gid1, 10)
-	cartRepo.AddOrderIntoCart(token, gid2, 20)
+	cartRepo.PutItemsInCart(token, gid1, 10)
+	cartRepo.PutItemsInCart(token, gid2, 20)
 
 	st.Equal(1, len(cartRepo.cartInfos), "should have 1 carts for same token, but it was %v ", len(cartRepo.cartInfos))
 
@@ -100,8 +100,8 @@ func (st *CartRepositoryTestSuite) Test_should_seperate_carts_for_different_toke
 	gid := "g7225946"
 	t1 := "TokenOne"
 	t2 := "TokenTwo"
-	cartRepo.AddOrderIntoCart(t1, gid, 10)
-	cartRepo.AddOrderIntoCart(t2, gid, 20)
+	cartRepo.PutItemsInCart(t1, gid, 10)
+	cartRepo.PutItemsInCart(t2, gid, 20)
 
 	length := len(cartRepo.cartInfos)
 	st.Equal(2, length, "should have 2 tokens , but it was %v ", length)
@@ -126,4 +126,20 @@ func (st *CartRepositoryTestSuite) Test_should_seperate_carts_for_different_toke
 	st.Equal("66.0", it.Price)
 	st.Contains(it.Pic, gid)
 
+}
+
+func (st *CartRepositoryTestSuite) Test_update_the_number_for_same_gid_in_same_Cart() {
+	token := "13900007997"
+	gid := "g7225946"
+	quantity := uint(100)
+	prod := st.gRepo.GetItemDetail(gid)
+	cartRepo.CreateCartInfoFor(token, prod, quantity)
+
+	cartRepo.ModifyQuantityOfGoodsInCate(token, gid, uint(101))
+	cart := cartRepo.GetCartByToken(token)
+	st.NotNil(cart)
+	items := cart.Items
+	st.Equal(1, len(items), "should have only one item.")
+	st.Equal(gid, items[0].Gid)
+	st.EqualValues(uint(101), items[0].Quantity, "expect 101, but it is:%d\n", items[0].Quantity)
 }
