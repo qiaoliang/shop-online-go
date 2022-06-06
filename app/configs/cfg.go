@@ -4,6 +4,7 @@ import (
 	"bookstore/app/utils"
 	"database/sql"
 	"fmt"
+	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang-migrate/migrate/v4"
@@ -16,12 +17,17 @@ import (
 )
 
 type Config struct {
+	cfgDir string
+
 	DBUser          string
 	DBPasswd        string
 	DBAddr          string
 	DBPort          int
 	DBName          string
 	DBMigrationPath string
+	DBMigrateProto  string
+	DBMigrateDir    string
+	m               *migrate.Migrate
 
 	StaticPic  string
 	BannerPath string
@@ -37,42 +43,70 @@ func GetConfigInstance(cfgfile string) *Config {
 	viper.SetConfigFile(cfgfile)
 	viper.ReadInConfig()
 	Cfg = Config{
-		DBUser:          viper.Get("MYSQL.DB_USERNAME").(string),
-		DBPasswd:        viper.Get("MYSQL.DB_PASSWORD").(string),
-		DBAddr:          viper.Get("MYSQL.BASE_URL").(string),
-		DBPort:          viper.Get("MYSQL.DB_PORT").(int),
-		DBName:          viper.Get("MYSQL.DB_NAME").(string),
-		DBMigrationPath: viper.Get("MYSQL.DB_SCRIPTS").(string),
+		DBUser:         viper.Get("MYSQL.DB_USERNAME").(string),
+		DBPasswd:       viper.Get("MYSQL.DB_PASSWORD").(string),
+		DBAddr:         viper.Get("MYSQL.BASE_URL").(string),
+		DBPort:         viper.Get("MYSQL.DB_PORT").(int),
+		DBName:         viper.Get("MYSQL.DB_NAME").(string),
+		DBMigrateProto: viper.Get("MYSQL.DB_MIG_PROTO").(string),
+		DBMigrateDir:   viper.Get("MYSQL.DB_MIG_DIR").(string),
 
 		StaticPic:  viper.Get("RESOURCES.STATIC_PIC_URI").(string),
 		GoodsPath:  viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
 		BannerPath: viper.Get("RESOURCES.BANNERS_RELETIVE_PATH").(string),
 		AvatarPath: viper.Get("RESOURCES.AVARAE_RELETIVE_PATH").(string),
 	}
+	Cfg.getAbsDir(cfgfile)
 	return &Cfg
 }
 
 var DB *gorm.DB
 var err error
 
-func (cfg *Config) DbMigrate() {
+func (cfg *Config) getAbsDir(filename string) string {
+	fp, _ := filepath.Abs(filename)
+	dp, _ := filepath.Split(fp)
+	cfg.cfgDir = dp
+	return cfg.cfgDir
+}
+func (cfg *Config) getMigretionPath() string {
+	return fmt.Sprintf("%s/%s/%s", cfg.DBMigrateProto, cfg.cfgDir, cfg.DBMigrateDir)
+}
+func (cfg *Config) prepareMigration() *migrate.Migrate {
 	dsn := cfg.getDbURI() + "?multiStatements=true"
 
 	db, _ := sql.Open("mysql", dsn)
 	driver, _ := mysql.WithInstance(db, &mysql.Config{})
 	m, err := migrate.NewWithDatabaseInstance(
-		cfg.DBMigrationPath,
+		cfg.getMigretionPath(),
 		"mysql",
 		driver,
 	)
+
 	if err != nil {
 		// **I get error here!!**
 		panic(err)
 	}
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	return m
+}
+func (cfg *Config) Downgrade() {
+	if cfg.m == nil {
+		cfg.prepareMigration()
+	}
+
+	if err := cfg.m.Down(); err != nil && err != migrate.ErrNoChange {
 		panic(err)
 	}
-	fmt.Println("migration completed!")
+
+}
+func (cfg *Config) Upgrade() {
+	if cfg.m == nil {
+		cfg.prepareMigration()
+	}
+
+	if err := cfg.m.Up(); err != nil && err != migrate.ErrNoChange {
+		panic(err)
+	}
 }
 
 var Cfg Config
@@ -97,7 +131,7 @@ func (cfg *Config) getDbURI() string {
 		cfg.DBUser, cfg.DBPasswd, cfg.DBAddr, cfg.DBPort, cfg.DBName)
 	return dsn
 }
-func (cfg *Config) InitMysqlDB() {
+func (cfg *Config) GetMysqlDBConn() {
 
 	dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
 

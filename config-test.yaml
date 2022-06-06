@@ -11,7 +11,8 @@ MYSQL:
   BASE_URL: localhost
   DB_PORT: 3306
   DB_NAME: bookstore
-  DB_SCRIPTS: "file://dbscripts"
+  DB_MIG_PROTO: "file://"
+  DB_MIG_DIR: "dbscripts"
 
 SQLITE:
   DB_FILE: data/bookstore.db

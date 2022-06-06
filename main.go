@@ -10,7 +10,7 @@ func init() {
 }
 func main() {
 	configs.GetConfigInstance("config.yaml")
-	configs.Cfg.DbMigrate()
-	configs.Cfg.InitMysqlDB()
+	configs.Cfg.Upgrade()
+	configs.Cfg.GetMysqlDBConn()
 	routers.InitRouter()
 }

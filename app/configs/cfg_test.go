@@ -1,6 +1,8 @@
 package configs
 
 import (
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -16,6 +18,18 @@ type ConfigTestSuite struct {
 
 func (s *ConfigTestSuite) Test_StaicPicPath() {
 	s.EqualValues("http://localhost:9090/pic", s.cfg.StaticPic)
+}
+
+func (s *ConfigTestSuite) Test_MigretionPath() {
+	s.Equal("file://", s.cfg.DBMigrateProto)
+	r := s.cfg.getMigretionPath()
+	s.True(strings.Contains(r, "file://"), "should contains migration protocol 'file://'")
+}
+
+func (s *ConfigTestSuite) Test_DB_Migration_Scripts_exists() {
+	_, err := os.Stat(s.cfg.cfgDir + "/" + s.cfg.DBMigrateDir)
+	s.Nil(err)
+
 }
 func (s *ConfigTestSuite) Test_BannerPath() {
 	s.EqualValues("http://localhost:9090/pic/banners/", s.cfg.BannerPicPrefix())
