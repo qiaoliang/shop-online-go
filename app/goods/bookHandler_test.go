@@ -57,6 +57,25 @@ func (st *BookHandlerSuite) Test_Get_book_when_Book_existed() {
 	st.Equal(exp, string(body), "should same.")
 }
 
+func (st *BookHandlerSuite) Test_Delete_book_when_Book_existed() {
+	//构建参数
+
+	url := configs.Cfg.Host + ":" + configs.Cfg.Port + "/books/1"
+	req, _ := http.NewRequest("DELETE", url, nil)
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		panic(err)
+	}
+	defer resp.Body.Close()
+	body, _ := ioutil.ReadAll(resp.Body)
+
+	exp := `{"data":{"id":1,"title":"little prince","author":"Antoine"}}`
+	st.Equal(exp, string(body), "should same.")
+}
+
 func (st *BookHandlerSuite) Test_Get_books_when_Books_existed() {
 	//构建参数
 
