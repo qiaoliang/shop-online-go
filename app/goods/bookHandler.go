@@ -28,18 +28,13 @@ func FindBooks(c *gin.Context) {
 
 func CreateBook(c *gin.Context) {
 	//Validate Input
-	var input CreateBookInput
-	err := c.ShouldBindJSON(&input)
 
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	title := c.PostForm("title")
+	author := c.PostForm("author")
 
 	//Create Book
-	book := Book{Title: input.Title, Author: input.Author}
+	book := Book{Title: title, Author: author}
 	configs.Cfg.DBConnection().Create(&book)
-
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 

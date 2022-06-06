@@ -72,7 +72,7 @@ func (st *BookHandlerSuite) Test_Get_books_when_Books_existed() {
 	defer resp.Body.Close()
 	body, _ := ioutil.ReadAll(resp.Body)
 
-	exp := `{"data":[{"id":1,"title":"little prince","author":"Antoine"},{"id":2,"title":"Les Trois Mousquetaires","author":"Alexandre Dumas fils"},{"id":3,"title":"Continuous Delivery","author":"Jez"}]}`
+	exp := `{"data":[{"id":1,"title":"little prince","author":"Antoine"},{"id":2,"title":"Les Trois Mousquetaires","author":"Alexandre Dumas fils"},{"id":3,"title":"Continuous Delivery","author":"Jez"},{"id":4,"title":"haha","author":"wowowo"}]}`
 	st.Equal(exp, string(body), "should same.")
 }
 
@@ -89,14 +89,12 @@ func (st *BookHandlerSuite) Should_Get_updated_when_the_Book_existed() {
 }
 
 func (st *BookHandlerSuite) Test_CREATE_A_BOOK() {
-	//构建参数
-	//url := configs.Cfg.Host + ":" + configs.Cfg.Port + "/books"
 	data := url.Values{}
 	data.Set("title", "haha")
 	data.Add("author", "wowowo")
 	body := utils.HttpPost(st.router, data, "/books")
 
-	exp := `{"data":[{"id":1,"title":"little prince","author":"Antoine"},{"id":2,"title":"Les Trois Mousquetaires","author":"Alexandre Dumas fils"},{"id":3,"title":"Continuous Delivery","author":"Jez"}]}`
+	exp := `{"data":{"id":4,"title":"haha","author":"wowowo"}}`
 	st.Equal(exp, string(body), "should same.")
 
 }
@@ -104,12 +102,11 @@ func (st *BookHandlerSuite) Test_CREATE_A_BOOK() {
 func (st *BookHandlerSuite) setupTestRouter() *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
-	v1 := router.Group("/v1")
 
-	v1.GET("/books", FindBooks)
-	v1.POST("/books", CreateBook)
-	v1.GET("/books/:id", FindBook)
-	v1.PATCH("/books/:id", UpdateBook)
-	v1.DELETE("/books/:id", DeleteBook)
+	router.GET("/books", FindBooks)
+	router.POST("/books", CreateBook)
+	router.GET("/books/:id", FindBook)
+	router.PATCH("/books/:id", UpdateBook)
+	router.DELETE("/books/:id", DeleteBook)
 	return router
 }

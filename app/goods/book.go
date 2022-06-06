@@ -1,7 +1,7 @@
 package goods
 
 type Book struct {
-	ID     uint   `json:"id" gorm:"primary_key"`
+	ID     int    `json:"id" gorm:"primary_key;AUTO_INCREMENT"`
 	Title  string `json:"title"`
 	Author string `json:"author"`
 }
