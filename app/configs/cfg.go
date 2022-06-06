@@ -16,12 +16,17 @@ import (
 )
 
 type Config struct {
-	User      string
-	Passwd    string
-	Addr      string
-	Port      int
-	DBName    string
-	StaticPic string
+	DBUser          string
+	DBPasswd        string
+	DBAddr          string
+	DBPort          int
+	DBName          string
+	DBMigrationPath string
+
+	StaticPic  string
+	BannerPath string
+	GoodsPath  string
+	AvatarPath string
 }
 
 func GetConfigInstance(cfgfile string) *Config {
@@ -32,12 +37,17 @@ func GetConfigInstance(cfgfile string) *Config {
 	viper.SetConfigFile(cfgfile)
 	viper.ReadInConfig()
 	Cfg = Config{
-		User:      viper.Get("MYSQL.DB_USERNAME").(string),
-		Passwd:    viper.Get("MYSQL.DB_PASSWORD").(string),
-		Addr:      viper.Get("MYSQL.BASE_URL").(string),
-		Port:      viper.Get("MYSQL.DB_PORT").(int),
-		DBName:    viper.Get("MYSQL.DB_NAME").(string),
-		StaticPic: viper.Get("MYSQL.STATIC_PIC_URI").(string),
+		DBUser:          viper.Get("MYSQL.DB_USERNAME").(string),
+		DBPasswd:        viper.Get("MYSQL.DB_PASSWORD").(string),
+		DBAddr:          viper.Get("MYSQL.BASE_URL").(string),
+		DBPort:          viper.Get("MYSQL.DB_PORT").(int),
+		DBName:          viper.Get("MYSQL.DB_NAME").(string),
+		DBMigrationPath: viper.Get("MYSQL.DB_SCRIPTS").(string),
+
+		StaticPic:  viper.Get("RESOURCES.STATIC_PIC_URI").(string),
+		GoodsPath:  viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
+		BannerPath: viper.Get("RESOURCES.BANNERS_RELETIVE_PATH").(string),
+		AvatarPath: viper.Get("RESOURCES.AVARAE_RELETIVE_PATH").(string),
 	}
 	return &Cfg
 }
@@ -51,7 +61,7 @@ func (cfg *Config) DbMigrate() {
 	db, _ := sql.Open("mysql", dsn)
 	driver, _ := mysql.WithInstance(db, &mysql.Config{})
 	m, err := migrate.NewWithDatabaseInstance(
-		"file://dbscripts",
+		cfg.DBMigrationPath,
 		"mysql",
 		driver,
 	)
@@ -71,20 +81,20 @@ func (cfg *Config) StaticPicPrefix() string {
 	return cfg.StaticPic
 }
 func (cfg *Config) BannerPicPrefix() string {
-	return fmt.Sprintf("%v/banners/", cfg.StaticPicPrefix())
+	return fmt.Sprintf("%s/%s", cfg.StaticPicPrefix(), cfg.BannerPath)
 }
 func (cfg *Config) GoodsPicPrefix() string {
-	return fmt.Sprintf("%v/goods/", cfg.StaticPicPrefix())
+	return fmt.Sprintf("%s/%s", cfg.StaticPicPrefix(), cfg.GoodsPath)
 }
 func (cfg *Config) AvatarPicPrefix() string {
-	return fmt.Sprintf("%v/avatar/", cfg.StaticPicPrefix())
+	return fmt.Sprintf("%s/%s", cfg.StaticPicPrefix(), cfg.AvatarPath)
 
 }
 
 func (cfg *Config) getDbURI() string {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-		cfg.User, cfg.Passwd, cfg.Addr, cfg.Port, cfg.DBName)
+		cfg.DBUser, cfg.DBPasswd, cfg.DBAddr, cfg.DBPort, cfg.DBName)
 	return dsn
 }
 func (cfg *Config) InitMysqlDB() {
