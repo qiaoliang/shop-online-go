@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -85,6 +86,19 @@ func (st *BookHandlerSuite) Should_Get_updated_when_the_Book_existed() {
 	exp := `{"data":{"id":1,"title":"newTitle","author":"NewAuthor"}}`
 
 	st.Equal(exp, string(body), "should same.")
+}
+
+func (st *BookHandlerSuite) Test_CREATE_A_BOOK() {
+	//构建参数
+	//url := configs.Cfg.Host + ":" + configs.Cfg.Port + "/books"
+	data := url.Values{}
+	data.Set("title", "haha")
+	data.Add("author", "wowowo")
+	body := utils.HttpPost(st.router, data, "/books")
+
+	exp := `{"data":[{"id":1,"title":"little prince","author":"Antoine"},{"id":2,"title":"Les Trois Mousquetaires","author":"Alexandre Dumas fils"},{"id":3,"title":"Continuous Delivery","author":"Jez"}]}`
+	st.Equal(exp, string(body), "should same.")
+
 }
 
 func (st *BookHandlerSuite) setupTestRouter() *gin.Engine {

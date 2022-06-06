@@ -72,11 +72,7 @@ func UpdateBook(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("你好 book :" + book.Title + "---" + book.Author)
-	fmt.Println()
-	fmt.Println()
-	fmt.Println()
-	configs.DB.Model(&Book{}).Where("id = ?", 1).Update("Title", "hello")
+	configs.DB.Model(&Book{}).Where("id = ?", c.Param("id")).Update("Title", "hello")
 	if err := configs.DB.Model(&book).Updates(map[string]interface{}{"title": "hello", "author": "false"}).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "update failed."})
 	}
