@@ -2,10 +2,8 @@ package goods
 
 import (
 	"bookstore/app/configs"
-	"sync"
 )
 
-var lockCRD = &sync.Mutex{}
 var cateRepoDB *CategoryRepoDB
 
 type CategoryRepoIf interface {
@@ -14,24 +12,21 @@ type CategoryRepoIf interface {
 }
 type CategoryRepoDB struct {
 	cates []Category
+	db    *configs.DBConn
 }
 
-func GetCategoryRepoDB() *CategoryRepoDB {
-	lockCRD.Lock()
-	defer lockCR.Unlock()
-	if cateRepo == nil {
-		cateRepoDB = &CategoryRepoDB{}
+func GetCategoryRepoDB(db *configs.DBConn) *CategoryRepoDB {
+	if cateRepoDB == nil {
+		cateRepoDB = &CategoryRepoDB{[]Category{}, db}
 	}
 	return cateRepoDB
 }
 func (cr *CategoryRepoDB) loadCategory() []Category {
-	var categories []Category
-	configs.DB.Find(&categories)
-	cr.cates = categories
+	cr.db.Find(&cr.cates)
 	return cr.cates
 }
 func (cr *CategoryRepoDB) GetList() []Category {
-	if cr.cates == nil {
+	if len(cr.cates) == 0 {
 		cr.loadCategory()
 	}
 	return cr.cates

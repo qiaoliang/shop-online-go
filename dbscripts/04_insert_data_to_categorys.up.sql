@@ -1,5 +1,5 @@
 INSERT INTO 
-categories(id,Cname) 
+categories(id,name) 
 VALUES 
 (1,	'DevOps'),
 (2,	'大数据');

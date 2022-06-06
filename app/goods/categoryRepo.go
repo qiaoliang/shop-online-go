@@ -1,6 +1,8 @@
 package goods
 
-import "sync"
+import (
+	"sync"
+)
 
 var lockCR = &sync.Mutex{}
 var cateRepo *CategoryRepo

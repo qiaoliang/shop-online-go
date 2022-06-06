@@ -18,9 +18,12 @@ type CategoryRepoDBTestSuite struct {
 
 // This is an example test that will always succeed
 func (s *CategoryRepoDBTestSuite) Test_get_categories_from_db() {
-	s.db = GetCategoryRepoDB()
 	categories := s.db.GetList()
 	s.Equal(2, len(categories))
+	s.Equal(uint(1), s.db.cates[0].Id)
+	s.Equal("DevOps", s.db.cates[0].Name)
+	s.Equal(uint(2), s.db.cates[1].Id)
+	s.Equal("大数据", s.db.cates[1].Name)
 }
 
 // We need this function to kick off the test suite, otherwise
@@ -34,12 +37,14 @@ func TestExampleTestSuite(t *testing.T) {
 func (s *CategoryRepoDBTestSuite) BeforeTest(suiteName, testName string) {
 	configs.GetConfigInstance(utils.GetConfigFileForTest())
 	configs.Cfg.Upgrade()
+	configs.Cfg.MysqlDBConn()
+	s.db = GetCategoryRepoDB(configs.Cfg.DBConnection())
+	s.NotNil(s.db)
 }
 
 // This will run after test finishes
 // and receives the suite and test names as input
 func (s *CategoryRepoDBTestSuite) AfterTest(suiteName, testName string) {
-	configs.GetConfigInstance(utils.GetConfigFileForTest())
 	configs.Cfg.Downgrade()
 }
 

@@ -18,6 +18,7 @@ import (
 
 type Config struct {
 	cfgDir string
+	DBConn *gorm.DB
 
 	DBUser          string
 	DBPasswd        string
@@ -72,7 +73,7 @@ func (cfg *Config) getAbsDir(filename string) string {
 func (cfg *Config) getMigretionPath() string {
 	return fmt.Sprintf("%s/%s/%s", cfg.DBMigrateProto, cfg.cfgDir, cfg.DBMigrateDir)
 }
-func (cfg *Config) prepareMigration() *migrate.Migrate {
+func (cfg *Config) prepareMigration() {
 	dsn := cfg.getDbURI() + "?multiStatements=true"
 
 	db, _ := sql.Open("mysql", dsn)
@@ -87,7 +88,7 @@ func (cfg *Config) prepareMigration() *migrate.Migrate {
 		// **I get error here!!**
 		panic(err)
 	}
-	return m
+	cfg.m = m
 }
 func (cfg *Config) Downgrade() {
 	if cfg.m == nil {
@@ -95,7 +96,7 @@ func (cfg *Config) Downgrade() {
 	}
 
 	if err := cfg.m.Down(); err != nil && err != migrate.ErrNoChange {
-		panic(err)
+		fmt.Printf(" downgrade error:\n %v\n", err)
 	}
 
 }
@@ -131,13 +132,20 @@ func (cfg *Config) getDbURI() string {
 		cfg.DBUser, cfg.DBPasswd, cfg.DBAddr, cfg.DBPort, cfg.DBName)
 	return dsn
 }
-func (cfg *Config) GetMysqlDBConn() {
+func (cfg *Config) MysqlDBConn() *gorm.DB {
+	if cfg.DBConn == nil {
+		dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
 
-	dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
+		DB, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
 
-	DB, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
-
-	if err != nil {
-		panic("Failed to connect database")
+		if err != nil {
+			panic("Failed to connect database")
+		}
+		cfg.DBConn = DB
 	}
+	return cfg.DBConn
+}
+func (cfg *Config) DBConnection() *DBConn {
+	db := cfg.MysqlDBConn()
+	return NewConn(db)
 }

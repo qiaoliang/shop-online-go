@@ -11,6 +11,6 @@ func init() {
 func main() {
 	configs.GetConfigInstance("config.yaml")
 	configs.Cfg.Upgrade()
-	configs.Cfg.GetMysqlDBConn()
+	configs.Cfg.MysqlDBConn()
 	routers.InitRouter()
 }
