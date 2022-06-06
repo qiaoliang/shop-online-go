@@ -60,20 +60,27 @@ func FindBook(c *gin.Context) {
 
 func UpdateBook(c *gin.Context) {
 	var book Book
-
 	//Validate Data
-	if err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors(); err != nil {
+	if err := configs.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record Not Found"})
 		return
 	}
-
 	//Validate Input
 	var input UpdateBookInput
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	configs.DB.Model(book).Updates(input)
+	fmt.Println("你好 book :" + book.Title + "---" + book.Author)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println()
+	configs.DB.Model(&Book{}).Where("id = ?", 1).Update("Title", "hello")
+	if err := configs.DB.Model(&book).Updates(map[string]interface{}{"title": "hello", "author": "false"}).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "update failed."})
+	}
+	fmt.Println("你好 book :" + book.Title + "---" + book.Author)
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
