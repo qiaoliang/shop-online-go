@@ -49,14 +49,26 @@ func HttpPatch(reqURL string, jsonStr []byte, r *gin.Engine) string {
 	return string(body)
 }
 
+func HttpPatch1(reqURL string, data url.Values, r *gin.Engine) string {
+
+	req, _ := http.NewRequest("PATCH", reqURL, bytes.NewBufferString(data.Encode()))
+	req.Header.Set("X-Custom-Header", "myvalue")
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	body := doIt(r, w, req, reqURL, data)
+	return string(body)
+}
+
 func HttpGet(reqURL string, params map[string]string, r *gin.Engine) string {
 	values := ""
 	for key, val := range params {
 		values += "&" + key + "=" + val
 	}
-	temp := values[1:]
-	values = "?" + temp
-
+	if len(values) != 0 {
+		temp := values[1:]
+		values = "?" + temp
+	}
 	reqURL = reqURL + values
 	req, _ := http.NewRequest("GET", reqURL, nil)
 	w := httptest.NewRecorder()
