@@ -63,7 +63,6 @@ func (st *BookHandlerSuite) Should_Delete_book_when_Book_existed() {
 }
 
 func (st *BookHandlerSuite) Test_Get_books_when_Books_existed() {
-	//构建参数
 
 	body := utils.HttpGet("/books", nil, st.router)
 
@@ -72,11 +71,8 @@ func (st *BookHandlerSuite) Test_Get_books_when_Books_existed() {
 
 }
 
-func (st *BookHandlerSuite) Should_Get_updated_when_the_Book_existed() {
+func (st *BookHandlerSuite) Should_updated_when_the_Book_existed() {
 	//构建参数
-
-	//input := UpdateBookInput{"newTitle", "NewAuthor"}
-	//inputStr, _ := json.Marshal(&input)
 	data := url.Values{}
 	data.Set("title", "newTitle")
 	data.Add("autohr", "NewAuthor")
@@ -89,7 +85,7 @@ func (st *BookHandlerSuite) Should_Get_updated_when_the_Book_existed() {
 	st.Equal(exp, string(body), "should same.")
 }
 
-func (st *BookHandlerSuite) Should_CREATE_A_BOOK() {
+func (st *BookHandlerSuite) TEST_CREATE_A_BOOK() {
 	data := url.Values{}
 	data.Set("title", "haha")
 	data.Add("author", "wowowo")

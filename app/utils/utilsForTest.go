@@ -52,8 +52,7 @@ func HttpPatch(reqURL string, jsonStr []byte, r *gin.Engine) string {
 func HttpPatch1(reqURL string, data url.Values, r *gin.Engine) string {
 
 	req, _ := http.NewRequest("PATCH", reqURL, bytes.NewBufferString(data.Encode()))
-	req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 	w := httptest.NewRecorder()
 
 	body := doIt(r, w, req, reqURL, data)
