@@ -21,6 +21,7 @@ func TestCategoryHandlerSuite(t *testing.T) {
 func (st *CategoryHandlerSuite) SetupSuite() {
 	st.router = st.setupTestRouter()
 	configs.GetConfigInstance(utils.GetConfigFileForTest())
+	configs.Cfg.Upgrade()
 }
 
 func (st *CategoryHandlerSuite) Test_get_category_list() {
@@ -30,7 +31,7 @@ func (st *CategoryHandlerSuite) Test_get_category_list() {
 	}
 	body := utils.HttpGet("/v1/shop/goods/category/all", params, st.router)
 
-	exp := `{"code":0,"data":[{"id":0,"name":"DevOps"},{"id":1,"name":"大数据"}],"msg":"OK"}`
+	exp := `{"code":0,"data":[{"id":1,"name":"DevOps"},{"id":2,"name":"大数据"}],"msg":"OK"}`
 	st.Equal(exp, string(body), "should same.")
 }
 

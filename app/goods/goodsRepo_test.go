@@ -34,10 +34,6 @@ func (st *GoodsRepositoryTestSuite) SetupTest() {
 	configs.GetConfigInstance(utils.GetConfigFileForTest())
 }
 
-func (st *GoodsRepositoryTestSuite) Test_should_initial_empty_goodRepo() {
-	st.Equal(0, len(goodsRepo.GetGoodsList()))
-}
-
 func (st *GoodsRepositoryTestSuite) Test_goods_load_from_() {
 	goodsRepo.LoadGoods()
 	st.Equal(8, len(goodsRepo.GetGoodsList()))

@@ -31,11 +31,7 @@ func (st *CategoryRepoTestSuite) SetupTest() {
 	cateRepo = GetCategoryRepo()
 }
 
-func (st *CategoryRepoTestSuite) Test_should_initial_empty_goodRepo() {
-	st.Equal(0, len(cateRepo.GetList()))
-}
-
 func (st *CategoryRepoTestSuite) Test_goods_load_from_() {
-	cateRepo.loadCategory()
+	cateRepo.LoadCategory()
 	st.Equal(2, len(cateRepo.GetList()))
 }

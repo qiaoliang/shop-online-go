@@ -7,7 +7,7 @@ import (
 var cateRepoDB *CategoryRepoDB
 
 type CategoryRepoIf interface {
-	loadCategory() []Category
+	LoadCategory() []Category
 	GetList() []Category
 }
 type CategoryRepoDB struct {
@@ -21,13 +21,13 @@ func GetCategoryRepoDB(db *configs.DBConn) *CategoryRepoDB {
 	}
 	return cateRepoDB
 }
-func (cr *CategoryRepoDB) loadCategory() []Category {
+func (cr *CategoryRepoDB) LoadCategory() []Category {
 	cr.db.Find(&cr.cates)
 	return cr.cates
 }
 func (cr *CategoryRepoDB) GetList() []Category {
 	if len(cr.cates) == 0 {
-		cr.loadCategory()
+		cr.LoadCategory()
 	}
 	return cr.cates
 }
