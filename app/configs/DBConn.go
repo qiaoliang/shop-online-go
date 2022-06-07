@@ -32,3 +32,8 @@ func (conn *DBConn) First(dest interface{}, conds ...interface{}) (tx *DBConn) {
 func (conn *DBConn) Errors() error {
 	return conn.db.Error
 }
+func (conn *DBConn) Delete(value interface{}, conds ...interface{}) (tx *DBConn) {
+	conn.db = conn.db.First(value, conds)
+	return conn
+
+}

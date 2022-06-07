@@ -1,7 +1,9 @@
 package goods
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"bookstore/app/configs"
@@ -40,10 +42,6 @@ func CreateBook(c *gin.Context) {
 
 func FindBook(c *gin.Context) {
 	var book Book
-
-	//Validate Data
-	bookid := c.Param("id")
-	fmt.Printf("id = %v", bookid)
 	err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors()
 
 	if err != nil {
@@ -61,23 +59,23 @@ func UpdateBook(c *gin.Context) {
 		return
 	}
 	//Validate Input
-	var input UpdateBookInput
-	if err := c.ShouldBindJSON(&input); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+	defer c.Request.Body.Close()
+	body, _ := ioutil.ReadAll(c.Request.Body)
+	var result map[string]interface{}
 
-	configs.DB.Model(&Book{}).Where("id = ?", c.Param("id")).Update("Title", "hello")
+	// Unmarshal or Decode the JSON to the interface.
+	json.Unmarshal([]byte(body), &result)
 
-	fmt.Println("你好 book :" + book.Title + "---" + book.Author)
+	configs.DB.Model(&book).Updates(result)
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
 func DeleteBook(c *gin.Context) {
 	var book Book
+	fmt.Printf("Delete id =%s\n", c.Param("id"))
+	err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors()
 
-	//Validate Data
-	if err := configs.DB.Where("id = ? ", c.Param("id")).First(&book).Error; err != nil {
+	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
 		return
 	}

@@ -34,28 +34,20 @@ func GetConfigFileForTest() string {
 	return path
 }
 
-func HttpPatch(reqURL string, jsonStr []byte, r *gin.Engine) string {
-
-	req, _ := http.NewRequest("PATCH", reqURL, bytes.NewBuffer(jsonStr))
+func HttpPatch1(reqURL string, data map[string]interface{}, r *gin.Engine) string {
+	jsonStr, err := json.Marshal(data)
+	if err != nil {
+		return err.Error()
+	}
+	req, err := http.NewRequest("PATCH", reqURL, bytes.NewBuffer(jsonStr))
+	if err != nil {
+		return err.Error()
+	}
 	req.Header.Set("X-Custom-Header", "myvalue")
 	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
-	return string(body)
-}
-
-func HttpPatch1(reqURL string, data url.Values, r *gin.Engine) string {
-
-	req, _ := http.NewRequest("PATCH", reqURL, bytes.NewBufferString(data.Encode()))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 	w := httptest.NewRecorder()
 
-	body := doIt(r, w, req, reqURL, data)
+	body := doIt(r, w, req, reqURL, nil)
 	return string(body)
 }
 
@@ -90,7 +82,7 @@ func HttpPost(r *gin.Engine, data url.Values, reqURL string) string {
 	body := doIt(r, w, req, reqURL, data)
 	return string(body)
 }
-func HttpDelete(r *gin.Engine, data url.Values, reqURL string) string {
+func HttpDelete(reqURL string, data url.Values, r *gin.Engine) string {
 	req, _ := http.NewRequest("DELETE", reqURL, bytes.NewBufferString(data.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
 	w := httptest.NewRecorder()
