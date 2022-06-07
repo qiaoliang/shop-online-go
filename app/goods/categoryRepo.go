@@ -21,7 +21,6 @@ func NewCategoryRepo(persistence bool) CategoryRepoIf {
 
 	if cateRepo == nil {
 		if persistence {
-
 			cateRepo = GetCategoryRepoDB(configs.Cfg.DBConnection())
 
 		} else {
@@ -32,8 +31,8 @@ func NewCategoryRepo(persistence bool) CategoryRepoIf {
 	return cateRepo
 }
 func (cr *CategoryRepo) LoadCategory() []Category {
-	cate1 := &Category{0, "DevOps"}
-	cate2 := &Category{1, "大数据"}
+	cate1 := &Category{1, "DevOps"}
+	cate2 := &Category{2, "大数据"}
 	cr.cates = append(cr.cates, *cate1)
 	cr.cates = append(cr.cates, *cate2)
 

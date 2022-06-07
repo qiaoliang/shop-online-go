@@ -4,8 +4,6 @@ import (
 	"bookstore/app/configs"
 )
 
-var cateRepoDB *CategoryRepoDB
-
 type CategoryRepoIf interface {
 	LoadCategory() []Category
 	GetList() []Category
@@ -15,11 +13,11 @@ type CategoryRepoDB struct {
 	db    *configs.DBConn
 }
 
-func GetCategoryRepoDB(db *configs.DBConn) *CategoryRepoDB {
-	if cateRepoDB == nil {
-		cateRepoDB = &CategoryRepoDB{[]Category{}, db}
+func GetCategoryRepoDB(db *configs.DBConn) CategoryRepoIf {
+	if cateRepo == nil {
+		cateRepo = &CategoryRepoDB{[]Category{}, db}
 	}
-	return cateRepoDB
+	return cateRepo
 }
 func (cr *CategoryRepoDB) LoadCategory() []Category {
 	cr.db.Find(&cr.cates)

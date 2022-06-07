@@ -25,6 +25,9 @@ func (st *BookHandlerSuite) SetupSuite() {
 	configs.GetConfigInstance(utils.GetConfigFileForTest())
 	configs.Cfg.Upgrade()
 }
+func (st *BookHandlerSuite) TeardownSuite() {
+	configs.Cfg.Downgrade()
+}
 
 func (st *BookHandlerSuite) Test_Get_error_when_Update_unexisted_Book() {
 	//构建参数
