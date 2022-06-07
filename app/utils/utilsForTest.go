@@ -91,6 +91,14 @@ func HttpPost(r *gin.Engine, data url.Values, reqURL string) string {
 	body := doIt(r, w, req, reqURL, data)
 	return string(body)
 }
+func HttpDelete(r *gin.Engine, data url.Values, reqURL string) string {
+	req, _ := http.NewRequest("DELETE", reqURL, bytes.NewBufferString(data.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+	w := httptest.NewRecorder()
+
+	body := doIt(r, w, req, reqURL, data)
+	return string(body)
+}
 
 func doIt(r *gin.Engine, w *httptest.ResponseRecorder, req *http.Request, reqURL string, data url.Values) []byte {
 	r.ServeHTTP(w, req)

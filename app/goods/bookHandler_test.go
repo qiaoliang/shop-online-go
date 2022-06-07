@@ -27,30 +27,17 @@ func (st *BookHandlerSuite) SetupSuite() {
 	configs.Cfg.Upgrade()
 }
 
-func (st *BookHandlerSuite) Should_Get_error_when_Update_unexisted_Book() {
+func (st *BookHandlerSuite) Test_Get_error_when_Update_unexisted_Book() {
 	//构建参数
-	var jsonStr = []byte(`[{"Title": "newTitle", "Author": "NewAuthor"}]`)
-	url := configs.Cfg.Host + ":" + configs.Cfg.Port + "/books/0"
-	body := utils.HttpPatch(url, jsonStr, st.router)
+	body := utils.HttpGet("/books/8888", nil, st.router)
 
-	exp := `{"error":"Record Not Found"}`
+	exp := `{"error":"Record not found"}`
 	st.Equal(exp, string(body), "should same.")
 }
 
-func (st *BookHandlerSuite) Should_Get_book_when_Book_existed() {
-	//构建参数
+func (st *BookHandlerSuite) Test_Get_book_when_Book_existed() {
 
-	url := configs.Cfg.Host + ":" + configs.Cfg.Port + "/books/1"
-	req, _ := http.NewRequest("GET", url, nil)
-	req.Header.Set("X-Custom-Header", "myvalue")
-	req.Header.Set("Content-Type", "application/json")
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		panic(err)
-	}
-	defer resp.Body.Close()
-	body, _ := ioutil.ReadAll(resp.Body)
+	body := utils.HttpGet("/books/1", nil, st.router)
 
 	exp := `{"data":{"id":1,"title":"little prince","author":"Antoine"}}`
 	st.Equal(exp, string(body), "should same.")
