@@ -30,6 +30,10 @@ func (r *MemoryUserRepo) TotalUsers() int {
 	return len(r.userlist)
 }
 
+func (r *MemoryUserRepo) DeleteByMobile(mobile string) {
+	//TODO: 未实现
+}
+
 func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
 	found := r.retriveUserByMobile(mobile)
 	if found == nil || found.Password != pwd {
@@ -62,6 +66,6 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 	}
 	return r.userlist[mobile], nil
 }
-func (r *MemoryUserRepo) CreateAdmin(mobile string, pwd string) {
-	r.CreateUser(mobile, pwd, "超级塞亚人")
+func (r *MemoryUserRepo) CreateAdmin(moblie string, pwd string) {
+	r.CreateUser(moblie, pwd, "超级塞亚人")
 }

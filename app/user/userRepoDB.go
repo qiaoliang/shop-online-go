@@ -5,6 +5,8 @@ import (
 	"bookstore/app/utils"
 	"errors"
 	"fmt"
+
+	"gorm.io/gorm"
 )
 
 type UserRepoIf interface {
@@ -13,14 +15,15 @@ type UserRepoIf interface {
 	retriveUserByMobile(mobile string) *User
 	CreateUser(mobile string, pwd string, nickname string) (user *User, err error)
 	CreateAdmin(mobile string, pwd string)
+	DeleteByMobile(mobile string)
 }
 
 type UserRepoDB struct {
 	userlist map[string]*User
-	db       *configs.DBConn
+	db       *gorm.DB
 }
 
-func GetUserRepoDB(db *configs.DBConn) UserRepoIf {
+func GetUserRepoDB(db *gorm.DB) UserRepoIf {
 	if userRepo == nil {
 		userRepo = &UserRepoDB{make(map[string]*User, 10), db}
 	}
@@ -32,7 +35,10 @@ func (r *UserRepoDB) TotalUsers() int {
 	r.db.Find(&users)
 	return len(users)
 }
-
+func (r *UserRepoDB) DeleteByMobile(mobile string) {
+	var user User
+	r.db.Where("mobile = ?", mobile).Delete(&user)
+}
 func (r *UserRepoDB) findUser(mobile string, pwd string) *User {
 	found := r.retriveUserByMobile(mobile)
 	if found == nil || found.Password != pwd {
@@ -42,7 +48,10 @@ func (r *UserRepoDB) findUser(mobile string, pwd string) *User {
 }
 func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
 	var user User
-	r.db.First(&user, mobile)
+	result := r.db.Where("mobile = ?", mobile).First(&user)
+	if result.Error != nil {
+		return nil
+	}
 	return &user
 }
 
@@ -52,18 +61,24 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string) (use
 	}
 	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
 	avatarUrl := configs.Cfg.AvatarPicPrefix() + utils.GenerateAavatarStr()
-	r.userlist[mobile] = &User{
-		Id:        userId,
-		Password:  pwd,
-		Mobile:    mobile,
-		Nickname:  nickname,
-		AvatarUrl: avatarUrl,
-		Province:  "未知",
-		City:      "未知",
-		AutoLogin: 0,
-		UserInfo:  "FakeUserInfo",
-		UserLevel: &UserLevel{GREENTYPE, GREENTYPE.String()},
+	newUser := &User{
+		Id:          userId,
+		Password:    pwd,
+		Mobile:      mobile,
+		Nickname:    nickname,
+		AvatarUrl:   avatarUrl,
+		Province:    "未知",
+		City:        "未知",
+		AutoLogin:   0,
+		UserInfo:    "FakeUserInfo",
+		UserLevelId: 1,
+		UserLevel:   &UserLevel{GREENTYPE, GREENTYPE.String()},
 	}
+	r.db.Create(newUser)
+	if r.db.Error != nil {
+		return nil, r.db.Error
+	}
+	r.userlist[mobile] = newUser
 	return r.userlist[mobile], nil
 }
 func (r *UserRepoDB) CreateAdmin(mobile string, pwd string) {

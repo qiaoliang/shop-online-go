@@ -28,7 +28,7 @@ func (ur *UserRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 func (ur *UserRepoDBTestSuite) SetupSuite() {
 	userRepo = nil
 	ur.SupperSuite.SetupSuite()
-	ur.repo = GetUserRepoDB(configs.Cfg.DBConnection())
+	ur.repo = GetUserRepoDB(configs.Cfg.GormDB())
 }
 func (ur *UserRepoDBTestSuite) TeardownSuite() {
 	ur.SupperSuite.TeardownSuite()
@@ -41,13 +41,19 @@ func (ur *UserRepoDBTestSuite) SetupTest() {
 func (ur *UserRepoDBTestSuite) Test_total_users() {
 	ur.Equal(1, ur.repo.TotalUsers())
 }
-func (ur *UserRepoDBTestSuite) Should_Create_users() {
-	exp := ur.repo.TotalUsers()
-	ur.repo.CreateUser("mymoble", "mypwd", "nickname")
-	ur.Equal(exp+1, ur.repo.TotalUsers())
+func (ur *UserRepoDBTestSuite) Test_Create_users() {
+	ur.repo.CreateUser("mymobile", "mypwd", "nickname")
+	result := ur.repo.retriveUserByMobile("mymobile")
+	ur.Equal("mymobile", result.Mobile)
+
+	//cleanup
+	ur.repo.DeleteByMobile("mymobile")
+
+	result = userRepo.retriveUserByMobile("mymobile")
+	ur.True(result == nil)
 }
 
-func (ur *UserRepoDBTestSuite) should_find_user_by_mobile_and_pwd() {
+func (ur *UserRepoDBTestSuite) Test_find_user_by_mobile_and_pwd() {
 	result := ur.repo.findUser("13900007997", "1234")
 	ur.NotEmpty(result)
 	pattern := configs.Cfg.AvatarPicPrefix() + "[a-l]\\.jpeg$"
@@ -58,6 +64,6 @@ func (ur *UserRepoDBTestSuite) should_find_user_by_mobile_and_pwd() {
 func (ur *UserRepoDBTestSuite) Test_retriveUserByMobile() {
 	result := ur.repo.retriveUserByMobile("13900007997")
 	ur.NotEmpty(result)
-	//result = userRepo.retriveUserByMobile("noexistedUser")
-	//ur.True(result == nil)
+	result = userRepo.retriveUserByMobile("noexistedUser")
+	ur.True(result == nil)
 }

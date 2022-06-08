@@ -19,7 +19,7 @@ import (
 type Config struct {
 	Persistence bool
 	cfgDir      string
-	DBConn      *gorm.DB
+	dbConn      *gorm.DB
 	Host        string
 	Port        int
 
@@ -68,7 +68,6 @@ func GetConfigInstance(cfgfile string) *Config {
 	return &Cfg
 }
 
-var DB *gorm.DB
 var err error
 
 func (cfg *Config) getAbsDir(filename string) string {
@@ -139,26 +138,24 @@ func (cfg *Config) getDbURI() string {
 		cfg.DBUser, cfg.DBPasswd, cfg.DBAddr, cfg.DBPort, cfg.DBName)
 	return dsn
 }
-func (cfg *Config) MysqlDBConn() *gorm.DB {
-	if cfg.DBConn == nil {
+func (cfg *Config) GormDB() *gorm.DB {
+	if cfg.dbConn == nil {
 		dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
 
-		DB, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
+		cfg.dbConn, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
 
 		if err != nil {
 			panic("Failed to connect database")
 		}
-		cfg.DBConn = DB
 	}
-	return cfg.DBConn
+	return cfg.dbConn
 }
 func (cfg *Config) DBDisconnect() {
-	if cfg.DBConn != nil {
-		cfg.DBConn = nil
-		DB = nil
+	if cfg.dbConn != nil {
+		cfg.dbConn = nil
 	}
 }
 func (cfg *Config) DBConnection() *DBConn {
-	db := cfg.MysqlDBConn()
+	db := cfg.GormDB()
 	return NewConn(db)
 }

@@ -54,7 +54,7 @@ func FindBook(c *gin.Context) {
 func UpdateBook(c *gin.Context) {
 	var book Book
 	//Validate Data
-	if err := configs.DB.Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := configs.Cfg.GormDB().Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record Not Found"})
 		return
 	}
@@ -66,7 +66,7 @@ func UpdateBook(c *gin.Context) {
 	// Unmarshal or Decode the JSON to the interface.
 	json.Unmarshal([]byte(body), &result)
 
-	configs.DB.Model(&book).Updates(result)
+	configs.Cfg.GormDB().Model(&book).Updates(result)
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
@@ -80,6 +80,6 @@ func DeleteBook(c *gin.Context) {
 		return
 	}
 
-	configs.DB.Delete(book)
+	configs.Cfg.GormDB().Delete(book)
 	c.JSON(http.StatusOK, gin.H{"data": true})
 }
