@@ -48,16 +48,17 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
 	avatarUrl := configs.Cfg.AvatarPicPrefix() + utils.GenerateAavatarStr()
 	r.userlist[mobile] = &User{
-		Id:        userId,
-		Password:  pwd,
-		Mobile:    mobile,
-		Nickname:  nickname,
-		AvatarUrl: avatarUrl,
-		Province:  "未知",
-		City:      "未知",
-		AutoLogin: 0,
-		UserInfo:  "FakeUserInfo",
-		UserLevel: &LEVELGREEN,
+		Id:          userId,
+		Password:    pwd,
+		Mobile:      mobile,
+		Nickname:    nickname,
+		AvatarUrl:   avatarUrl,
+		Province:    "未知",
+		City:        "未知",
+		AutoLogin:   0,
+		UserInfo:    "FakeUserInfo",
+		UserLevelId: 1,
+		UserLevel:   &UserLevel{GREENTYPE, GREENTYPE.String()},
 	}
 	return r.userlist[mobile], nil
 }

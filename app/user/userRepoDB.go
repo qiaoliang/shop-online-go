@@ -59,7 +59,7 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string) (use
 		City:      "未知",
 		AutoLogin: 0,
 		UserInfo:  "FakeUserInfo",
-		UserLevel: &LEVELGREEN,
+		UserLevel: &UserLevel{GREENTYPE, GREENTYPE.String()},
 	}
 	return r.userlist[mobile], nil
 }
