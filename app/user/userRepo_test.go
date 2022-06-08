@@ -32,7 +32,7 @@ func (ur *UserRepoTestSuite) SetupSuite() {}
 // This will run before each test in the suite
 func (ur *UserRepoTestSuite) SetupTest() {
 	userRepo = nil
-	userRepo = GetUserRepoInstance()
+	userRepo = GetMemoryUserRepo()
 }
 
 func (suite *UserRepoTestSuite) Test_create_user() {

@@ -38,6 +38,12 @@ func (ur *UserRepoDBTestSuite) TeardownSuite() {
 func (ur *UserRepoDBTestSuite) SetupTest() {
 }
 
+func (ur *UserRepoDBTestSuite) Test_get_DB_REPO_Instance() {
+	result := GetUserRepo()
+	_, ok := result.(*UserRepoDB)
+	ur.True(ok)
+}
+
 func (ur *UserRepoDBTestSuite) Test_total_users() {
 	ur.Equal(1, ur.repo.TotalUsers())
 }

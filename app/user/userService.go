@@ -44,19 +44,19 @@ func (r *UserService) FindUserByToken(token string) *User {
 	if mobileNumber == "" {
 		return nil
 	}
-	return GetUserRepoInstance().retriveUserByMobile(mobileNumber)
+	return GetMemoryUserRepo().retriveUserByMobile(mobileNumber)
 }
 
 func (s *UserService) findUser(mobile string, pwd string) *User {
-	user := GetUserRepoInstance().findUser(mobile, pwd)
+	user := GetMemoryUserRepo().findUser(mobile, pwd)
 	return user
 }
 func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string) *User {
-	if GetUserRepoInstance().findUser(mobile, pwd) != nil {
+	if GetMemoryUserRepo().findUser(mobile, pwd) != nil {
 		return nil
 	}
 
-	newUser, err := GetUserRepoInstance().CreateUser(mobile, pwd, nickname)
+	newUser, err := GetMemoryUserRepo().CreateUser(mobile, pwd, nickname)
 	if err != nil {
 		return nil
 	}

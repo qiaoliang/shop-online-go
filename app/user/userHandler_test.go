@@ -37,7 +37,7 @@ func (ur *UserHandlerSuite) SetupTest() {
 	userService = nil
 	userRepo = nil
 	userService = GetUserService()
-	userRepo = GetUserRepoInstance()
+	userRepo = GetMemoryUserRepo()
 
 }
 

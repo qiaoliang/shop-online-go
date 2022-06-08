@@ -16,7 +16,27 @@ type MemoryUserRepo struct {
 
 var userRepo UserRepoIf
 
-func GetUserRepoInstance() UserRepoIf {
+func GetUserRepo() UserRepoIf {
+	return NewUserRepo(configs.Cfg.Persistence)
+}
+func NewUserRepo(persistence bool) UserRepoIf {
+	lockUR.Lock()
+	defer lockUR.Unlock()
+
+	if userRepo == nil {
+		if persistence {
+			userRepo = GetUserRepoDB(configs.Cfg.GormDB())
+
+		} else {
+
+			userRepo = &MemoryUserRepo{make(map[string]*User, 10)}
+			userRepo.CreateAdmin("13900007997", "1234")
+		}
+	}
+	return userRepo
+}
+
+func GetMemoryUserRepo() UserRepoIf {
 	lockUR.Lock()
 	defer lockUR.Unlock()
 	if userRepo == nil {
@@ -66,6 +86,6 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 	}
 	return r.userlist[mobile], nil
 }
-func (r *MemoryUserRepo) CreateAdmin(moblie string, pwd string) {
-	r.CreateUser(moblie, pwd, "超级塞亚人")
+func (r *MemoryUserRepo) CreateAdmin(mobile string, pwd string) {
+	r.CreateUser(mobile, pwd, "超级塞亚人")
 }
