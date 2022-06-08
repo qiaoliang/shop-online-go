@@ -1,18 +1,17 @@
 CREATE TABLE IF NOT EXISTS `users` (
-
-	Gid  VARCHAR(100)  PRIMARY KEY, 
-	GName VARCHAR(100) NOT NULL, 
-	Pics  VARCHAR(256),
-	CategoryId  INTEGER ,
-    RecommendStatus VARCHAR(10),
-	Stock   INTEGER,  
-	Unit    VARCHAR(100), 
-	Logistics INTEGER,  
-	Content   VARCHAR(256), 
-	CurState     INTEGER,   
-	StatusStr    VARCHAR(10), 
-	PicUrl       VARCHAR(256), 
-	MinPrice      VARCHAR(256),
-	OriginalPrice VARCHAR(256),
-	AfterSale     INTEGER
+	Id   VARCHAR(100)  PRIMARY KEY,
+	Password   VARCHAR(100) NOT NULL,
+	Mobile   VARCHAR(100),
+	Nickname   VARCHAR(100),
+	AvatarUrl   VARCHAR(255),
+	Province   VARCHAR(100),
+	City   VARCHAR(100),
+	AutoLogin  INTEGER,
+	UserInfo   VARCHAR(100),
+	UserLevelId   INTEGER
 );
+
+INSERT INTO 
+users (Id,Password,Mobile,Nickname,AvatarUrl,Province,City,AutoLogin,UserInfo,UserLevelId)
+VALUES 
+('13900007997', '1234','13900007997','天之骄子', 'a.jpeg', '北京',  '北京',  1, '这是UserInfo',1);

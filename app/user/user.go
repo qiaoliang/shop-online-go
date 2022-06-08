@@ -10,7 +10,7 @@ type User struct {
 	City        string     `json:"city"`
 	AutoLogin   uint       `json:"autoLogin"`
 	UserInfo    string     `json:"userInfo"`
-	UserLevelId int        `json:"-"`
+	UserLevelId int32      `json:"-"`
 	UserLevel   *UserLevel `json:"userLevel" gorm:"-"`
 }
 type UserLevel struct {
@@ -18,7 +18,7 @@ type UserLevel struct {
 	Name  string   `json:"name"`
 }
 
-type UserType int
+type UserType int32
 
 const (
 	BLANKTYPE UserType = iota
