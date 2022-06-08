@@ -1,9 +1,9 @@
 package configs
 
 import (
-	"bookstore/app/utils"
 	"database/sql"
 	"fmt"
+	"os"
 	"path/filepath"
 
 	_ "github.com/go-sql-driver/mysql"
@@ -17,6 +17,7 @@ import (
 )
 
 type Config struct {
+	IsTestEnv   bool
 	Persistence bool
 	cfgDir      string
 	dbConn      *gorm.DB
@@ -39,15 +40,30 @@ type Config struct {
 	AvatarPath string
 }
 
+func IsPathExist(path string) bool {
+	_, err := os.Stat(path)
+
+	if err != nil {
+		if os.IsExist(err) {
+			return true
+		}
+		if os.IsNotExist(err) {
+			return false
+		}
+		return false
+	}
+	return true
+}
+
 func GetConfigInstance(cfgfile string) *Config {
-	if !utils.IsPathExist(cfgfile) {
+	if !IsPathExist(cfgfile) {
 		fmt.Println("config file " + cfgfile + " is NOT existed")
 		panic(cfgfile + "is NOT existed.")
 	}
 	viper.SetConfigFile(cfgfile)
 	viper.ReadInConfig()
 	Cfg = Config{
-
+		IsTestEnv:      viper.GetBool("IS_TEST_ENV"),
 		Persistence:    viper.GetBool("PERSISTANCE"),
 		Host:           viper.Get("HOST").(string),
 		Port:           viper.Get("PORT").(int),

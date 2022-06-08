@@ -56,7 +56,7 @@ func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string
 		return nil
 	}
 
-	newUser, err := GetMemoryUserRepo().CreateUser(mobile, pwd, nickname)
+	newUser, err := GetMemoryUserRepo().CreateUser(mobile, pwd, nickname, genUId)
 	if err != nil {
 		return nil
 	}

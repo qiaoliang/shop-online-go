@@ -3,7 +3,6 @@ package user
 import (
 	"bookstore/app/utils"
 	"errors"
-	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -12,7 +11,7 @@ type UserRepoIf interface {
 	TotalUsers() int
 	findUser(mobile string, pwd string) *User
 	retriveUserByMobile(mobile string) *User
-	CreateUser(mobile string, pwd string, nickname string) (user *User, err error)
+	CreateUser(mobile string, pwd string, nickname string, genUserId UserIdGen) (user *User, err error)
 	CreateAdmin(mobile string, pwd string)
 	DeleteByMobile(mobile string)
 }
@@ -54,12 +53,12 @@ func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
 	return &user
 }
 
-func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string) (user *User, err error) {
+func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string, genUserId UserIdGen) (user *User, err error) {
 	if r.findUser(mobile, pwd) != nil {
 		return nil, errors.New("hello,error")
 	}
-	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
-	avatarUrl := utils.GenerateAavatarStr()
+	userId := genUserId()
+	avatarUrl := utils.NewRandom().GenAavatarStr()
 	newUser := &User{
 		Id:          userId,
 		Password:    pwd,
@@ -81,5 +80,5 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string) (use
 	return r.userlist[mobile], nil
 }
 func (r *UserRepoDB) CreateAdmin(mobile string, pwd string) {
-	r.CreateUser(mobile, pwd, "超级塞亚人")
+	r.CreateUser(mobile, pwd, "超级塞亚人", genUId)
 }

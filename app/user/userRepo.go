@@ -65,12 +65,18 @@ func (r *MemoryUserRepo) retriveUserByMobile(mobile string) *User {
 	return r.userlist[mobile]
 }
 
-func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) (user *User, err error) {
+type UserIdGen func() string
+
+func genUId() string {
+	return fmt.Sprintf("userId%v", utils.NewRandom().GenStr())
+}
+
+func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string, genUserId UserIdGen) (user *User, err error) {
 	if r.findUser(mobile, pwd) != nil {
 		return nil, errors.New("hello,error")
 	}
-	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
-	avatarUrl := utils.GenerateAavatarStr()
+	userId := genUserId()
+	avatarUrl := utils.NewRandom().GenAavatarStr()
 	r.userlist[mobile] = &User{
 		Id:          userId,
 		Password:    pwd,
@@ -87,5 +93,5 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 	return r.userlist[mobile], nil
 }
 func (r *MemoryUserRepo) CreateAdmin(mobile string, pwd string) {
-	r.CreateUser(mobile, pwd, "超级塞亚人")
+	r.CreateUser(mobile, pwd, "超级塞亚人", genUId)
 }

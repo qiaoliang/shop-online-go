@@ -1,4 +1,5 @@
 
+IS_TEST_ENV: true
 PERSISTANCE: true
 RESOURCES:
   STATIC_PIC_URI: "http://localhost:9090/pic"

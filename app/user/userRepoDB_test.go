@@ -3,6 +3,7 @@ package user
 import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
+	"math/rand"
 	"regexp"
 	"testing"
 
@@ -12,6 +13,29 @@ import (
 type UserRepoDBTestSuite struct {
 	testutils.SupperSuite
 	repo UserRepoIf
+}
+
+func GenStr(length int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyz"
+	bytes := []byte(str)
+	var result []byte
+	for i := 0; i < length; i++ {
+		result = append(result, bytes[rand.Intn(len(bytes))])
+	}
+	return string(result)
+}
+
+func (ur *UserRepoDBTestSuite) Test_generate_String() {
+	str := GenStr(4)
+	ur.Equal(4, len(str))
+	str2 := GenStr(5)
+	ur.Equal(5, len(str2))
+	result := make(map[string]string, 100)
+	for i := 0; i < 100; i++ {
+		str = GenStr(10)
+		result[str] = str
+	}
+	ur.Equal(100, len(result))
 }
 
 // We need this function to kick off the test suite, otherwise
@@ -48,7 +72,7 @@ func (ur *UserRepoDBTestSuite) Test_total_users() {
 	ur.Equal(1, ur.repo.TotalUsers())
 }
 func (ur *UserRepoDBTestSuite) Test_Create_users() {
-	ur.repo.CreateUser("mymobile", "mypwd", "nickname")
+	ur.repo.CreateUser("mymobile", "mypwd", "nickname", genUId)
 	result := ur.repo.retriveUserByMobile("mymobile")
 	ur.Equal("mymobile", result.Mobile)
 	ur.NotContains(result.AvatarUrl, "http://localhost:9090/pic/avatar/")
