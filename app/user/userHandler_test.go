@@ -2,7 +2,7 @@ package user
 
 import (
 	"bookstore/app/configs"
-	"bookstore/app/utils"
+	"bookstore/app/testutils"
 	"net/url"
 	"testing"
 
@@ -21,7 +21,7 @@ func TestUserHandlerSuite(t *testing.T) {
 
 func (st *UserHandlerSuite) SetupSuite() {
 	st.router = setupTestRouter()
-	configs.GetConfigInstance(utils.GetConfigFileForTest())
+	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 }
 
 // This will run right before the test starts
@@ -49,7 +49,7 @@ func (st *UserHandlerSuite) Test_login_with_admin() {
 	data.Add("mobile", "13900007997")
 	data.Add("pwd", "1234")
 
-	body := utils.HttpPost(st.router, data, "/v1/user/m/login")
+	body := testutils.HttpPost(st.router, data, "/v1/user/m/login")
 
 	st.Contains(string(body), "13900007997", "should return admin")
 }
@@ -61,7 +61,7 @@ func (st *UserHandlerSuite) Test_Register_User() {
 	data.Add("autoLogin", "1")
 	data.Add("code", "5678")
 
-	body := utils.HttpPost(st.router, data, "/v1/user/m/register")
+	body := testutils.HttpPost(st.router, data, "/v1/user/m/register")
 	exp := `{"code":0,"data":{"token":"newUser","base":{"id":"userIdnl8x7lipma","pwd":"天下无贼","mobile":"newUser","nick":"secret","avatarUrl":"http://localhost:9090/pic/avatar/d.jpeg","province":"未知","city":"未知","autoLogin":0,"userInfo":"FakeUserInfo","userLevel":{"id":1,"name":"Green"}},"userLevel":{"id":1,"name":"Green"}},"msg":"OK"}`
 	st.Equal(exp, string(body), "should rigister successfully")
 

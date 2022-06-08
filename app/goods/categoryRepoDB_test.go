@@ -2,7 +2,6 @@ package goods
 
 import (
 	"bookstore/app/configs"
-	"bookstore/app/utils"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -45,11 +44,7 @@ func (s *CategoryRepoDBTestSuite) AfterTest(suiteName, testName string) {
 
 // This will run before before the tests in the suite are run
 func (s *CategoryRepoDBTestSuite) SetupSuite() {
-	configs.GetConfigInstance(utils.GetConfigFileForTest())
-	if configs.Cfg.Persistence {
-		configs.Cfg.Upgrade()
-		configs.Cfg.MysqlDBConn()
-	}
+
 	s.db = GetCategoryRepoDB(configs.Cfg.DBConnection())
 	s.NotNil(s.db)
 }

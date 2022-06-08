@@ -2,7 +2,7 @@ package goods
 
 import (
 	"bookstore/app/configs"
-	"bookstore/app/utils"
+	"bookstore/app/testutils"
 	_ "fmt"
 	"testing"
 
@@ -31,7 +31,7 @@ func (st *GoodsRepositoryTestSuite) SetupSuite() {
 func (st *GoodsRepositoryTestSuite) SetupTest() {
 	goodsRepo = nil
 	GetGoodsRepo()
-	configs.GetConfigInstance(utils.GetConfigFileForTest())
+	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 }
 
 func (st *GoodsRepositoryTestSuite) Test_goods_load_from_() {

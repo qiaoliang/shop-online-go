@@ -2,6 +2,7 @@ package user
 
 import (
 	"bookstore/app/configs"
+	"bookstore/app/testutils"
 	"regexp"
 	"testing"
 
@@ -32,6 +33,8 @@ func (ur *UserRepoDBTestSuite) SetupSuite() {}
 // This will run before each test in the suite
 func (ur *UserRepoDBTestSuite) SetupTest() {
 	userRepo = nil
+	configs.GetConfigInstance(testutils.GetConfigFileForTest())
+	configs.Cfg.Upgrade()
 	userRepo = GetUserRepoInstance()
 }
 

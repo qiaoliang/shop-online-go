@@ -2,7 +2,7 @@ package goods
 
 import (
 	"bookstore/app/configs"
-	"bookstore/app/utils"
+	"bookstore/app/testutils"
 	"net/url"
 	"testing"
 
@@ -12,7 +12,7 @@ import (
 
 type GoodItemJson struct {
 	Data *GoodsItem `json:"data"`
-	utils.JsonResult
+	testutils.JsonResult
 }
 
 type GoodsHandlerSuite struct {
@@ -26,7 +26,7 @@ func TestGoodsHandlerSuite(t *testing.T) {
 
 func (st *GoodsHandlerSuite) SetupSuite() {
 	st.router = st.setupTestRouter()
-	configs.GetConfigInstance(utils.GetConfigFileForTest())
+	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 }
 
 func (st *GoodsHandlerSuite) Test_get_GoodsDetail() {
@@ -42,7 +42,7 @@ func (st *GoodsHandlerSuite) Test_get_GoodsDetail() {
 	//调用请求接口
 	exp := `{"code":0,"data":{"id":"g7225946","name":"持续交付1.0","pics":[{"id":"g7225946-01","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg"},{"id":"g7225946-02","pic":"http://localhost:9090/pic/goods/g7225946-02.jpeg"}],"goodsId":0,"stores":10,"unit":"册","logistics":"0","content":"一本DevOps的经典书。","status":2,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","afterSale":"1"},"msg":"OK"}`
 
-	body := utils.HttpGet("/v1/shop/goods/detail", params, st.router)
+	body := testutils.HttpGet("/v1/shop/goods/detail", params, st.router)
 	st.Equal(exp, body, "should same.")
 }
 func (st *GoodsHandlerSuite) Test_fetch_GoodsList() {
@@ -56,14 +56,14 @@ func (st *GoodsHandlerSuite) Test_fetch_GoodsList() {
 	//调用请求接口
 	exp := `{"code":0,"data":{"result":[{"id":"g7225946","name":"持续交付1.0","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","goodsDetail":{"id":"g7225946","name":"持续交付1.0","pics":[{"id":"g7225946-01","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg"},{"id":"g7225946-02","pic":"http://localhost:9090/pic/goods/g7225946-02.jpeg"}],"goodsId":0,"stores":10,"unit":"册","logistics":"0","content":"一本DevOps的经典书。","status":2,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","afterSale":"1"}},{"id":"g7225947","name":"持续交付2.0","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","minPrice":"99.0","originalPrice":"129.0","goodsDetail":{"id":"g7225947","name":"持续交付2.0","pics":[{"id":"g7225947-01","pic":"http://localhost:9090/pic/goods/g7225947-01.jpeg"},{"id":"g7225947-02","pic":"http://localhost:9090/pic/goods/g7225947-02.jpeg"}],"goodsId":0,"stores":20,"unit":"册","logistics":"0","content":"另一本DevOps的经典书。","status":2,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","minPrice":"99.0","originalPrice":"129.0","afterSale":"1"}},{"id":"g7225948","name":"DevOps实战指南","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225948.jpeg","minPrice":"55.0","originalPrice":"85.0","goodsDetail":{"id":"g7225948","name":"DevOps实战指南","pics":[{"id":"g7225948-01","pic":"http://localhost:9090/pic/goods/g7225948-01.jpeg"},{"id":"g7225948-02","pic":"http://localhost:9090/pic/goods/g7225948-02.jpeg"}],"goodsId":0,"stores":2,"unit":"册","logistics":"0","content":"DevOps 黄皮书。","status":2,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225948.jpeg","minPrice":"55.0","originalPrice":"85.0","afterSale":"1"}},{"id":"g7225949","name":"谷歌软件工程","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225949.jpeg","minPrice":"77.0","originalPrice":"107.0","goodsDetail":{"id":"g7225949","name":"谷歌软件工程","pics":[{"id":"g7225949-01","pic":"http://localhost:9090/pic/goods/g7225949-01.jpeg"},{"id":"g7225949-02","pic":"http://localhost:9090/pic/goods/g7225949-02.jpeg"}],"goodsId":0,"stores":5,"unit":"册","logistics":"0","content":"解密硅谷头部互联网企业 如何打造软件工程文化。","status":2,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225949.jpeg","minPrice":"77.0","originalPrice":"107.0","afterSale":"1"}}],"totalRow":4},"msg":"OK"}`
 
-	body := utils.HttpPost(st.router, data, "/v1/goods/list")
+	body := testutils.HttpPost(st.router, data, "/v1/goods/list")
 	st.Equal(exp, body, "should same.")
 
 	data = url.Values{}
 	data.Set("page", "")
 	data.Add("pageSize", "anythingIsOKByNow")
 	data.Add("categoryId", "1")
-	body = utils.HttpPost(st.router, data, "/v1/goods/list")
+	body = testutils.HttpPost(st.router, data, "/v1/goods/list")
 	st.NotEqual(exp, body, "should not same.")
 
 }

@@ -17,14 +17,13 @@ type UserRepoIf interface {
 
 type UserRepoDB struct {
 	userlist map[string]*User
+	db       *configs.DBConn
 }
 
-var userRepoDB *UserRepoDB
-
-func GetUserRepoDB() *UserRepoDB {
+func GetUserRepoDB(db *configs.DBConn) *UserRepoDB {
+	var userRepoDB *UserRepoDB
 	if userRepo == nil {
-		userRepoDB = &UserRepoDB{}
-		userRepoDB.userlist = make(map[string]*User, 10)
+		userRepoDB = &UserRepoDB{make(map[string]*User, 10), db}
 		userRepoDB.CreateAdmin("13900007997", "1234")
 	}
 	return userRepoDB

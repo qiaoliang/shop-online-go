@@ -152,6 +152,12 @@ func (cfg *Config) MysqlDBConn() *gorm.DB {
 	}
 	return cfg.DBConn
 }
+func (cfg *Config) DBDisconnect() {
+	if cfg.DBConn != nil {
+		cfg.DBConn = nil
+		DB = nil
+	}
+}
 func (cfg *Config) DBConnection() *DBConn {
 	db := cfg.MysqlDBConn()
 	return NewConn(db)

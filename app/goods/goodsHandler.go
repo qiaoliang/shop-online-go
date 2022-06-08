@@ -1,7 +1,7 @@
 package goods
 
 import (
-	"bookstore/app/utils"
+	"bookstore/app/testutils"
 	"net/http"
 	"strconv"
 
@@ -9,7 +9,7 @@ import (
 )
 
 type GoodsListJson struct {
-	utils.JsonResult
+	testutils.JsonResult
 	Data *ResultData `json:"data"`
 }
 type ResultData struct {
