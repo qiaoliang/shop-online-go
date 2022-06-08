@@ -1,7 +1,7 @@
 package goods
 
 import (
-	"bookstore/app/configs"
+	"gorm.io/gorm"
 )
 
 type CategoryRepoIf interface {
@@ -10,10 +10,10 @@ type CategoryRepoIf interface {
 }
 type CategoryRepoDB struct {
 	cates []Category
-	db    *configs.DBConn
+	db    *gorm.DB
 }
 
-func GetCategoryRepoDB(db *configs.DBConn) CategoryRepoIf {
+func GetCategoryRepoDB(db *gorm.DB) CategoryRepoIf {
 	if cateRepo == nil {
 		cateRepo = &CategoryRepoDB{[]Category{}, db}
 	}

@@ -155,7 +155,3 @@ func (cfg *Config) DBDisconnect() {
 		cfg.dbConn = nil
 	}
 }
-func (cfg *Config) DBConnection() *DBConn {
-	db := cfg.GormDB()
-	return NewConn(db)
-}

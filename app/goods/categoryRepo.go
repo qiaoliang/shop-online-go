@@ -21,7 +21,7 @@ func NewCategoryRepo(persistence bool) CategoryRepoIf {
 
 	if cateRepo == nil {
 		if persistence {
-			cateRepo = GetCategoryRepoDB(configs.Cfg.DBConnection())
+			cateRepo = GetCategoryRepoDB(configs.Cfg.GormDB())
 
 		} else {
 

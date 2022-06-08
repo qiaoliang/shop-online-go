@@ -24,7 +24,7 @@ type UpdateBookInput struct {
 func FindBooks(c *gin.Context) {
 
 	var books []Book
-	configs.Cfg.DBConnection().Find(&books)
+	configs.Cfg.GormDB().Find(&books)
 	c.JSON(http.StatusOK, gin.H{"data": &books})
 }
 
@@ -36,15 +36,15 @@ func CreateBook(c *gin.Context) {
 
 	//Create Book
 	book := Book{Title: title, Author: author}
-	configs.Cfg.DBConnection().Create(&book)
+	configs.Cfg.GormDB().Create(&book)
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
 func FindBook(c *gin.Context) {
 	var book Book
-	err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors()
+	result := configs.Cfg.GormDB().Where("id = ?", c.Param("id")).First(&book)
 
-	if err != nil {
+	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
 		return
 	}
@@ -73,13 +73,15 @@ func UpdateBook(c *gin.Context) {
 func DeleteBook(c *gin.Context) {
 	var book Book
 	fmt.Printf("Delete id =%s\n", c.Param("id"))
-	err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Errors()
-
-	if err != nil {
+	result := configs.Cfg.GormDB().Where("id = ?", c.Param("id")).First(&book)
+	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
 		return
 	}
-
-	configs.Cfg.GormDB().Delete(book)
+	result = configs.Cfg.GormDB().Delete(book)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Can Not Delete"})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{"data": true})
 }

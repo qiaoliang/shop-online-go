@@ -45,7 +45,7 @@ func (s *CategoryRepoDBTestSuite) AfterTest(suiteName, testName string) {
 // This will run before before the tests in the suite are run
 func (s *CategoryRepoDBTestSuite) SetupSuite() {
 
-	s.db = GetCategoryRepoDB(configs.Cfg.DBConnection())
+	s.db = GetCategoryRepoDB(configs.Cfg.GormDB())
 	s.NotNil(s.db)
 }
 
