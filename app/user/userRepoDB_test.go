@@ -51,6 +51,7 @@ func (ur *UserRepoDBTestSuite) Test_Create_users() {
 	ur.repo.CreateUser("mymobile", "mypwd", "nickname")
 	result := ur.repo.retriveUserByMobile("mymobile")
 	ur.Equal("mymobile", result.Mobile)
+	ur.NotContains(result.AvatarUrl, "http://localhost:9090/pic/avatar/")
 
 	//cleanup
 	ur.repo.DeleteByMobile("mymobile")

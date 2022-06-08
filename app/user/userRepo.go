@@ -70,7 +70,7 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) 
 		return nil, errors.New("hello,error")
 	}
 	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
-	avatarUrl := configs.Cfg.AvatarPicPrefix() + utils.GenerateAavatarStr()
+	avatarUrl := utils.GenerateAavatarStr()
 	r.userlist[mobile] = &User{
 		Id:          userId,
 		Password:    pwd,

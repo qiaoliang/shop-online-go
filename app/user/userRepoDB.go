@@ -1,7 +1,6 @@
 package user
 
 import (
-	"bookstore/app/configs"
 	"bookstore/app/utils"
 	"errors"
 	"fmt"
@@ -60,7 +59,7 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string) (use
 		return nil, errors.New("hello,error")
 	}
 	userId := fmt.Sprintf("userId%v", utils.RandomStr(10))
-	avatarUrl := configs.Cfg.AvatarPicPrefix() + utils.GenerateAavatarStr()
+	avatarUrl := utils.GenerateAavatarStr()
 	newUser := &User{
 		Id:          userId,
 		Password:    pwd,

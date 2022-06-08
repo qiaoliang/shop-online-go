@@ -112,16 +112,6 @@ func GetUserDetail(c *gin.Context) {
 	user := GetUserService().FindUserByToken(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
-func userToVM(user *User) *UserVM {
-	if user == nil {
-		return nil
-	}
-	return &UserVM{
-		user.Mobile,
-		*user,
-		*user.UserLevel,
-	}
-}
 func checkVerifyCode(code string) bool {
 	//TODO 需要校验注册的图片验证码
 	return true
