@@ -30,7 +30,6 @@ func (suite *SupperSuite) SetupSuite() {
 	}
 }
 func (suite *SupperSuite) TeardownSuite() {
-	configs.GetConfigInstance(GetConfigFileForTest())
 	if configs.Cfg.Persistence {
 		configs.Cfg.Downgrade()
 		configs.Cfg.DBDisconnect()

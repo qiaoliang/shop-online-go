@@ -14,14 +14,13 @@ type MemoryUserRepo struct {
 	userlist map[string]*User
 }
 
-var userRepo *MemoryUserRepo
+var userRepo UserRepoIf
 
-func GetUserRepoInstance() *MemoryUserRepo {
+func GetUserRepoInstance() UserRepoIf {
 	lockUR.Lock()
 	defer lockUR.Unlock()
 	if userRepo == nil {
-		userRepo = &MemoryUserRepo{}
-		userRepo.userlist = make(map[string]*User, 10)
+		userRepo = &MemoryUserRepo{make(map[string]*User, 10)}
 		userRepo.CreateAdmin("13900007997", "1234")
 	}
 	return userRepo
@@ -39,7 +38,7 @@ func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
 	return found
 }
 func (r *MemoryUserRepo) retriveUserByMobile(mobile string) *User {
-	return userRepo.userlist[mobile]
+	return r.userlist[mobile]
 }
 
 func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string) (user *User, err error) {

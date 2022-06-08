@@ -20,13 +20,12 @@ type UserRepoDB struct {
 	db       *configs.DBConn
 }
 
-func GetUserRepoDB(db *configs.DBConn) *UserRepoDB {
-	var userRepoDB *UserRepoDB
+func GetUserRepoDB(db *configs.DBConn) UserRepoIf {
 	if userRepo == nil {
-		userRepoDB = &UserRepoDB{make(map[string]*User, 10), db}
-		userRepoDB.CreateAdmin("13900007997", "1234")
+		userRepo = &UserRepoDB{make(map[string]*User, 10), db}
+		userRepo.CreateAdmin("13900007997", "1234")
 	}
-	return userRepoDB
+	return userRepo
 }
 
 func (r *UserRepoDB) TotalUsers() int {
@@ -41,7 +40,7 @@ func (r *UserRepoDB) findUser(mobile string, pwd string) *User {
 	return found
 }
 func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
-	return userRepo.userlist[mobile]
+	return r.userlist[mobile]
 }
 
 func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string) (user *User, err error) {
