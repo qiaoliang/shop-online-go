@@ -26,6 +26,7 @@ func (ur *UserRepoDBTestSuite) BeforeTest(suiteName, testName string) {}
 func (ur *UserRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 
 func (ur *UserRepoDBTestSuite) SetupSuite() {
+	userRepo = nil
 	ur.SupperSuite.SetupSuite()
 	ur.repo = GetUserRepoDB(configs.Cfg.DBConnection())
 }
@@ -34,30 +35,29 @@ func (ur *UserRepoDBTestSuite) TeardownSuite() {
 	ur.repo = nil
 }
 
-// This will run before each test in the suite
 func (ur *UserRepoDBTestSuite) SetupTest() {
 }
-func (ur *UserRepoDBTestSuite) Should_create_user() {
-	ur.Equal(1, ur.repo.TotalUsers())
-	user, _ := ur.repo.CreateUser("mobile1", "pwd1", "nickname2")
 
-	ur.Equal(2, ur.repo.TotalUsers())
-	ur.Equal("mobile1", user.Mobile)
+func (ur *UserRepoDBTestSuite) Test_total_users() {
+	ur.Equal(1, ur.repo.TotalUsers())
+}
+func (ur *UserRepoDBTestSuite) Should_Create_users() {
+	exp := ur.repo.TotalUsers()
+	ur.repo.CreateUser("mymoble", "mypwd", "nickname")
+	ur.Equal(exp+1, ur.repo.TotalUsers())
 }
 
-func (suite *UserRepoDBTestSuite) Should_find_user_by_mobile_and_pwd() {
-	userRepo.CreateUser("mobile", "pwd", "nickname")
-	result := userRepo.findUser("mobile", "pwd")
-	suite.NotEmpty(result)
+func (ur *UserRepoDBTestSuite) should_find_user_by_mobile_and_pwd() {
+	result := ur.repo.findUser("13900007997", "1234")
+	ur.NotEmpty(result)
 	pattern := configs.Cfg.AvatarPicPrefix() + "[a-l]\\.jpeg$"
 	reg, _ := regexp.Compile(pattern)
 	reg.MatchString(result.AvatarUrl)
-	suite.Equal("mobile", result.Mobile)
+	ur.Equal("13900007997", result.Mobile)
 }
-func (suite *UserRepoDBTestSuite) Should_retriveUserByMobile() {
-	userRepo.CreateUser("mobile", "pwd", "nickname")
-	result := userRepo.retriveUserByMobile("mobile")
-	suite.NotEmpty(result)
-	result = userRepo.retriveUserByMobile("noexistedUser")
-	suite.True(result == nil)
+func (ur *UserRepoDBTestSuite) Test_retriveUserByMobile() {
+	result := ur.repo.retriveUserByMobile("13900007997")
+	ur.NotEmpty(result)
+	//result = userRepo.retriveUserByMobile("noexistedUser")
+	//ur.True(result == nil)
 }
