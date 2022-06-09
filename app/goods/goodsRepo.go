@@ -12,8 +12,7 @@ func GetGoodsRepo() *GoodsRepo {
 	lockGR.Lock()
 	defer lockGR.Unlock()
 	if goodsRepo == nil {
-		goodsRepo = &GoodsRepo{}
-		goodsRepo.items = make([]GoodsItem, 0)
+		goodsRepo = &GoodsRepo{make([]GoodsItem, 0)}
 	}
 
 	return goodsRepo

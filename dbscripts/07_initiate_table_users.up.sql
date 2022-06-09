@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE IF NOT EXISTS `users` (
-	Id   VARCHAR(100)  PRIMARY KEY,
+	Id   VARCHAR(100),
 	Password   VARCHAR(100) NOT NULL,
 	Mobile   VARCHAR(100),
 	Nickname   VARCHAR(100),
@@ -9,7 +9,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 	City   VARCHAR(100),
 	auto_login  INTEGER,
 	user_info   VARCHAR(100),
-	User_Level_Id   INTEGER
+	User_Level_Id   INTEGER,
+	PRIMARY KEY (Id)
 );
 
 INSERT INTO 

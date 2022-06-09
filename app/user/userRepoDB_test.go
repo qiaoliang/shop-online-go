@@ -15,31 +15,6 @@ type UserRepoDBTestSuite struct {
 	repo UserRepoIf
 }
 
-func GenStr(length int) string {
-	str := "0123456789abcdefghijklmnopqrstuvwxyz"
-	bytes := []byte(str)
-	var result []byte
-	for i := 0; i < length; i++ {
-		result = append(result, bytes[rand.Intn(len(bytes))])
-	}
-	return string(result)
-}
-
-func (ur *UserRepoDBTestSuite) Test_generate_String() {
-	str := GenStr(4)
-	ur.Equal(4, len(str))
-	str2 := GenStr(5)
-	ur.Equal(5, len(str2))
-	result := make(map[string]string, 100)
-	for i := 0; i < 100; i++ {
-		str = GenStr(10)
-		result[str] = str
-	}
-	ur.Equal(100, len(result))
-}
-
-// We need this function to kick off the test suite, otherwise
-// "go test" won't know about our tests
 func TestUserRepoDBTestSuite(t *testing.T) {
 	suite.Run(t, new(UserRepoDBTestSuite))
 
@@ -60,6 +35,19 @@ func (ur *UserRepoDBTestSuite) TeardownSuite() {
 }
 
 func (ur *UserRepoDBTestSuite) SetupTest() {
+}
+
+func (ur *UserRepoDBTestSuite) Test_generate_String() {
+	str := GenStr(4)
+	ur.Equal(4, len(str))
+	str2 := GenStr(5)
+	ur.Equal(5, len(str2))
+	result := make(map[string]string, 100)
+	for i := 0; i < 100; i++ {
+		str = GenStr(10)
+		result[str] = str
+	}
+	ur.Equal(100, len(result))
 }
 
 func (ur *UserRepoDBTestSuite) Test_get_DB_REPO_Instance() {
@@ -95,6 +83,20 @@ func (ur *UserRepoDBTestSuite) Test_find_user_by_mobile_and_pwd() {
 func (ur *UserRepoDBTestSuite) Test_retriveUserByMobile() {
 	result := ur.repo.retriveUserByMobile("13900007997")
 	ur.NotEmpty(result)
+	ur.Equal(int32(0), result.UserLevelId)
+	ur.Equal("这是UserInfo", result.UserInfo)
+	ur.Equal("a.jpeg", result.AvatarUrl)
 	result = userRepo.retriveUserByMobile("noexistedUser")
 	ur.True(result == nil)
+
+}
+
+func GenStr(length int) string {
+	str := "0123456789abcdefghijklmnopqrstuvwxyz"
+	bytes := []byte(str)
+	var result []byte
+	for i := 0; i < length; i++ {
+		result = append(result, bytes[rand.Intn(len(bytes))])
+	}
+	return string(result)
 }

@@ -31,7 +31,7 @@ func (st *BookHandlerSuite) TeardownSuite() {
 
 func (st *BookHandlerSuite) Test_Get_error_when_Update_unexisted_Book() {
 	//构建参数
-	body := testutils.HttpGet("/books/8888", nil, st.router)
+	body := testutils.HttpGet("/books/unexisted", nil, st.router)
 
 	exp := `{"error":"Record not found"}`
 	st.Equal(exp, string(body), "should same.")
