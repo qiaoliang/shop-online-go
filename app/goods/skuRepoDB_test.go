@@ -3,6 +3,7 @@ package goods
 import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
+	"bookstore/app/utils"
 	"log"
 	"testing"
 
@@ -49,6 +50,29 @@ func (r *SkuRepoDBTestSuite) Test_Find_with_association() {
 	result = r.repo.FindWithCarouselPics(exp.SkuId)
 	r.NotNil(result)
 	r.Equal(&exp, result)
+}
+
+func (r *SkuRepoDBTestSuite) Test_Create() {
+
+	exp := r.cd10()
+	id := exp.SkuId + utils.RandomImpl{}.GenStr()
+	exp.SkuId = id
+	picStr1 := "-1.jpeg"
+	pic1 := SkuCarouPicture{SkuId: id, PicStr: picStr1}
+	picStr2 := "-2.jpeg"
+	pic2 := SkuCarouPicture{SkuId: id, PicStr: picStr2}
+	pics := []SkuCarouPicture{pic1, pic2}
+	exp.SkuCarouPictures = pics
+
+	r.Nil(r.repo.Create(exp))
+
+	saved := r.repo.FindWithCarouselPics(id)
+	r.Equal(id, saved.SkuId)
+	r.Equal(exp.SkuCarouPictures[0].SkuId, pic1.SkuId)
+	r.Equal(exp.SkuCarouPictures[0].PicStr, picStr1)
+	r.Equal(exp.SkuCarouPictures[1].SkuId, pic1.SkuId)
+	r.Equal(exp.SkuCarouPictures[1].PicStr, picStr2)
+
 }
 
 func (r *SkuRepoDBTestSuite) cd10() SKU {

@@ -36,11 +36,19 @@ func getSkuRepoDB(db *gorm.DB) SkuRepoIf {
 type SkuRepoIf interface {
 	Find(skuid string) *SKU
 	FindWithCarouselPics(skuid string) *SKU
+	Create(sku SKU) error
 }
 type SkuRepoDB struct {
 	db *gorm.DB
 }
 
+func (s SkuRepoDB) Create(sku SKU) error {
+	err := s.db.Create(&sku).Error
+	if err != nil {
+		return err
+	}
+	return s.db.Save(&sku).Error
+}
 func (s SkuRepoDB) Find(skuid string) *SKU {
 	var sku SKU
 	result := s.db.Where("sku_id = ?", skuid).First(&sku)
@@ -51,7 +59,7 @@ func (s SkuRepoDB) Find(skuid string) *SKU {
 	return &sku
 }
 func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
-	sku := SKU{SkuId: "g7225946"}
+	sku := SKU{SkuId: skuid}
 	err := s.db.Model(&sku).Association("SkuCarouPictures").Error
 
 	if err != nil {
