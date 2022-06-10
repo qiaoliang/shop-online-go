@@ -3,6 +3,7 @@ package goods
 import (
 	"bookstore/app/configs"
 	"fmt"
+	"log"
 	"sync"
 
 	"gorm.io/gorm"
@@ -34,6 +35,7 @@ func getSkuRepoDB(db *gorm.DB) SkuRepoIf {
 
 type SkuRepoIf interface {
 	Find(skuid string) *SKU
+	FindWithCarouselPics(skuid string) *SKU
 }
 type SkuRepoDB struct {
 	db *gorm.DB
@@ -46,5 +48,25 @@ func (s SkuRepoDB) Find(skuid string) *SKU {
 		return nil
 	}
 	fmt.Printf("%v\n", sku)
+	return &sku
+}
+func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
+	sku := SKU{SkuId: "g7225946"}
+	err := s.db.Model(&sku).Association("SkuCarouPictures").Error
+
+	if err != nil {
+		fmt.Println(err)
+		return nil
+	}
+	result := s.db.Preload("SkuCarouPictures").First(&sku)
+	log.Printf("sku is %v\n", sku)
+	if result == nil {
+		log.Println("Can not find Pics for " + sku.SkuId)
+		return nil
+	}
+	if result.Error != nil {
+		log.Println(result.Error)
+		return nil
+	}
 	return &sku
 }

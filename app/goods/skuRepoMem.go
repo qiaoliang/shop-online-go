@@ -4,6 +4,10 @@ type SkuRepoMem struct {
 }
 
 func (s SkuRepoMem) Find(skuid string) *SKU {
-	//TODO:
+	//TODO: Not implementated yet
+	return nil
+}
+func (s SkuRepoMem) FindWithCarouselPics(skuid string) *SKU {
+	//TODO: Not implementated yet
 	return nil
 }
