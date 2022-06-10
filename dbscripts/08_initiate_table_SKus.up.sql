@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `skus` (
 );
 
 INSERT INTO 
-skus (`Id`,`Sku_Id`,`Name`,`Category_Id`,`Recommend_Status`,`Pic_Str`,`Unit`,`Stock`,`Min_Price`,`Original_Price`,`Logistics`,`Content`,`Status`,`Aftersale`)
+skus (`Sku_Id`,`Name`,`Category_Id`,`Recommend_Status`,`Pic_Str`,`Unit`,`Stock`,`Min_Price`,`Original_Price`,`Logistics`,`Content`,`Status`,`Aftersale`)
 VALUES 
 ( "g7225946","持续交付1.0", 0, "1", "g7225946.jpeg", "册", 110, "66.0", "99.0", "1", "DevOps 的第一本书", 0, 1),
 ( "g7225947","持续交付2.0", 0, "1", "g7225947.jpeg", "册", 200, "99.0", "129.0", "1", "另一本DevOps的经典书。", 0, 1),

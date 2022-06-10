@@ -17,7 +17,7 @@ type SKU struct {
 	Aftersale       AfterSaleType `json:"afterSale" gorm:"Aftersale"`                     // 售后服务支持 1:支持退款且退货，0:支持退款, 2:支持退货
 }
 
-type CarouselPicture struct {
+type CarouselPictures struct {
 	Id     int    `json:"-" gorm:"primary_key;AUTO_INCREMENT"`
 	SkuId  string `json:"gid" gorm:"column:Sku_Id"`
 	PicStr string `json:"pic" gorm:"column:Pic_Str"`
