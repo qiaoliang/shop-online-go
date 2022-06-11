@@ -154,6 +154,10 @@ func (r *SkuRepoDBTestSuite) anySkuWithPics() SKU {
 	return ret
 }
 func (r *SkuRepoDBTestSuite) cd10WithPics() SKU {
+	return prepareSku_Cd10_With_Pics()
+}
+
+func prepareSku_Cd10_With_Pics() SKU {
 	Pic1 := SkuCarouPicture{
 		Id:     0,
 		SkuId:  "g7225946",

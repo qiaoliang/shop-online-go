@@ -26,8 +26,10 @@ func newGoodsService(usingDB bool) *GoodsService {
 	return &GoodsService{make([]GoodsItem, 0), nil}
 }
 
+type GoodsItems []GoodsItem
+
 type GoodsService struct {
-	items []GoodsItem
+	items GoodsItems
 	repo  *SkuRepoIf
 }
 
@@ -36,10 +38,13 @@ func (gr *GoodsService) GetItemDetail(id string) *GoodsDetail {
 	return nil
 }
 
-func (gs *GoodsService) LoadGoods() []GoodsItem {
+func (gs *GoodsService) LoadGoods() GoodsItems {
 	return gs.items
 
 }
-func (gr *GoodsService) GetGoodsList() []GoodsItem {
+func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
+	return nil
+}
+func (gr *GoodsService) GetGoodsList() GoodsItems {
 	return gr.items
 }
