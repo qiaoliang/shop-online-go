@@ -12,8 +12,7 @@ func GetUserService() *UserService {
 	lockUS.Lock()
 	defer lockUS.Unlock()
 	if userService == nil {
-		userService = &UserService{}
-		userService.userOnline = make(map[string]string, 10)
+		userService = &UserService{make(map[string]string, 10)}
 	}
 	return userService
 }
