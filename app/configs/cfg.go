@@ -154,7 +154,7 @@ func (cfg *Config) getDbURI() string {
 		cfg.DBUser, cfg.DBPasswd, cfg.DBAddr, cfg.DBPort, cfg.DBName)
 	return dsn
 }
-func (cfg *Config) GormDB() *gorm.DB {
+func (cfg *Config) DBConnection() *gorm.DB {
 	if cfg.dbConn == nil {
 		dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
 

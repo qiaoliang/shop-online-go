@@ -25,7 +25,7 @@ func (r *SkuRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 func (r *SkuRepoDBTestSuite) SetupSuite() {
 	r.SupperSuite.SetupSuite()
 	skuRepo = nil
-	r.repo = getSkuRepoDB(configs.Cfg.GormDB())
+	r.repo = getSkuRepoDB(configs.Cfg.DBConnection())
 }
 func (r *SkuRepoDBTestSuite) TeardownSuite() {
 	r.SupperSuite.TeardownSuite()
@@ -35,7 +35,7 @@ func (r *SkuRepoDBTestSuite) TeardownSuite() {
 func (r *SkuRepoDBTestSuite) SetupTest() {}
 func (r *SkuRepoDBTestSuite) Test_Find() {
 	exp := r.cd10()
-	result := r.repo.Find(exp.SkuId)
+	result := r.repo.First(exp.SkuId)
 	r.NotNil(result)
 	r.EqualValues(&exp, result)
 }
@@ -67,6 +67,22 @@ func (r *SkuRepoDBTestSuite) Test_Update() {
 	found := r.repo.FindWithCarouselPics(exp.SkuId)
 	r.Equal("0.0", found.MinPrice)
 	r.Equal(uint(888), found.CategoryId)
+
+	//clean up
+	r.repo.Delete(*found)
+}
+
+func (r *SkuRepoDBTestSuite) Test_FindAll() {
+	exp := r.repo.FindAll()
+	r.NotNil(exp)
+	r.Equal(8, len(exp))
+	r.Equal(2, len(exp[0].SkuCarouPictures))
+	r.Equal(2, len(exp[1].SkuCarouPictures))
+	r.Equal(2, len(exp[4].SkuCarouPictures))
+	r.Equal(2, len(exp[7].SkuCarouPictures))
+	r.Equal("-01.jpeg", exp[7].SkuCarouPictures[0].PicStr)
+	r.Equal("-02.jpeg", exp[7].SkuCarouPictures[1].PicStr)
+
 }
 
 func (r *SkuRepoDBTestSuite) Test_create_without_association() {
@@ -75,7 +91,7 @@ func (r *SkuRepoDBTestSuite) Test_create_without_association() {
 	//act
 	r.repo.Create(exp)
 	//assert
-	saved := r.repo.Find(exp.SkuId)
+	saved := r.repo.First(exp.SkuId)
 	r.NotNil(saved)
 	r.Equal(exp.SkuId, saved.SkuId)
 	r.Equal(0, len(exp.SkuCarouPictures))

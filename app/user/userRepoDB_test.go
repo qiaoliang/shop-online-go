@@ -27,7 +27,7 @@ func (ur *UserRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 func (ur *UserRepoDBTestSuite) SetupSuite() {
 	userRepo = nil
 	ur.SupperSuite.SetupSuite()
-	ur.repo = GetUserRepoDB(configs.Cfg.GormDB())
+	ur.repo = GetUserRepoDB(configs.Cfg.DBConnection())
 }
 func (ur *UserRepoDBTestSuite) TeardownSuite() {
 	ur.SupperSuite.TeardownSuite()

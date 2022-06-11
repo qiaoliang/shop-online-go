@@ -11,6 +11,6 @@ func init() {
 func main() {
 	configs.GetConfigInstance("config.yaml")
 	configs.Cfg.Upgrade()
-	configs.Cfg.GormDB()
+	configs.Cfg.DBConnection()
 	routers.InitRouter()
 }

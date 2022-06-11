@@ -47,7 +47,7 @@ func (st *BookHandlerSuite) Test_Get_book_when_Book_existed() {
 
 func (st *BookHandlerSuite) Test_Delete_book_when_Book_existed() {
 	book := Book{7777, "willBeDeleted", "willBeDeleted"}
-	configs.Cfg.GormDB().Create(&book)
+	configs.Cfg.DBConnection().Create(&book)
 
 	body := testutils.HttpDelete("/books/"+strconv.Itoa(book.ID), nil, st.router)
 	exp := `{"data":true}`
@@ -65,7 +65,7 @@ func (st *BookHandlerSuite) Test_Get_books_when_Books_existed() {
 
 func (st *BookHandlerSuite) Test_updated_when_the_Book_existed() {
 	book := Book{7777, "willBeDeleted", "willBeDeleted"}
-	configs.Cfg.GormDB().Create(&book)
+	configs.Cfg.DBConnection().Create(&book)
 	data := map[string]interface{}{
 		"id":     7777,
 		"title":  "new Title",
@@ -80,7 +80,7 @@ func (st *BookHandlerSuite) Test_updated_when_the_Book_existed() {
 	st.Contains(string(body), "new Title")
 	st.Contains(string(body), "new Author")
 
-	configs.Cfg.GormDB().Delete(&book)
+	configs.Cfg.DBConnection().Delete(&book)
 
 }
 

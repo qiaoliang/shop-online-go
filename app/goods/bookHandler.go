@@ -24,7 +24,7 @@ type UpdateBookInput struct {
 func FindBooks(c *gin.Context) {
 
 	var books []Book
-	configs.Cfg.GormDB().Find(&books)
+	configs.Cfg.DBConnection().Find(&books)
 	c.JSON(http.StatusOK, gin.H{"data": &books})
 }
 
@@ -36,13 +36,13 @@ func CreateBook(c *gin.Context) {
 
 	//Create Book
 	book := Book{Title: title, Author: author}
-	configs.Cfg.GormDB().Create(&book)
+	configs.Cfg.DBConnection().Create(&book)
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
 func FindBook(c *gin.Context) {
 	var book Book
-	result := configs.Cfg.GormDB().Where("id = ?", c.Param("id")).First(&book)
+	result := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book)
 
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
@@ -54,7 +54,7 @@ func FindBook(c *gin.Context) {
 func UpdateBook(c *gin.Context) {
 	var book Book
 	//Validate Data
-	if err := configs.Cfg.GormDB().Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
+	if err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record Not Found"})
 		return
 	}
@@ -66,19 +66,19 @@ func UpdateBook(c *gin.Context) {
 	// Unmarshal or Decode the JSON to the interface.
 	json.Unmarshal([]byte(body), &result)
 
-	configs.Cfg.GormDB().Model(&book).Updates(result)
+	configs.Cfg.DBConnection().Model(&book).Updates(result)
 	c.JSON(http.StatusOK, gin.H{"data": book})
 }
 
 func DeleteBook(c *gin.Context) {
 	var book Book
 	fmt.Printf("Delete id =%s\n", c.Param("id"))
-	result := configs.Cfg.GormDB().Where("id = ?", c.Param("id")).First(&book)
+	result := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&book)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
 		return
 	}
-	result = configs.Cfg.GormDB().Delete(book)
+	result = configs.Cfg.DBConnection().Delete(book)
 	if result.Error != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Can Not Delete"})
 		return

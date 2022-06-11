@@ -25,7 +25,7 @@ func NewUserRepo(persistence bool) UserRepoIf {
 
 	if userRepo == nil {
 		if persistence {
-			userRepo = GetUserRepoDB(configs.Cfg.GormDB())
+			userRepo = GetUserRepoDB(configs.Cfg.DBConnection())
 
 		} else {
 

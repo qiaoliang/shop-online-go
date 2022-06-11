@@ -26,7 +26,7 @@ func (suite *SupperSuite) SetupSuite() {
 	configs.GetConfigInstance(GetConfigFileForTest())
 	if configs.Cfg.Persistence {
 		configs.Cfg.Upgrade()
-		configs.Cfg.GormDB()
+		configs.Cfg.DBConnection()
 	}
 }
 func (suite *SupperSuite) TeardownSuite() {

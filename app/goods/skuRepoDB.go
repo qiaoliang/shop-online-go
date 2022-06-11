@@ -23,7 +23,7 @@ func GetSkuRepo() SkuRepoIf {
 
 func NewSkuRepo(isPersistence bool) SkuRepoIf {
 	if isPersistence {
-		return getSkuRepoDB(configs.Cfg.GormDB())
+		return getSkuRepoDB(configs.Cfg.DBConnection())
 	} else {
 		return &SkuRepoDB{}
 	}
@@ -34,7 +34,8 @@ func getSkuRepoDB(db *gorm.DB) SkuRepoIf {
 }
 
 type SkuRepoIf interface {
-	Find(skuid string) *SKU
+	FindAll() []SKU
+	First(skuid string) *SKU
 	FindWithCarouselPics(skuid string) *SKU
 	Create(sku SKU) error
 	Delete(sku SKU) error
@@ -49,7 +50,14 @@ func (s SkuRepoDB) Update(skuid string, sku SKU) error {
 	ret := s.db.Model(&oSku).Updates(sku)
 	return ret.Error
 }
-
+func (s SkuRepoDB) FindAll() []SKU {
+	var skus []SKU
+	ret := s.db.Preload("SkuCarouPictures").Find(&skus)
+	if ret.Error != nil {
+		return nil
+	}
+	return skus
+}
 func (s SkuRepoDB) Create(sku SKU) error {
 	err := s.db.Create(&sku).Error
 	if err != nil {
@@ -61,7 +69,7 @@ func (s SkuRepoDB) Delete(sku SKU) error {
 	r := s.db.Model(&sku).Delete(sku)
 	return r.Error
 }
-func (s SkuRepoDB) Find(skuid string) *SKU {
+func (s SkuRepoDB) First(skuid string) *SKU {
 	var sku SKU
 	result := s.db.Where("sku_id = ?", skuid).First(&sku)
 	if result.Error != nil {
