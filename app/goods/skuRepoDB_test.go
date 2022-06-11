@@ -57,25 +57,16 @@ func (r *SkuRepoDBTestSuite) Test_Delete() {
 	r.Nil(found)
 
 }
-func (r *SkuRepoDBTestSuite) Should_Update() {
+func (r *SkuRepoDBTestSuite) Test_Update() {
 
-	exp := r.cd10()
-	//use RandomId to distingish the test data
-	id := exp.SkuId + utils.RandomImpl{}.GenStr()
-	exp.SkuId = id
-	picStr1 := "any.jpeg"
-	pic1 := SkuCarouPicture{SkuId: id, PicStr: picStr1}
-	picStr2 := "any.jpeg"
-	pic2 := SkuCarouPicture{SkuId: id, PicStr: picStr2}
-	pics := []SkuCarouPicture{pic1, pic2}
-	exp.SkuCarouPictures = pics
-	r.repo.Create(exp)
-	saved := r.repo.FindWithCarouselPics(id)
-	r.NotNil(saved)
-	r.repo.Delete(exp)
-	found := r.repo.FindWithCarouselPics(id)
-	r.Nil(found)
+	exp := r.prepare_a_sku()
+	exp.MinPrice = "0.0"
+	exp.CategoryId = 888
+	r.repo.Update(exp.SkuId, exp)
 
+	found := r.repo.FindWithCarouselPics(exp.SkuId)
+	r.Equal("0.0", found.MinPrice)
+	r.Equal(uint(888), found.CategoryId)
 }
 
 func (r *SkuRepoDBTestSuite) Test_create_without_association() {

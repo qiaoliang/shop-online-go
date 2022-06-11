@@ -15,3 +15,7 @@ func (s SkuRepoMem) Create(sku SKU) error {
 	//TODO: Not implementated yet
 	return nil
 }
+func (s SkuRepoMem) Update(skuid string, sku SKU) error {
+	//TODO: Not implementated yet
+	return nil
+}

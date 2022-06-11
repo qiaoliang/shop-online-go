@@ -38,9 +38,16 @@ type SkuRepoIf interface {
 	FindWithCarouselPics(skuid string) *SKU
 	Create(sku SKU) error
 	Delete(sku SKU) error
+	Update(skuid string, sku SKU) error
 }
 type SkuRepoDB struct {
 	db *gorm.DB
+}
+
+func (s SkuRepoDB) Update(skuid string, sku SKU) error {
+	oSku := SKU{SkuId: skuid}
+	ret := s.db.Model(&oSku).Updates(sku)
+	return ret.Error
 }
 
 func (s SkuRepoDB) Create(sku SKU) error {
