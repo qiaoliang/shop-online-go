@@ -52,9 +52,31 @@ func (r *SkuRepoDBTestSuite) Test_Find_with_association() {
 	r.Equal(&exp, result)
 }
 
+func (r *SkuRepoDBTestSuite) Test_Delete() {
+
+	exp := r.cd10()
+	//use RandomId to distingish the test data
+	id := exp.SkuId + utils.RandomImpl{}.GenStr()
+	exp.SkuId = id
+	picStr1 := "any.jpeg"
+	pic1 := SkuCarouPicture{SkuId: id, PicStr: picStr1}
+	picStr2 := "any.jpeg"
+	pic2 := SkuCarouPicture{SkuId: id, PicStr: picStr2}
+	pics := []SkuCarouPicture{pic1, pic2}
+	exp.SkuCarouPictures = pics
+	r.repo.Create(exp)
+	saved := r.repo.FindWithCarouselPics(id)
+	r.NotNil(saved)
+	r.repo.Delete(exp)
+	found := r.repo.FindWithCarouselPics(id)
+	r.Nil(found)
+
+}
+
 func (r *SkuRepoDBTestSuite) Test_Create() {
 
 	exp := r.cd10()
+	//user RandomId to distingish the test data
 	id := exp.SkuId + utils.RandomImpl{}.GenStr()
 	exp.SkuId = id
 	picStr1 := "-1.jpeg"
@@ -72,7 +94,9 @@ func (r *SkuRepoDBTestSuite) Test_Create() {
 	r.Equal(exp.SkuCarouPictures[0].PicStr, picStr1)
 	r.Equal(exp.SkuCarouPictures[1].SkuId, pic1.SkuId)
 	r.Equal(exp.SkuCarouPictures[1].PicStr, picStr2)
-
+	r.repo.Delete(*saved)
+	found := r.repo.FindWithCarouselPics(id)
+	r.Nil(found)
 }
 
 func (r *SkuRepoDBTestSuite) cd10() SKU {

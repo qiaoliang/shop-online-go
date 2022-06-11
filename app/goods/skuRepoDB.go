@@ -37,6 +37,7 @@ type SkuRepoIf interface {
 	Find(skuid string) *SKU
 	FindWithCarouselPics(skuid string) *SKU
 	Create(sku SKU) error
+	Delete(sku SKU) error
 }
 type SkuRepoDB struct {
 	db *gorm.DB
@@ -48,6 +49,10 @@ func (s SkuRepoDB) Create(sku SKU) error {
 		return err
 	}
 	return s.db.Save(&sku).Error
+}
+func (s SkuRepoDB) Delete(sku SKU) error {
+	r := s.db.Model(&sku).Delete(sku)
+	return r.Error
 }
 func (s SkuRepoDB) Find(skuid string) *SKU {
 	var sku SKU

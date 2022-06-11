@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS `SkuCarouselPics` (
 	`Sku_Id` VARCHAR(100) ,
     `Pic_Str` VARCHAR(100) ,
     PRIMARY KEY (ID),
-    FOREIGN KEY (Sku_Id) REFERENCES skus(Sku_Id)
+    FOREIGN KEY (Sku_Id) 
+        REFERENCES skus(Sku_Id)
+        ON DELETE CASCADE
 );
 INSERT INTO 
 SkuCarouselPics (`Sku_Id`,`Pic_Str`)
