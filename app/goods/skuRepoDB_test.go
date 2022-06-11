@@ -4,7 +4,6 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
-	"log"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -37,22 +36,28 @@ func (r *SkuRepoDBTestSuite) SetupTest() {}
 func (r *SkuRepoDBTestSuite) Test_Find() {
 	exp := r.cd10()
 	result := r.repo.Find(exp.SkuId)
-
 	r.NotNil(result)
 	r.EqualValues(&exp, result)
 }
 func (r *SkuRepoDBTestSuite) Test_Find_with_association() {
 	exp := r.cd10WithPics()
-	result := r.repo.Find(exp.SkuId)
-	log.Printf("%v\n", result)
-	result.StatusStr = SalingStatus(result.Status).String()
 
-	result = r.repo.FindWithCarouselPics(exp.SkuId)
+	result := r.repo.FindWithCarouselPics(exp.SkuId)
 	r.NotNil(result)
 	r.Equal(&exp, result)
 }
 
 func (r *SkuRepoDBTestSuite) Test_Delete() {
+	//arrange
+	sku := r.prepare_a_sku()
+	//act
+	r.repo.Delete(sku)
+	//assert
+	found := r.repo.FindWithCarouselPics(sku.SkuId)
+	r.Nil(found)
+
+}
+func (r *SkuRepoDBTestSuite) Should_Update() {
 
 	exp := r.cd10()
 	//use RandomId to distingish the test data
@@ -73,32 +78,40 @@ func (r *SkuRepoDBTestSuite) Test_Delete() {
 
 }
 
-func (r *SkuRepoDBTestSuite) Test_Create() {
-
-	exp := r.cd10()
-	//user RandomId to distingish the test data
-	id := exp.SkuId + utils.RandomImpl{}.GenStr()
-	exp.SkuId = id
-	picStr1 := "-1.jpeg"
-	pic1 := SkuCarouPicture{SkuId: id, PicStr: picStr1}
-	picStr2 := "-2.jpeg"
-	pic2 := SkuCarouPicture{SkuId: id, PicStr: picStr2}
-	pics := []SkuCarouPicture{pic1, pic2}
-	exp.SkuCarouPictures = pics
-
-	r.Nil(r.repo.Create(exp))
-
-	saved := r.repo.FindWithCarouselPics(id)
-	r.Equal(id, saved.SkuId)
-	r.Equal(exp.SkuCarouPictures[0].SkuId, pic1.SkuId)
-	r.Equal(exp.SkuCarouPictures[0].PicStr, picStr1)
-	r.Equal(exp.SkuCarouPictures[1].SkuId, pic1.SkuId)
-	r.Equal(exp.SkuCarouPictures[1].PicStr, picStr2)
+func (r *SkuRepoDBTestSuite) Test_create_without_association() {
+	//arange
+	exp := r.aSkuWithoutPics()
+	//act
+	r.repo.Create(exp)
+	//assert
+	saved := r.repo.Find(exp.SkuId)
+	r.NotNil(saved)
+	r.Equal(exp.SkuId, saved.SkuId)
+	r.Equal(0, len(exp.SkuCarouPictures))
+	//clean up
 	r.repo.Delete(*saved)
-	found := r.repo.FindWithCarouselPics(id)
-	r.Nil(found)
 }
-
+func (r *SkuRepoDBTestSuite) Test_create_with_association() {
+	//arange
+	exp := r.anySkuWithPics()
+	//act
+	r.repo.Create(exp)
+	//assert
+	saved := r.repo.FindWithCarouselPics(exp.SkuId)
+	r.NotNil(saved)
+	r.Equal(exp.SkuId, saved.SkuId)
+	r.Equal(exp.SkuCarouPictures[0].SkuId, saved.SkuCarouPictures[0].SkuId)
+	r.Equal(exp.SkuCarouPictures[0].PicStr, saved.SkuCarouPictures[0].PicStr)
+	r.Equal(exp.SkuCarouPictures[1].SkuId, saved.SkuCarouPictures[1].SkuId)
+	r.Equal(exp.SkuCarouPictures[1].PicStr, saved.SkuCarouPictures[1].PicStr)
+	//clean up
+	r.repo.Delete(*saved)
+}
+func (r *SkuRepoDBTestSuite) prepare_a_sku() SKU {
+	exp := r.anySkuWithPics()
+	r.Nil(r.repo.Create(exp))
+	return exp
+}
 func (r *SkuRepoDBTestSuite) cd10() SKU {
 	return SKU{
 		SkuId:           "g7225946",
@@ -113,10 +126,26 @@ func (r *SkuRepoDBTestSuite) cd10() SKU {
 		Logistics:       "1",
 		Content:         "DevOps 的第一本书",
 		Status:          SalingStatus(ONSAIL),
+		StatusStr:       SalingStatus(ONSAIL).String(),
 		Aftersale:       AfterSaleType(BOTH),
 	}
 }
-
+func (r *SkuRepoDBTestSuite) aSkuWithoutPics() SKU {
+	ret := r.cd10()
+	ret.SkuId = ret.SkuId + utils.RandomImpl{}.GenStr()
+	return ret
+}
+func (r *SkuRepoDBTestSuite) anySkuWithPics() SKU {
+	ret := r.cd10()
+	ret.SkuId = ret.SkuId + utils.RandomImpl{}.GenStr()
+	picStr1 := "-1.jpeg"
+	pic1 := SkuCarouPicture{SkuId: ret.SkuId, PicStr: picStr1}
+	picStr2 := "-2.jpeg"
+	pic2 := SkuCarouPicture{SkuId: ret.SkuId, PicStr: picStr2}
+	pics := []SkuCarouPicture{pic1, pic2}
+	ret.SkuCarouPictures = pics
+	return ret
+}
 func (r *SkuRepoDBTestSuite) cd10WithPics() SKU {
 	Pic1 := SkuCarouPicture{
 		Id:     0,
@@ -142,6 +171,7 @@ func (r *SkuRepoDBTestSuite) cd10WithPics() SKU {
 		Logistics:        "1",
 		Content:          "DevOps 的第一本书",
 		Status:           SalingStatus(ONSAIL),
+		StatusStr:        SalingStatus(ONSAIL).String(),
 		Aftersale:        AfterSaleType(BOTH),
 		SkuCarouPictures: pics,
 	}

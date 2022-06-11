@@ -60,7 +60,7 @@ func (s SkuRepoDB) Find(skuid string) *SKU {
 	if result.Error != nil {
 		return nil
 	}
-	fmt.Printf("%v\n", sku)
+	sku.StatusStr = SalingStatus(sku.Status).String()
 	return &sku
 }
 func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
@@ -71,15 +71,16 @@ func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
 		fmt.Println(err)
 		return nil
 	}
-	result := s.db.Preload("SkuCarouPictures").First(&sku)
+	ret := s.db.Preload("SkuCarouPictures").First(&sku)
 	log.Printf("sku is %v\n", sku)
-	if result == nil {
+	if ret == nil {
 		log.Println("Can not find Pics for " + sku.SkuId)
 		return nil
 	}
-	if result.Error != nil {
-		log.Println(result.Error)
+	if ret.Error != nil {
+		log.Println(ret.Error)
 		return nil
 	}
+	sku.StatusStr = SalingStatus(sku.Status).String()
 	return &sku
 }
