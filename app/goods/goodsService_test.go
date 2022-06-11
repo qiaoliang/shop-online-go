@@ -40,6 +40,23 @@ func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
 	s.EqualValues(&exp, ret)
 }
 
+func (s *GoodsServiceTestSuite) Test_Load_GoodsItems() {
+	ret := s.serv.LoadGoods()
+	s.Equal(8, len(ret))
+	exp := prepare_GoodsItem_cd20_with_pics()
+	var r GoodsItem
+	found := false
+	for _, v := range ret {
+		if v.Gid == exp.Gid {
+			found = true
+			r = v
+			break
+		}
+	}
+	s.True(found)
+	s.EqualValues(exp, r)
+}
+
 func prepare_GoodsItem_cd20_with_pics() GoodsItem {
 	gid := "g7225946"
 	gName := "持续交付1.0"

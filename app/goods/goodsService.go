@@ -22,7 +22,7 @@ func newGoodsService(usingDB bool) *GoodsService {
 	if usingDB {
 		db := configs.Cfg.DBConnection()
 		repo := getSkuRepoDB(db)
-		return &GoodsService{make([]GoodsItem, 0), &repo}
+		return &GoodsService{make([]GoodsItem, 0), repo}
 	}
 	return &GoodsService{make([]GoodsItem, 0), nil}
 }
@@ -31,7 +31,7 @@ type GoodsItems []GoodsItem
 
 type GoodsService struct {
 	items GoodsItems
-	repo  *SkuRepoIf
+	repo  SkuRepoIf
 }
 
 func (gr *GoodsService) GetItemDetail(id string) *GoodsDetail {
@@ -40,8 +40,13 @@ func (gr *GoodsService) GetItemDetail(id string) *GoodsDetail {
 }
 
 func (gs *GoodsService) LoadGoods() GoodsItems {
-	return gs.items
-
+	skus := gs.repo.FindAll()
+	items := make(GoodsItems, 0)
+	for _, sku := range skus {
+		i := gs.skuToGoodsItem(sku)
+		items = append(items, *i)
+	}
+	return items
 }
 func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 	gd := GoodsDetail{
@@ -54,7 +59,7 @@ func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 		sku.Logistics, //"Logistics":
 		sku.Content,   //"Content":
 		uint(sku.Status),
-		sku.StatusStr,
+		sku.Status.String(),
 		configs.Cfg.GoodsPicPrefix() + sku.SkuId + ".jpeg", //picURL
 		sku.MinPrice,          //MinPrice
 		sku.OriginalPrice,     //OriginalPrice
