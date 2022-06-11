@@ -37,7 +37,7 @@ func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
 
 	sku := prepareSku_Cd10_With_Pics()
 	ret := s.serv.skuToGoodsItem(sku)
-	s.EqualValues(exp, ret)
+	s.EqualValues(&exp, ret)
 }
 
 func prepare_GoodsItem_cd20_with_pics() GoodsItem {
@@ -56,7 +56,7 @@ func prepare_GoodsItem_cd20_with_pics() GoodsItem {
 		"DevOps 的第一本书", //"Content":
 		uint(SalingStatus(ONSAIL)),
 		SalingStatus(ONSAIL).String(),
-		"g7225946.jpeg",             //picURL
+		configs.Cfg.GoodsPicPrefix() + "g7225946.jpeg", //picURL
 		minPrice,                    //MinPrice
 		origPrice,                   //OriginalPrice
 		string(AfterSaleType(BOTH)), //AfterSale

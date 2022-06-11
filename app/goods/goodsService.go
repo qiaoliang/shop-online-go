@@ -2,6 +2,7 @@ package goods
 
 import (
 	"bookstore/app/configs"
+	"strings"
 	"sync"
 )
 
@@ -43,7 +44,42 @@ func (gs *GoodsService) LoadGoods() GoodsItems {
 
 }
 func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
-	return nil
+	gd := GoodsDetail{
+		sku.SkuId,     //"gId"
+		sku.Name,      //name
+		nil,           //"Pics"
+		0,             //"ItemId":
+		sku.Stock,     //"Stock":
+		sku.Unit,      //Unit
+		sku.Logistics, //"Logistics":
+		sku.Content,   //"Content":
+		uint(sku.Status),
+		sku.StatusStr,
+		configs.Cfg.GoodsPicPrefix() + sku.SkuId + ".jpeg", //picURL
+		sku.MinPrice,          //MinPrice
+		sku.OriginalPrice,     //OriginalPrice
+		string(sku.Aftersale), //AfterSale
+	}
+	gd.Pics = make([]Picture, 0)
+	for _, v := range sku.SkuCarouPictures {
+		vid := v.PicStr[0:strings.Index(v.PicStr, ".jpeg")]
+		id := v.SkuId + vid
+		pic := Picture{id, configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr}
+		gd.Pics = append(gd.Pics, pic)
+	}
+
+	items := &GoodsItem{
+		sku.SkuId,           //id
+		sku.Name,            //name
+		sku.CategoryId,      //catalogueId
+		sku.RecommendStatus, //recommandStatus
+		configs.Cfg.GoodsPicPrefix() + sku.PicStr, //picURL
+		sku.MinPrice,      //MinPrice
+		sku.OriginalPrice, //originalPrice
+		gd,
+	}
+
+	return items
 }
 func (gr *GoodsService) GetGoodsList() GoodsItems {
 	return gr.items
