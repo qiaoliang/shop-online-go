@@ -75,8 +75,7 @@ func (st *CartRepositoryTestSuite) Test_add_different_goods_into_the_Cart_for_sa
 	cartRepo.PutItemsInCart(token, gid1, 10)
 	cartRepo.PutItemsInCart(token, gid2, 20)
 
-	st.Equal(1, len(cartRepo.cartInfos), "should have 1 carts for same token, but it was %v ", len(cartRepo.cartInfos))
-
+	st.NotNil(cartRepo.GetCartByToken(token))
 	c := cartRepo.GetCartByToken(token)
 	st.Equal(2, len(c.Items), "should be 2 Items, but it was %v ", len(c.Items))
 	st.Equal(2, len(c.Pairs), "should be 2 Pairs, but it was %v ", len(c.Items))
@@ -102,9 +101,6 @@ func (st *CartRepositoryTestSuite) Test_should_seperate_carts_for_different_toke
 	t2 := "TokenTwo"
 	cartRepo.PutItemsInCart(t1, gid, 10)
 	cartRepo.PutItemsInCart(t2, gid, 20)
-
-	length := len(cartRepo.cartInfos)
-	st.Equal(2, length, "should have 2 tokens , but it was %v ", length)
 
 	ci := cartRepo.GetCartByToken(t1)
 	st.Equal(t1, ci.getToken())

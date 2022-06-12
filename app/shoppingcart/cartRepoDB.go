@@ -1,29 +1,48 @@
 package cart
 
 import (
+	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"fmt"
+
+	"gorm.io/gorm"
 )
 
-type CartRepo struct {
-	cartInfos map[string]*CartInfo
+type CartRepoIf interface {
+	PutItemsInCart(token string, gid string, quantity uint) *CartInfo
+	ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo
+	GetCartByToken(token string) *CartInfo
+	CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo
 }
 
-var cartRepo CartRepoIf
+type CartRepoDB struct {
+	cartInfos map[string]*CartInfo
+	db        *gorm.DB
+}
 
 func init() {
 	GetCartsRepo()
 	gR := goods.GetGoodsRepo()
 	gR.LoadGoods()
 }
-func GetCartsRepo() CartRepoIf {
+func GetCartsRepoIf() CartRepoIf {
 	if cartRepo == nil {
-		cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
+		cartRepo = NewCartsRepo(configs.Cfg.Persistence)
+	}
+	return cartRepo
+}
+func NewCartsRepo(persistance bool) CartRepoIf {
+	if cartRepo == nil {
+		if persistance {
+			cartRepo = &CartRepoDB{make(map[string]*CartInfo, 0), configs.Cfg.DBConnection()}
+		} else {
+			cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
+		}
 	}
 	return cartRepo
 }
 
-func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartRepoDB) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
 		fmt.Println("goodsDetail is nil")
@@ -38,7 +57,7 @@ func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *Car
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
-func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartRepoDB) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
 
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
@@ -52,14 +71,14 @@ func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quanti
 	return cs.cartInfos[token]
 }
 
-func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
+func (cs *CartRepoDB) GetCartByToken(token string) *CartInfo {
 	if _, ok := cs.cartInfos[token]; !ok {
 		return nil
 	}
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
-func (cs *CartRepo) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
+func (cs *CartRepoDB) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
 	items := make([]CartItem, 0)
 	ips := make([]ItemPair, 0)
 	ci := &CartInfo{token, quantity, items, ips}

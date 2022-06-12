@@ -31,7 +31,7 @@ func ModifyNumberOfGoodsInCart(c *gin.Context) {
 	number, _ := strconv.Atoi(numStr)
 
 	GetCartsRepo().ModifyQuantityOfGoodsInCate(token, gid, uint(number))
-	result := GetCartsRepo().cartInfos[token]
+	result := GetCartsRepo().GetCartByToken(token)
 
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
