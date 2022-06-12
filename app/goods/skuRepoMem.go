@@ -24,3 +24,8 @@ func (s SkuRepoMem) FindAll() []SKU {
 	//TODO: Not implementated yet
 	return nil
 }
+
+func (s SkuRepoMem) Delete(sku SKU) error {
+	//TODO: Not implementated yet
+	return nil
+}

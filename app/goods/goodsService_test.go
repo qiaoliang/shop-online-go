@@ -3,6 +3,7 @@ package goods
 import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
+	"log"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -47,10 +48,17 @@ func (s *GoodsServiceTestSuite) Test_get_GoodsDetail_from_cache() {
 	ret := s.serv.GetItemDetail("IamCached")
 	s.NotNil(ret)
 	s.EqualValues(cachedItem.GoodsDetail, *ret)
+
 }
 
 func (s *GoodsServiceTestSuite) Test_get_Goods_for_a_category() {
+	s.serv.LoadGoods()
+	log.Printf("%v\n", s.serv.items)
+	result := s.serv.GetCategory(uint(0))
+	s.Equal(4, len(result))
 
+	exp := prepare_Devops_category()
+	s.EqualValues(exp, result)
 }
 func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
 	exp := prepare_GoodsItem_cd10_with_pics()
@@ -77,8 +85,8 @@ func (s *GoodsServiceTestSuite) Test_Load_GoodsItems() {
 	s.EqualValues(exp, r)
 }
 
-func prepare_category_of_devOps() GoodsItems {
-	items := make(GoodsItems, 4)
+func prepare_Devops_category() GoodsItems {
+	items := make(GoodsItems, 0)
 	cd10 := assemble_Item("g7225946", "持续交付1.0", 0, 110, "DevOps 的第一本书", "66.0", "99.0")
 	cd20 := assemble_Item("g7225947", "持续交付2.0", 0, 200, "另一本DevOps的经典书。", "99.0", "129.0")
 	devops := assemble_Item("g7225948", "DevOps实战指南", 0, 10, "DevOps 黄皮书。", "55.0", "85.0")

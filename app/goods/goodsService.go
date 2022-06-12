@@ -22,8 +22,9 @@ func newGoodsService(usingDB bool) *GoodsService {
 		db := configs.Cfg.DBConnection()
 		repo := getSkuRepoDB(db)
 		return &GoodsService{make([]GoodsItem, 0), repo}
+	} else {
+		return &GoodsService{make([]GoodsItem, 0), &SkuRepoMem{}}
 	}
-	return &GoodsService{make([]GoodsItem, 0), nil}
 }
 
 type GoodsItems []GoodsItem
@@ -31,6 +32,16 @@ type GoodsItems []GoodsItem
 type GoodsService struct {
 	items GoodsItems
 	repo  SkuRepoIf
+}
+
+func (gs *GoodsService) GetCategory(cId uint) GoodsItems {
+	result := make(GoodsItems, 0)
+	for _, v := range gs.items {
+		if v.blongsTo(cId) {
+			result = append(result, v)
+		}
+	}
+	return result
 }
 
 func (gs *GoodsService) GetItemDetail(gid string) *GoodsDetail {
@@ -50,6 +61,7 @@ func (gs *GoodsService) LoadGoods() GoodsItems {
 		i := gs.skuToGoodsItem(sku)
 		items = append(items, *i)
 	}
+	gs.items = items
 	return items
 }
 
@@ -104,7 +116,4 @@ func (*GoodsService) picToPicVM(v SkuCarouPicture) CarouselPicVM {
 		configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr,
 	}
 	return pic
-}
-func (gr *GoodsService) GetGoodsList() GoodsItems {
-	return gr.items
 }
