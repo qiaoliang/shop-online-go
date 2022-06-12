@@ -1,5 +1,7 @@
 package goods
 
+import "strings"
+
 type SKU struct {
 	SkuId            string            `json:"gid" gorm:"column:Sku_Id;primary_key;"`          //商品Id
 	Name             string            `json:"name"`                                           // 商品名
@@ -27,6 +29,10 @@ type Tabler interface {
 	TableName() string
 }
 
+func (s SkuCarouPicture) picId() string {
+	vid := s.PicStr[0:strings.Index(s.PicStr, ".jpeg")]
+	return s.SkuId + vid
+}
 func (SkuCarouPicture) TableName() string {
 	return "SkuCarouselPics"
 }

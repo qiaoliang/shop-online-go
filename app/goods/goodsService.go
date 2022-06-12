@@ -2,7 +2,6 @@ package goods
 
 import (
 	"bookstore/app/configs"
-	"strings"
 	"sync"
 )
 
@@ -65,11 +64,9 @@ func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 		sku.OriginalPrice,     //OriginalPrice
 		string(sku.Aftersale), //AfterSale
 	}
-	gd.Pics = make([]Picture, 0)
+	gd.Pics = make([]CarouselPicVM, 0)
 	for _, v := range sku.SkuCarouPictures {
-		vid := v.PicStr[0:strings.Index(v.PicStr, ".jpeg")]
-		id := v.SkuId + vid
-		pic := Picture{id, configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr}
+		pic := gs.picToPicVM(v)
 		gd.Pics = append(gd.Pics, pic)
 	}
 
@@ -85,6 +82,14 @@ func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 	}
 
 	return items
+}
+
+func (*GoodsService) picToPicVM(v SkuCarouPicture) CarouselPicVM {
+	pic := CarouselPicVM{
+		v.picId(),
+		configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr,
+	}
+	return pic
 }
 func (gr *GoodsService) GetGoodsList() GoodsItems {
 	return gr.items

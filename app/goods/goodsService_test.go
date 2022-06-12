@@ -78,10 +78,10 @@ func prepare_GoodsItem_cd20_with_pics() GoodsItem {
 		origPrice,                   //OriginalPrice
 		string(AfterSaleType(BOTH)), //AfterSale
 	}
-	gd.Pics = make([]Picture, 0)
+	gd.Pics = make([]CarouselPicVM, 0)
 	for i := 1; i <= 2; i++ {
 		id := gd.Gid + "-0" + fmt.Sprintf("%d", i)
-		pic := Picture{id, configs.Cfg.GoodsPicPrefix() + id + ".jpeg"}
+		pic := CarouselPicVM{id, configs.Cfg.GoodsPicPrefix() + id + ".jpeg"}
 		gd.Pics = append(gd.Pics, pic)
 	}
 	item := GoodsItem{
