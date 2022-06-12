@@ -31,6 +31,11 @@ func (s *GoodsServiceTestSuite) TeardownSuite() {
 	s.serv = nil
 }
 
+func (s *GoodsServiceTestSuite) Test_get_GoodsDetail() {
+	exp := prepare_GoodsItem_cd20_with_pics()
+	ret := s.serv.GetItemDetail(exp.Gid)
+	s.NotNil(ret)
+}
 func (s *GoodsServiceTestSuite) SetupTest() {}
 func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
 	exp := prepare_GoodsItem_cd20_with_pics()
