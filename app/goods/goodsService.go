@@ -33,9 +33,14 @@ type GoodsService struct {
 	repo  SkuRepoIf
 }
 
-func (gr *GoodsService) GetItemDetail(id string) *GoodsDetail {
-
-	return nil
+func (gs *GoodsService) GetItemDetail(gid string) *GoodsDetail {
+	ret := gs.getFromCache(gid)
+	if ret != nil {
+		return ret
+	}
+	sku := gs.repo.FindWithCarouselPics(gid)
+	item := gs.skuToGoodsItem(*sku)
+	return &item.GoodsDetail
 }
 
 func (gs *GoodsService) LoadGoods() GoodsItems {
@@ -46,6 +51,15 @@ func (gs *GoodsService) LoadGoods() GoodsItems {
 		items = append(items, *i)
 	}
 	return items
+}
+
+func (gs *GoodsService) getFromCache(gid string) *GoodsDetail {
+	for _, v := range gs.items {
+		if v.sameAs(gid) {
+			return &v.GoodsDetail
+		}
+	}
+	return nil
 }
 func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 	gd := GoodsDetail{

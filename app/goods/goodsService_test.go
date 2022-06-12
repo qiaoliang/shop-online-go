@@ -3,7 +3,6 @@ package goods
 import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
-	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -31,14 +30,30 @@ func (s *GoodsServiceTestSuite) TeardownSuite() {
 	s.serv = nil
 }
 
+func (s *GoodsServiceTestSuite) SetupTest() {}
+
 func (s *GoodsServiceTestSuite) Test_get_GoodsDetail() {
-	exp := prepare_GoodsItem_cd20_with_pics()
+	exp := prepare_GoodsItem_cd10_with_pics()
 	ret := s.serv.GetItemDetail(exp.Gid)
 	s.NotNil(ret)
+	s.EqualValues(exp.GoodsDetail, *ret)
 }
-func (s *GoodsServiceTestSuite) SetupTest() {}
+func (s *GoodsServiceTestSuite) Test_get_GoodsDetail_from_cache() {
+	cachedItem := prepare_GoodsItem_cd10_with_pics()
+	cachedItem.Gid = "IamCached"
+	cachedItem.GoodsDetail.Gid = "IamCached"
+	s.serv.items = append(s.serv.items, cachedItem)
+
+	ret := s.serv.GetItemDetail("IamCached")
+	s.NotNil(ret)
+	s.EqualValues(cachedItem.GoodsDetail, *ret)
+}
+
+func (s *GoodsServiceTestSuite) Test_get_Goods_for_a_category() {
+
+}
 func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
-	exp := prepare_GoodsItem_cd20_with_pics()
+	exp := prepare_GoodsItem_cd10_with_pics()
 
 	sku := prepareSku_Cd10_With_Pics()
 	ret := s.serv.skuToGoodsItem(sku)
@@ -48,7 +63,7 @@ func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
 func (s *GoodsServiceTestSuite) Test_Load_GoodsItems() {
 	ret := s.serv.LoadGoods()
 	s.Equal(8, len(ret))
-	exp := prepare_GoodsItem_cd20_with_pics()
+	exp := prepare_GoodsItem_cd10_with_pics()
 	var r GoodsItem
 	found := false
 	for _, v := range ret {
@@ -62,42 +77,79 @@ func (s *GoodsServiceTestSuite) Test_Load_GoodsItems() {
 	s.EqualValues(exp, r)
 }
 
-func prepare_GoodsItem_cd20_with_pics() GoodsItem {
+func prepare_category_of_devOps() GoodsItems {
+	items := make(GoodsItems, 4)
+	cd10 := assemble_Item("g7225946", "持续交付1.0", 0, 110, "DevOps 的第一本书", "66.0", "99.0")
+	cd20 := assemble_Item("g7225947", "持续交付2.0", 0, 200, "另一本DevOps的经典书。", "99.0", "129.0")
+	devops := assemble_Item("g7225948", "DevOps实战指南", 0, 10, "DevOps 黄皮书。", "55.0", "85.0")
+	ggSE := assemble_Item("g7225949", "谷歌软件工程", 0, 20, "解密硅谷头部互联网企业 如何打造软件工程文化。", "77.0", "107.0")
+	items = append(items, cd10)
+	items = append(items, cd20)
+	items = append(items, devops)
+	items = append(items, ggSE)
+	return items
+}
+func prepare_GoodsItem_cd10_with_pics() GoodsItem {
 	gid := "g7225946"
 	gName := "持续交付1.0"
+	CatalogueId := 0
+	stock := 110
 	minPrice := "66.0"
 	origPrice := "99.0"
+	content := "DevOps 的第一本书"
+
+	item := assemble_Item(gid, gName, CatalogueId, stock, content, minPrice, origPrice)
+	return item
+}
+
+func assemble_Item(gid string, gName string, CatalogueId int, stock int, content string, minPrice string, origPrice string) GoodsItem {
+	picExt := ".jpeg"
+	gd := aDetail(gid, gName, stock, content, picExt, minPrice, origPrice)
+
+	gd.Pics = append_pics_to_gd(gd.Gid)
+
+	item := aItem(gid, gName, CatalogueId, picExt, minPrice, origPrice, gd)
+	return item
+}
+
+func aDetail(gid string, gName string, stock int, content string, picExt string, minPrice string, origPrice string) GoodsDetail {
 	gd := GoodsDetail{
-		gid,            //"gId"
-		gName,          //name
-		nil,            //"Pics"
-		0,              //"ItemId":
-		110,            //"Stock":
-		"册",            //Unit
-		"1",            //"Logistics":
-		"DevOps 的第一本书", //"Content":
+		gid,
+		gName,
+		nil,
+		0,
+		uint(stock),
+		"册",
+		"1",
+		content,
 		uint(SalingStatus(ONSAIL)),
 		SalingStatus(ONSAIL).String(),
-		configs.Cfg.GoodsPicPrefix() + "g7225946.jpeg", //picURL
-		minPrice,                    //MinPrice
-		origPrice,                   //OriginalPrice
-		string(AfterSaleType(BOTH)), //AfterSale
+		configs.Cfg.GoodsPicPrefix() + gid + picExt,
+		minPrice,
+		origPrice,
+		string(AfterSaleType(BOTH)),
 	}
-	gd.Pics = make([]CarouselPicVM, 0)
-	for i := 1; i <= 2; i++ {
-		id := gd.Gid + "-0" + fmt.Sprintf("%d", i)
-		pic := CarouselPicVM{id, configs.Cfg.GoodsPicPrefix() + id + ".jpeg"}
-		gd.Pics = append(gd.Pics, pic)
-	}
+	return gd
+}
+
+func aItem(gid string, gName string, CatalogueId int, picExt string, minPrice string, origPrice string, gd GoodsDetail) GoodsItem {
 	item := GoodsItem{
-		gid,   //id
-		gName, //name
-		0,     //catalogueId
-		"1",   //recommandStatus
-		configs.Cfg.GoodsPicPrefix() + gid + ".jpeg", //picURL
-		minPrice,  //MinPrice
-		origPrice, //originalPrice
+		gid,
+		gName,
+		uint(CatalogueId),
+		"1",
+		configs.Cfg.GoodsPicPrefix() + gid + picExt,
+		minPrice,
+		origPrice,
 		gd,
 	}
 	return item
+}
+
+func append_pics_to_gd(gid string) []CarouselPicVM {
+	pics := make([]CarouselPicVM, 0)
+	pic1 := CarouselPicVM{gid + "-01", configs.Cfg.GoodsPicPrefix() + gid + "-01.jpeg"}
+	pic2 := CarouselPicVM{gid + "-02", configs.Cfg.GoodsPicPrefix() + gid + "-02.jpeg"}
+	pics = append(pics, pic1, pic2)
+	return pics
 }
