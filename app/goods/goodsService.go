@@ -2,6 +2,7 @@ package goods
 
 import (
 	"bookstore/app/configs"
+	"strconv"
 	"sync"
 )
 
@@ -86,9 +87,9 @@ func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 		uint(sku.Status),
 		sku.Status.String(),
 		configs.Cfg.GoodsPicPrefix() + sku.SkuId + ".jpeg", //picURL
-		sku.MinPrice,          //MinPrice
-		sku.OriginalPrice,     //OriginalPrice
-		string(sku.Aftersale), //AfterSale
+		sku.MinPrice,                     //MinPrice
+		sku.OriginalPrice,                //OriginalPrice
+		strconv.Itoa(int(sku.Aftersale)), //AfterSale
 	}
 	gd.Pics = make([]CarouselPicVM, 0)
 	for _, v := range sku.SkuCarouPictures {

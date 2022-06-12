@@ -4,6 +4,7 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"log"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -135,7 +136,7 @@ func aDetail(gid string, gName string, stock int, content string, picExt string,
 		configs.Cfg.GoodsPicPrefix() + gid + picExt,
 		minPrice,
 		origPrice,
-		string(AfterSaleType(BOTH)),
+		strconv.Itoa(int(AfterSaleType(BOTH))),
 	}
 	return gd
 }

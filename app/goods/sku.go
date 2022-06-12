@@ -54,7 +54,7 @@ func (c SalingStatus) String() string {
 	return "N/A"
 }
 
-type AfterSaleType int32
+type AfterSaleType uint
 
 const (
 	REFUND AfterSaleType = iota
