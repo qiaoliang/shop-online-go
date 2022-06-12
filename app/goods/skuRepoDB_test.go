@@ -133,7 +133,6 @@ func (r *SkuRepoDBTestSuite) cd10() SKU {
 		Logistics:       "1",
 		Content:         "DevOps 的第一本书",
 		Status:          SalingStatus(ONSAIL),
-		StatusStr:       SalingStatus(ONSAIL).String(),
 		Aftersale:       AfterSaleType(BOTH),
 	}
 }
@@ -182,7 +181,6 @@ func prepareSku_Cd10_With_Pics() SKU {
 		Logistics:        "1",
 		Content:          "DevOps 的第一本书",
 		Status:           SalingStatus(ONSAIL),
-		StatusStr:        SalingStatus(ONSAIL).String(),
 		Aftersale:        AfterSaleType(BOTH),
 		SkuCarouPictures: pics,
 	}

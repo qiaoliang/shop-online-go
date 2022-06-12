@@ -75,7 +75,6 @@ func (s SkuRepoDB) First(skuid string) *SKU {
 	if result.Error != nil {
 		return nil
 	}
-	sku.StatusStr = SalingStatus(sku.Status).String()
 	return &sku
 }
 func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
@@ -96,6 +95,5 @@ func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
 		log.Println(ret.Error)
 		return nil
 	}
-	sku.StatusStr = SalingStatus(sku.Status).String()
 	return &sku
 }
