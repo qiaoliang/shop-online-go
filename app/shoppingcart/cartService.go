@@ -3,7 +3,6 @@ package cart
 import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
-	"fmt"
 	"log"
 	"strings"
 )
@@ -40,55 +39,78 @@ func NewCartService(persistance bool) *CartService {
 		} else {
 			cartService = &CartService{make(map[string]*CartInfo, 0), nil, nil}
 		}
-		cartService.init()
 	}
 	return cartService
 }
-func (cs *CartService) init() {
-	//TODO: Load from persistance
-}
-func (cs *CartService) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
-	goodsDetail := cs.gs.GetItemDetail(gid)
+
+func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint) *CartInfo {
+	goodsDetail := cs.gs.GetItemDetail(skuId)
 	if goodsDetail == nil {
-		fmt.Println("sku is not found.")
-		return nil
+		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
 	}
 	ci := cs.cached.get(token)
 	if ci == nil {
-		ci = cs.CreateCartInfoFor(token, goodsDetail, quantity)
-		ci.caculateRedDot()
-		cs.cached.update(token, ci)
-		return ci
+		ci = cs.fetchCartItemsFromPersistance(token)
+		if ci == nil {
+			ci = cs.CreateCartInfoFor(token, goodsDetail, 0)
+			return ci
+		}
 	}
-	ci.AddMore(goodsDetail, quantity)
+	item, ip := ci.FindBy(goodsDetail.Gid)
+	item.AddMore(quantity)
+	ip.AddMore(quantity)
+	cs.cr.UpdateUserCartItem(cs.VMToUCI(token, item))
 	ci.caculateRedDot()
 	cs.cached.update(token, ci)
 	return ci
 }
-func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, skuId string, quantity uint) *CartInfo {
 
-	goodsDetail := cs.gs.GetItemDetail(gid)
+	goodsDetail := cs.gs.GetItemDetail(skuId)
 	if goodsDetail == nil {
-		fmt.Printf("～～没有找到 Gid是 %v 的goodsDetail", gid)
+		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
 	}
-	ret := cs.cached.get(token)
-	if ret == nil {
-		fmt.Printf("～～没有找到 token：%v", token)
+	ci := cs.cached.get(token)
+	if ci == nil {
+		ci = cs.fetchCartItemsFromPersistance(token)
+		if ci == nil {
+			return nil
+		}
 	}
-	ret.Modify(goodsDetail, quantity)
-	ret.caculateRedDot()
-	return cs.cached.get(token)
+	item := ci.Modify(goodsDetail, quantity)
+	cs.cr.UpdateUserCartItem(cs.VMToUCI(token, *item))
+	ci.caculateRedDot()
+	return ci
 }
 
 func (cs *CartService) GetCartByToken(token string) *CartInfo {
 	ret := cs.cached.get(token)
 	if ret == nil {
-		return nil
+		return cs.fetchCartItemsFromPersistance(token)
 	}
-	ret.caculateRedDot()
-	cs.cached.update(token, ret)
 	return ret
 }
+func (cs *CartService) fetchCartItemsFromPersistance(token string) *CartInfo {
+	found := cs.cr.FindUserCartItemsBy(token)
+	if len(found) == 0 {
+		return nil
+	}
+	ci := cs.convertToVM(token, found)
+	cs.cached.update(token, ci)
+	return ci
+}
+
+func (cs *CartService) convertToVM(token string, found []UserCartItem) *CartInfo {
+	ci := &CartInfo{token, 0, []CartItemVM{}, []ItemPairVM{}}
+	for _, v := range found {
+		item, ip := cs.UserCartItemToVM(v)
+		ci.Items = append(ci.Items, item)
+		ci.Pairs = append(ci.Pairs, ip)
+	}
+	ci.caculateRedDot()
+	return ci
+}
+
 func (cs *CartService) UserCartItemToVM(uci UserCartItem) (CartItemVM, ItemPairVM) {
 	civm := CartItemVM{
 		uci.SkuId,
@@ -106,6 +128,21 @@ func (cs *CartService) UserCartItemToVM(uci UserCartItem) (CartItemVM, ItemPairV
 		uci.Quantity,
 	}
 	return civm, ipvm
+}
+func (cs *CartService) VMToUCI(token string, ci CartItemVM) UserCartItem {
+	uci := UserCartItem{
+		token,
+		ci.Gid,
+		ci.RetrivePicStr(),
+		ci.Status,
+		ci.Name,
+		strings.Join(ci.Sku, ","),
+		ci.Price,
+		ci.Quantity,
+		ci.Selected,
+		ci.OptionValueName,
+	}
+	return uci
 }
 
 func (cs *CartService) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {

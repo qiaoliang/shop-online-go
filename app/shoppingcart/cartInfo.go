@@ -24,9 +24,23 @@ type CartItemVM struct {
 	OptionValueName string   `json:"optionValueName"`
 }
 
+func (civm CartItemVM) RetrivePicStr() string {
+	l := len(configs.Cfg.GoodsPicPrefix())
+	return civm.Pic[l:]
+}
+
+func (civm CartItemVM) AddMore(quantity uint) {
+	civm.Quantity = civm.Quantity + quantity
+	return
+}
+
 type ItemPairVM struct {
 	GoodsId string `json:"goodsId"`
 	Volume  uint   `json:"number"`
+}
+
+func (ip ItemPairVM) AddMore(quantity uint) {
+	ip.Volume = ip.Volume + quantity
 }
 
 func (ci *CartInfo) caculateRedDot() {
@@ -36,6 +50,11 @@ func (ci *CartInfo) caculateRedDot() {
 func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
+func (ci *CartInfo) FindBy(skuid string) (CartItemVM, ItemPairVM) {
+	return *ci.findItemByGid(skuid), *ci.findPairByGid(skuid)
+
+}
+
 func (ci *CartInfo) findItemByGid(gid string) *CartItemVM {
 	for i := range ci.Items {
 		it := &ci.Items[i]
@@ -70,15 +89,15 @@ func (ci *CartInfo) AddMore(prod *goods.GoodsDetail, quantity uint) {
 	ci.Pairs = append(ci.Pairs, ip)
 }
 
-func (ci *CartInfo) Modify(prod *goods.GoodsDetail, quantity uint) bool {
+func (ci *CartInfo) Modify(prod *goods.GoodsDetail, quantity uint) *CartItemVM {
 	item := ci.findItemByGid(prod.Gid)
 	if item != nil {
 		item.Quantity = quantity
 		ip := ci.findPairByGid(prod.Gid)
 		ip.Volume = item.Quantity
-		return true
+		return item
 	}
-	return false
+	return nil
 }
 
 func (c *CartInfo) getVolumeById(gid string) uint {

@@ -74,6 +74,7 @@ func (s *CartRepoDBTestSuite) Test_Get() {
 
 }
 func (s *CartRepoDBTestSuite) Test_FindMore() {
+	//arrange
 	token := "test_Find_More_UCI" + utils.RandomImpl{}.GenStr()
 	exp1 := NewUCIBuilder().token(token).skuId("new-Sku-id2").build()
 	ret := s.repo.SaveUserCartItem(exp1)
@@ -81,11 +82,14 @@ func (s *CartRepoDBTestSuite) Test_FindMore() {
 	exp2 := NewUCIBuilder().token(token).skuId("new-Sku-id1").build()
 	ret = s.repo.SaveUserCartItem(exp2)
 	s.Nil(ret)
+	//act
 	found := s.repo.FindUserCartItemsBy(token)
+	//assert
 	s.NotNil(found)
 	s.Equal(2, len(found))
 	s.EqualValues(exp1, found[0])
 	s.EqualValues(exp2, found[1])
+	//clean up
 	ret = s.repo.DeleteUserCartItemsBy(token)
 	s.Nil(ret)
 }
