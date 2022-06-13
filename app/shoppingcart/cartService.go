@@ -4,6 +4,7 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"fmt"
+	"strings"
 )
 
 var cartService *CartService
@@ -86,14 +87,55 @@ func (cs *CartService) GetCartByToken(token string) *CartInfo {
 	cs.cached.update(token, ret)
 	return ret
 }
+func (cs *CartService) UserCartItemToVM(uci UserCartItem) (CartItemVM, ItemPairVM) {
+	civm := CartItemVM{
+		uci.SkuId,
+		uci.FullPicStr(),
+		uci.Status,
+		uci.Name,
+		strings.Split(uci.SkuStrs, ","),
+		uci.Price,
+		uci.Quantity,
+		uci.Selected,
+		uci.OptionValueName,
+	}
+	ipvm := ItemPairVM{
+		uci.SkuId,
+		uci.Quantity,
+	}
+	return civm, ipvm
+}
+
 func (cs *CartService) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
 	//TODO: Persistance
-	items := make([]CartItem, 0)
-	ips := make([]ItemPair, 0)
+	items := make([]CartItemVM, 0)
+	ips := make([]ItemPairVM, 0)
 	ci := &CartInfo{token, quantity, items, ips}
 	ci.AddMore(prod, quantity)
 	ci.caculateRedDot()
 	cs.cached.update(token, ci)
 	return ci
 
+}
+func (cs *CartService) SaveCartInfo(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
+	uci := UserCartItem{
+		Token:           token,
+		SkuId:           prod.Gid,
+		Pic:             prod.PicUrl,
+		Status:          prod.Status,
+		Name:            prod.Name,
+		SkuStrs:         "sku1,sku3",
+		Price:           prod.MinPrice,
+		Quantity:        quantity,
+		Selected:        "1",
+		OptionValueName: "OptionValueName",
+	}
+	cs.cr.SaveUserCartItem(uci)
+	ci := &CartInfo{token, 0, []CartItemVM{}, []ItemPairVM{}}
+	item, ip := cs.UserCartItemToVM(uci)
+	ci.Items = append(ci.Items, item)
+	ci.Pairs = append(ci.Pairs, ip)
+	ci.RedDot = uint(len(ci.Items))
+	cs.cached.update(token, ci)
+	return ci
 }

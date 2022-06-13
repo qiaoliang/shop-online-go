@@ -23,6 +23,10 @@ func GetCartsRepo() CartRepoIf {
 	return cartRepo
 }
 
+func (cs *CartRepo) SaveUserCartItem(uci UserCartItem) error {
+	//TODO: save to memory db, not implemented
+	return nil
+}
 func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
@@ -60,8 +64,8 @@ func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
 	return cs.cartInfos[token]
 }
 func (cs *CartRepo) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
-	items := make([]CartItem, 0)
-	ips := make([]ItemPair, 0)
+	items := make([]CartItemVM, 0)
+	ips := make([]ItemPairVM, 0)
 	ci := &CartInfo{token, quantity, items, ips}
 	ci.AddMore(prod, quantity)
 	ci.caculateRedDot()

@@ -13,6 +13,7 @@ type CartRepoIf interface {
 	ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo
 	GetCartByToken(token string) *CartInfo
 	CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo
+	SaveUserCartItem(uci UserCartItem) error
 }
 
 type CartRepoDB struct {
@@ -40,6 +41,11 @@ func NewCartsRepo(persistance bool) CartRepoIf {
 		}
 	}
 	return cartRepo
+}
+
+func (cs *CartRepoDB) SaveUserCartItem(uci UserCartItem) error {
+	ret := cs.db.Create(&uci)
+	return ret.Error
 }
 
 func (cs *CartRepoDB) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
@@ -79,8 +85,8 @@ func (cs *CartRepoDB) GetCartByToken(token string) *CartInfo {
 	return cs.cartInfos[token]
 }
 func (cs *CartRepoDB) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
-	items := make([]CartItem, 0)
-	ips := make([]ItemPair, 0)
+	items := make([]CartItemVM, 0)
+	ips := make([]ItemPairVM, 0)
 	ci := &CartInfo{token, quantity, items, ips}
 	ci.AddMore(prod, quantity)
 	ci.caculateRedDot()

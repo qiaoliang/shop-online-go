@@ -6,15 +6,14 @@ import (
 )
 
 type UserCart struct {
-	Token string     `json:"token"`
-	Items []CartItem `json:"items"`
-	Pairs []ItemPair `json:"goods"`
+	Token string       `json:"token"`
+	Items []CartItemVM `json:"items"`
+	Pairs []ItemPairVM `json:"goods"`
 }
 
 type UserCartItem struct {
-	Id              uint `gorm:"primary_key;`
 	Token           string
-	Gid             string
+	SkuId           string
 	Pic             string
 	Status          uint `` // === 1 【失效】
 	Name            string
@@ -25,6 +24,10 @@ type UserCartItem struct {
 	OptionValueName string `grom:"column:Option_value_name"`
 }
 
+func (ci UserCartItem) FullPicStr() string {
+	return configs.Cfg.GoodsPicPrefix() + ci.Pic
+}
+
 func (ci *UserCart) RedDot() uint {
 	if ci.Items != nil {
 		return uint(len(ci.Items))
@@ -33,12 +36,12 @@ func (ci *UserCart) RedDot() uint {
 }
 func (ci *UserCart) NewUserCartItem(token string, sku goods.SKU, quantity uint) UserCartItem {
 
-	skuStr := []string{"sku1", "sku3"}
-	item := UserCartItem{0, token, sku.SkuId, configs.Cfg.GoodsPicPrefix() + sku.PicStr, 0, sku.Name, skuStr, sku.MinPrice, quantity, "1", "optionValueName"}
+	skuStr := "sku1, sku3"
+	item := UserCartItem{token, sku.SkuId, configs.Cfg.GoodsPicPrefix() + sku.PicStr, 0, sku.Name, skuStr, sku.MinPrice, quantity, "1", "optionValueName"}
 	return item
 }
 
-func (ci *UserCart) findItemByGid(gid string) *CartItem {
+func (ci *UserCart) findItemByGid(gid string) *CartItemVM {
 	for i := range ci.Items {
 		it := &ci.Items[i]
 		if it.Gid == gid {
@@ -47,7 +50,7 @@ func (ci *UserCart) findItemByGid(gid string) *CartItem {
 	}
 	return nil
 }
-func (ci *UserCart) findPairByGid(gid string) *ItemPair {
+func (ci *UserCart) findPairByGid(gid string) *ItemPairVM {
 	for i := range ci.Pairs {
 		it := &ci.Pairs[i]
 		if it.GoodsId == gid {
@@ -67,7 +70,7 @@ func (ci *UserCart) AddMore(prod *goods.GoodsDetail, quantity uint) {
 		return
 	}
 	item = ci.createCartItem(prod, quantity)
-	ip := ItemPair{prod.Gid, quantity}
+	ip := ItemPairVM{prod.Gid, quantity}
 	ci.Items = append(ci.Items, *item)
 	ci.Pairs = append(ci.Pairs, ip)
 }
@@ -97,12 +100,12 @@ func (c *UserCart) getVolumeById(gid string) uint {
 	return uint(0)
 }
 
-func (ci *UserCart) createCartItem(prod *goods.GoodsDetail, quantity uint) *CartItem {
+func (ci *UserCart) createCartItem(prod *goods.GoodsDetail, quantity uint) *CartItemVM {
 	sku := []string{"sku1", "sku3"}
 	selected := "1"
 	optionValue := "optionValueName"
 
-	item := CartItem{prod.Gid,
+	item := CartItemVM{prod.Gid,
 		configs.Cfg.GoodsPicPrefix() + prod.Gid + ".jpeg",
 		0,
 		prod.Name,

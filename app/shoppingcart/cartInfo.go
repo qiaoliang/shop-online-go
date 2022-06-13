@@ -6,13 +6,13 @@ import (
 )
 
 type CartInfo struct {
-	Token  string     `json:"token"`
-	RedDot uint       `json:"number"` //等于用户购物车中SKU的品类个数（京东购物车的逻辑）
-	Items  []CartItem `json:"items"`
-	Pairs  []ItemPair `json:"goods"`
+	Token  string       `json:"token"`
+	RedDot uint         `json:"number"` //等于用户购物车中SKU的品类个数（京东购物车的逻辑）
+	Items  []CartItemVM `json:"items"`
+	Pairs  []ItemPairVM `json:"goods"`
 }
 
-type CartItem struct {
+type CartItemVM struct {
 	Gid             string   `json:"key"`
 	Pic             string   `json:"pic"`
 	Status          uint     `json:"status"` // === 1 【失效】
@@ -24,7 +24,7 @@ type CartItem struct {
 	OptionValueName string   `json:"optionValueName"`
 }
 
-type ItemPair struct {
+type ItemPairVM struct {
 	GoodsId string `json:"goodsId"`
 	Volume  uint   `json:"number"`
 }
@@ -32,15 +32,15 @@ type ItemPair struct {
 func (ci *CartInfo) caculateRedDot() {
 	ci.RedDot = uint(len(ci.Items))
 }
-func (ci *CartInfo) NewCartItem(gid string, quantity uint) CartItem {
+func (ci *CartInfo) NewCartItem(gid string, quantity uint) CartItemVM {
 	sku := []string{"sku1", "sku3"}
-	item := CartItem{gid, configs.Cfg.GoodsPicPrefix() + gid + "-01.jpeg", 0, "CD1.0", sku, "66.0", quantity, "1", "valueName"}
+	item := CartItemVM{gid, configs.Cfg.GoodsPicPrefix() + gid + "-01.jpeg", 0, "CD1.0", sku, "66.0", quantity, "1", "valueName"}
 	return item
 }
 func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
-func (ci *CartInfo) findItemByGid(gid string) *CartItem {
+func (ci *CartInfo) findItemByGid(gid string) *CartItemVM {
 	for i := range ci.Items {
 		it := &ci.Items[i]
 		if it.Gid == gid {
@@ -49,7 +49,7 @@ func (ci *CartInfo) findItemByGid(gid string) *CartItem {
 	}
 	return nil
 }
-func (ci *CartInfo) findPairByGid(gid string) *ItemPair {
+func (ci *CartInfo) findPairByGid(gid string) *ItemPairVM {
 	for i := range ci.Pairs {
 		it := &ci.Pairs[i]
 		if it.GoodsId == gid {
@@ -69,7 +69,7 @@ func (ci *CartInfo) AddMore(prod *goods.GoodsDetail, quantity uint) {
 		return
 	}
 	item = ci.createCartItem(prod, quantity)
-	ip := ItemPair{prod.Gid, quantity}
+	ip := ItemPairVM{prod.Gid, quantity}
 	ci.Items = append(ci.Items, *item)
 	ci.Pairs = append(ci.Pairs, ip)
 }
@@ -99,12 +99,12 @@ func (c *CartInfo) getVolumeById(gid string) uint {
 	return uint(0)
 }
 
-func (ci *CartInfo) createCartItem(prod *goods.GoodsDetail, quantity uint) *CartItem {
+func (ci *CartInfo) createCartItem(prod *goods.GoodsDetail, quantity uint) *CartItemVM {
 	sku := []string{"sku1", "sku3"}
 	selected := "1"
 	optionValue := "optionValueName"
 
-	item := CartItem{prod.Gid,
+	item := CartItemVM{prod.Gid,
 		configs.Cfg.GoodsPicPrefix() + prod.Gid + ".jpeg",
 		0,
 		prod.Name,

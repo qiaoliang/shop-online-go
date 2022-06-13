@@ -6,10 +6,9 @@ type UserCartItemBuilder struct {
 
 func NewUCIBuilder() UserCartItemBuilder {
 	return UserCartItemBuilder{UserCartItem{
-		0,
 		"token-13900007997", //Token
-		"7225946",           //Gid
-		"7225946.jpeg",      //Pic
+		"g7225946",          //Gid
+		"g7225946.jpeg",     //Pic
 		0,                   //Status
 		"持续交付1.0",           //Name
 		"sku1,sku2",         //SkuStr
@@ -19,10 +18,6 @@ func NewUCIBuilder() UserCartItemBuilder {
 		"OptionValueName",   //OptionValueName
 	}}
 }
-func (b UserCartItemBuilder) id(id uint) UserCartItemBuilder {
-	b.item.Id = id
-	return b
-}
 
 func (b UserCartItemBuilder) token(token string) UserCartItemBuilder {
 	b.item.Token = token
@@ -30,7 +25,7 @@ func (b UserCartItemBuilder) token(token string) UserCartItemBuilder {
 }
 
 func (b UserCartItemBuilder) gid(gid string) UserCartItemBuilder {
-	b.item.Gid = gid
+	b.item.SkuId = gid
 	return b
 }
 
