@@ -7,7 +7,7 @@ import (
 
 type CartInfo struct {
 	Token  string     `json:"token"`
-	RedDot uint       `json:"number"`
+	RedDot uint       `json:"number"` //等于用户购物车中SKU的品类个数（京东购物车的逻辑）
 	Items  []CartItem `json:"items"`
 	Pairs  []ItemPair `json:"goods"`
 }
