@@ -24,8 +24,8 @@ func (b UserCartItemBuilder) token(token string) UserCartItemBuilder {
 	return b
 }
 
-func (b UserCartItemBuilder) gid(gid string) UserCartItemBuilder {
-	b.item.SkuId = gid
+func (b UserCartItemBuilder) skuId(skuId string) UserCartItemBuilder {
+	b.item.SkuId = skuId
 	return b
 }
 
@@ -41,7 +41,7 @@ func (b UserCartItemBuilder) status(status uint) UserCartItemBuilder {
 	b.item.Status = status
 	return b
 }
-func (b UserCartItemBuilder) sku(skuStrs string) UserCartItemBuilder {
+func (b UserCartItemBuilder) skuStrs(skuStrs string) UserCartItemBuilder {
 	b.item.SkuStrs = skuStrs
 	return b
 }

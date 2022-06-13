@@ -16,8 +16,10 @@ type CartRepoIf interface {
 	CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo
 	SaveUserCartItem(uci UserCartItem) error
 	DeleteUserCartItem(uci UserCartItem) error
+	DeleteUserCartItemsBy(token string) error
 	UpdateUserCartItem(uci UserCartItem) error
 	GetUserCartItem(uci UserCartItem) *UserCartItem
+	FindUserCartItemsBy(token string) []UserCartItem
 }
 
 type CartRepoDB struct {
@@ -56,6 +58,10 @@ func (cs *CartRepoDB) DeleteUserCartItem(uci UserCartItem) error {
 	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Delete(uci)
 	return ret.Error
 }
+func (cs *CartRepoDB) DeleteUserCartItemsBy(token string) error {
+	ret := cs.db.Where(map[string]interface{}{"Token": token}).Delete(&UserCartItem{})
+	return ret.Error
+}
 
 func (cs *CartRepoDB) UpdateUserCartItem(uci UserCartItem) error {
 	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Select("*").Updates(&uci)
@@ -67,7 +73,11 @@ func (cs *CartRepoDB) GetUserCartItem(uci UserCartItem) *UserCartItem {
 	cs.db.Where(&found).First(&found)
 	return &found
 }
-
+func (cs *CartRepoDB) FindUserCartItemsBy(token string) []UserCartItem {
+	found := []UserCartItem{}
+	cs.db.Where(map[string]interface{}{"Token": token}).Find(&found)
+	return found
+}
 func (cs *CartRepoDB) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {

@@ -13,9 +13,9 @@ type UserCart struct {
 
 type UserCartItem struct {
 	Token           string
-	SkuId           string
+	SkuId           string `grom:"column:sku_id"`
 	Pic             string
-	Status          uint `` // === 1 【失效】
+	Status          uint // === 1 【失效】
 	Name            string
 	SkuStrs         string `grom:"column:sku_strs"`
 	Price           string ``

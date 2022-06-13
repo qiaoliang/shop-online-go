@@ -22,6 +22,15 @@ func GetCartsRepo() CartRepoIf {
 	}
 	return cartRepo
 }
+func (cs *CartRepo) FindUserCartItemsBy(token string) []UserCartItem {
+	//TODO: save to memory db, not implemented
+	return nil
+}
+
+func (cs *CartRepo) DeleteUserCartItemsBy(token string) error {
+	//TODO: save to memory db, not implemented
+	return nil
+}
 func (cs *CartRepo) GetUserCartItem(uci UserCartItem) *UserCartItem {
 	//TODO: save to memory db, not implemented
 	return nil
