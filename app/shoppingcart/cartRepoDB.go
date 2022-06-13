@@ -4,6 +4,7 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"fmt"
+	"log"
 
 	"gorm.io/gorm"
 )
@@ -15,6 +16,7 @@ type CartRepoIf interface {
 	CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo
 	SaveUserCartItem(uci UserCartItem) error
 	DeleteUserCartItem(uci UserCartItem) error
+	UpdateUserCartItem(uci UserCartItem) error
 }
 
 type CartRepoDB struct {
@@ -52,29 +54,31 @@ func (cs *CartRepoDB) DeleteUserCartItem(uci UserCartItem) error {
 	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Delete(&uci)
 	return ret.Error
 }
+
+func (cs *CartRepoDB) UpdateUserCartItem(uci UserCartItem) error {
+	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Select("*").Updates(&uci)
+	return ret.Error
+}
+
 func (cs *CartRepoDB) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
-		fmt.Println("goodsDetail is nil")
+		log.Fatalf("sku %v is not found.\n", gid)
 		return nil
 	}
 	if _, ok := cs.cartInfos[token]; !ok {
-		cs.cartInfos[token] = cs.CreateCartInfoFor(token, goodsDetail, quantity)
-		cs.cartInfos[token].caculateRedDot()
-		return cs.cartInfos[token]
+		return cs.CreateCartInfoFor(token, goodsDetail, quantity)
 	}
-	cs.cartInfos[token].AddMore(goodsDetail, quantity)
-	cs.cartInfos[token].caculateRedDot()
-	return cs.cartInfos[token]
+	return nil
 }
 func (cs *CartRepoDB) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
 
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
-		fmt.Printf("～～没有找到 Gid是 %v 的goodsDetail", gid)
+		fmt.Printf("没有找到 Gid 是 %v 的goodsDetail\n", gid)
 	}
 	if _, ok := cs.cartInfos[token]; !ok {
-		fmt.Printf("～～没有找到 token：%v", token)
+		fmt.Printf("没有找到 token: %v \n", token)
 	}
 	cs.cartInfos[token].Modify(goodsDetail, quantity)
 	cs.cartInfos[token].caculateRedDot()

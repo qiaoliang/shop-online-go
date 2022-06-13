@@ -22,6 +22,11 @@ func GetCartsRepo() CartRepoIf {
 	}
 	return cartRepo
 }
+
+func (cs *CartRepo) UpdateUserCartItem(uci UserCartItem) error {
+	//TODO: save to memory db, not implemented
+	return nil
+}
 func (cs *CartRepo) DeleteUserCartItem(uci UserCartItem) error {
 	//TODO: save to memory db, not implemented
 	return nil

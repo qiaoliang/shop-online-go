@@ -4,6 +4,7 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"fmt"
+	"log"
 	"strings"
 )
 
@@ -70,11 +71,12 @@ func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, qua
 	if goodsDetail == nil {
 		fmt.Printf("～～没有找到 Gid是 %v 的goodsDetail", gid)
 	}
-	if _, ok := cs.cached[token]; !ok {
+	ret := cs.cached.get(token)
+	if ret == nil {
 		fmt.Printf("～～没有找到 token：%v", token)
 	}
-	cs.cached[token].Modify(goodsDetail, quantity)
-	cs.cached[token].caculateRedDot()
+	ret.Modify(goodsDetail, quantity)
+	ret.caculateRedDot()
 	return cs.cached.get(token)
 }
 
@@ -107,17 +109,11 @@ func (cs *CartService) UserCartItemToVM(uci UserCartItem) (CartItemVM, ItemPairV
 }
 
 func (cs *CartService) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
-	//TODO: Persistance
-	items := make([]CartItemVM, 0)
-	ips := make([]ItemPairVM, 0)
-	ci := &CartInfo{token, quantity, items, ips}
-	ci.AddMore(prod, quantity)
-	ci.caculateRedDot()
-	cs.cached.update(token, ci)
-	return ci
+
+	return cs.saveCartInfo(token, prod, quantity)
 
 }
-func (cs *CartService) SaveCartInfo(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
+func (cs *CartService) saveCartInfo(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
 	uci := UserCartItem{
 		Token:           token,
 		SkuId:           prod.Gid,
@@ -130,7 +126,11 @@ func (cs *CartService) SaveCartInfo(token string, prod *goods.GoodsDetail, quant
 		Selected:        "1",
 		OptionValueName: "OptionValueName",
 	}
-	cs.cr.SaveUserCartItem(uci)
+	err := cs.cr.SaveUserCartItem(uci)
+	if err != nil {
+		log.Fatalf("%v \n save db has error:\n%v\n", uci, err)
+		return nil
+	}
 	ci := &CartInfo{token, 0, []CartItemVM{}, []ItemPairVM{}}
 	item, ip := cs.UserCartItemToVM(uci)
 	ci.Items = append(ci.Items, item)

@@ -42,5 +42,18 @@ func (s *CartRepoDBTestSuite) Test_Save() {
 	//clean up
 	ret = s.repo.DeleteUserCartItem(uci)
 	s.Nil(ret)
+}
+
+func (s *CartRepoDBTestSuite) Test_Update() {
+	uci := NewUCIBuilder().token("test_save_token").build()
+	ret := s.repo.SaveUserCartItem(uci)
+	s.Nil(ret)
+	uci.Name = "updated_name"
+
+	ret = s.repo.UpdateUserCartItem(uci)
+	s.Nil(ret)
+	//clean up
+	ret = s.repo.DeleteUserCartItem(uci)
+	s.Nil(ret)
 
 }
