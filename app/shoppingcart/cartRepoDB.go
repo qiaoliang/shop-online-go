@@ -14,6 +14,7 @@ type CartRepoIf interface {
 	GetCartByToken(token string) *CartInfo
 	CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo
 	SaveUserCartItem(uci UserCartItem) error
+	DeleteUserCartItem(uci UserCartItem) error
 }
 
 type CartRepoDB struct {
@@ -47,7 +48,10 @@ func (cs *CartRepoDB) SaveUserCartItem(uci UserCartItem) error {
 	ret := cs.db.Create(&uci)
 	return ret.Error
 }
-
+func (cs *CartRepoDB) DeleteUserCartItem(uci UserCartItem) error {
+	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Delete(&uci)
+	return ret.Error
+}
 func (cs *CartRepoDB) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {

@@ -32,11 +32,7 @@ type ItemPairVM struct {
 func (ci *CartInfo) caculateRedDot() {
 	ci.RedDot = uint(len(ci.Items))
 }
-func (ci *CartInfo) NewCartItem(gid string, quantity uint) CartItemVM {
-	sku := []string{"sku1", "sku3"}
-	item := CartItemVM{gid, configs.Cfg.GoodsPicPrefix() + gid + "-01.jpeg", 0, "CD1.0", sku, "66.0", quantity, "1", "valueName"}
-	return item
-}
+
 func (ci *CartInfo) getToken() string {
 	return ci.Token
 }
