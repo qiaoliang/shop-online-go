@@ -1,12 +1,13 @@
 package cart
 
 import (
+	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"fmt"
 )
 
 type CartRepo struct {
-	cartInfos map[string]*CartInfoVM
+	cartInfos map[string]*UserCart
 }
 
 var cartRepo CartRepoIf
@@ -18,12 +19,14 @@ func init() {
 }
 func GetCartsRepo() CartRepoIf {
 	if cartRepo == nil {
-		cartRepo = &CartRepo{make(map[string]*CartInfoVM, 0)}
+		cartRepo = newCartsRepo(configs.Cfg.Persistence)
 	}
 	return cartRepo
 }
 func (cs *CartRepo) FindUserCartItemsBy(token string) []UserCartItem {
-	//TODO: save to memory db, not implemented
+	if _, ok := cs.cartInfos[token]; !ok {
+		return nil
+	}
 	return nil
 }
 
@@ -77,11 +80,7 @@ func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quanti
 }
 
 func (cs *CartRepo) GetCartByToken(token string) *CartInfoVM {
-	if _, ok := cs.cartInfos[token]; !ok {
-		return nil
-	}
-	cs.cartInfos[token].caculateRedDot()
-	return cs.cartInfos[token]
+
 }
 func (cs *CartRepo) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfoVM {
 	items := make([]CartItemVM, 0)

@@ -11,6 +11,7 @@ import (
 type CartRepositoryTestSuite struct {
 	suite.Suite
 	gRepo *goods.GoodsRepoMem
+	repo  CartRepoIf
 }
 
 func (st *CartRepositoryTestSuite) TestExample() {
@@ -39,7 +40,7 @@ func (st *CartRepositoryTestSuite) SetupSuite() {}
 // This will run before each test in the suite
 func (st *CartRepositoryTestSuite) SetupTest() {
 	cartRepo = nil
-	cartRepo = GetCartsRepo()
+	st.repo = newCartsRepo(false)
 	st.gRepo = goods.GetGoodsRepo()
 	st.gRepo.LoadGoods()
 }

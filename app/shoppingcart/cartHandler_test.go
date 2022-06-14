@@ -2,8 +2,9 @@ package cart
 
 import (
 	"bookstore/app/configs"
-	"bookstore/app/goods"
 	"bookstore/app/testutils"
+	"bookstore/app/utils"
+	"fmt"
 	"net/url"
 	"testing"
 
@@ -38,23 +39,29 @@ func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 }
 
+const (
+	SECOND_SKU = "g7225947"
+)
+
 func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_token() {
-	goods.GetGoodsRepo().LoadGoods()
+	//goods.GetGoodsRepo().LoadGoods()
 	data := url.Values{}
-	data.Set("token", "13900007997")
-	data.Add("goodsId", "g7225946")
+	token := "an_token_" + utils.RandomImpl{}.GenStr()
+	data.Set("token", token)
+	data.Add("goodsId", EXISTED_SKU)
 	data.Add("number", "5")
 
 	body := testutils.HttpPost(st.router, data, "/v1/shopping-cart/add")
 
-	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":5,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":5}]},"msg":"OK"}`
+	exp := fmt.Sprintf(`{"code":0,"data":{"token":"%v","number":1,"items":[{"key":"%v","pic":"http://localhost:9090/pic/goods/%v.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":5,"selected":"1","optionValueName":"OptionValueName"}],"goods":[{"goodsId":"%v","number":5}]},"msg":"OK"}`,
+		token, EXISTED_SKU, EXISTED_SKU, EXISTED_SKU)
 	st.Equal(exp, string(body), "should same.")
 }
 func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
 	st.Test_add_one_item_to_shoppingcart_for_a_token()
-	gid := "g7225947"
-	token := "13900007996"
-	quantity := "10"
+	gid := EXISTED_SKU
+	token := "second_token_" + utils.RandomImpl{}.GenStr()
+	quantity := "13"
 	data := url.Values{}
 	data.Set("token", token)
 	data.Add("goodsId", gid)
@@ -62,39 +69,43 @@ func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
 
 	body := string(testutils.HttpPost(st.router, data, "/v1/shopping-cart/add"))
 
-	exp := `{"code":0,"data":{"token":"13900007996","number":1,"items":[{"key":"g7225947","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","status":0,"name":"持续交付2.0","sku":["sku1","sku3"],"price":"99.0","number":10,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225947","number":10}]},"msg":"OK"}`
+	exp := fmt.Sprintf(`{"code":0,"data":{"token":"%v","number":1,"items":[{"key":"%v","pic":"http://localhost:9090/pic/goods/%v.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":%v,"selected":"1","optionValueName":"OptionValueName"}],"goods":[{"goodsId":"%v","number":%v}]},"msg":"OK"}`,
+		token, gid, gid, quantity, gid, quantity)
 	st.Equal(exp, string(body))
 
 }
 func (st *ShoppingCartHandlerSuite) Test_add_more_items_in_shoppingcart_for_same_token() {
-	st.Test_add_one_item_to_shoppingcart_for_a_token()
-	gid := "g7225946"
-	token := "13900007997"
+	gid := EXISTED_SKU
+	token := "same_token_" + utils.RandomImpl{}.GenStr()
+	GetCartsService().PutItemsInCart(token, gid, uint(46))
 	moreQuantity := "10"
 	data := url.Values{}
 	data.Set("token", token)
 	data.Add("goodsId", gid)
 	data.Add("number", moreQuantity)
-
+	totalQuantity := uint(56)
 	body := string(testutils.HttpPost(st.router, data, "/v1/shopping-cart/add"))
 
-	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":15,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":15}]},"msg":"OK"}`
+	exp := fmt.Sprintf(`{"code":0,"data":{"token":"%v","number":1,"items":[{"key":"%v","pic":"http://localhost:9090/pic/goods/%v.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":%v,"selected":"1","optionValueName":"OptionValueName"}],"goods":[{"goodsId":"%v","number":%v}]},"msg":"OK"}`,
+		token, gid, gid, totalQuantity, gid, totalQuantity)
 	st.Equal(exp, string(body))
 }
 func (st *ShoppingCartHandlerSuite) Test_Modify_number_of_item_in_shoppingcart_for_a_token() {
-
+	gid := EXISTED_SKU
+	token := "same_token_" + utils.RandomImpl{}.GenStr()
 	initquantity := uint(10)
-	gid := "g7225946" //构建参数
-	token := "13900007997"
-	cartRepo.PutItemsInCart(token, gid, initquantity)
+	GetCartsService().PutItemsInCart(token, gid, initquantity)
 
+	newQuan := "11"
 	data := url.Values{}
 	data.Set("token", token)
 	data.Add("key", gid)
-	data.Add("number", "11")
+	data.Add("number", newQuan)
+	totalQuantity := uint(11)
 
-	exp := `{"code":0,"data":{"token":"13900007997","number":1,"items":[{"key":"g7225946","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":11,"selected":"1","optionValueName":"optionValueName"}],"goods":[{"goodsId":"g7225946","number":11}]},"msg":"OK"}`
 	body := string(testutils.HttpPost(st.router, data, "/v1/shopping-cart/modifyNumber"))
+	exp := fmt.Sprintf(`{"code":0,"data":{"token":"%v","number":1,"items":[{"key":"%v","pic":"http://localhost:9090/pic/goods/%v.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":%v,"selected":"1","optionValueName":"OptionValueName"}],"goods":[{"goodsId":"%v","number":%v}]},"msg":"OK"}`,
+		token, gid, gid, totalQuantity, gid, totalQuantity)
 	st.Equal(exp, string(body))
 }
 
