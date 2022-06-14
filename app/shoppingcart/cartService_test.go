@@ -4,6 +4,7 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"bookstore/app/testutils"
+	"bookstore/app/utils"
 	"strings"
 	"testing"
 
@@ -45,15 +46,15 @@ func (s *CartServiceTestSuite) Test_GetPersistance() {
 }
 
 const (
-	ANY_NUMBER  = 8888
-	ANY_TOKEN   = "ANY"
-	UNEXISTED   = "unexisted_SKU"
-	EXISTED_SKU = "g7225946"
+	ANY_NUMBER    = 8888
+	ANY_TOKEN     = "ANY"
+	UNEXISTED_SKU = "unexisted_SKU"
+	EXISTED_SKU   = "g7225946"
 )
 
 func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
 
-	token := "create_cartInfo_token"
+	token := " Test_CreateCartInfoFor" + utils.RandomImpl{}.GenStr()
 	exp_skuID := EXISTED_SKU
 	quantity := uint(10)
 	expGd, expIf := s.generateExp(exp_skuID, quantity, token)
@@ -66,8 +67,8 @@ func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
 
 func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
 
-	token := "create_cartInfo_token"
-	exp_skuID := "g7225946"
+	token := "ModifyQuantityOfGoodsInCate" + utils.RandomImpl{}.GenStr()
+	exp_skuID := EXISTED_SKU
 	orgQuan := uint(10)
 	expGd, expIf := s.generateExp(exp_skuID, orgQuan, token)
 	s.cs.CreateCartInfoFor(token, expGd, orgQuan)
@@ -82,6 +83,20 @@ func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
 	s.EqualValues(expIf, ci)
 
 }
+
+func (s *CartServiceTestSuite) Test_PutItemsInCart() {
+
+	s.Nil(s.cs.PutItemsInCart(ANY_TOKEN, UNEXISTED_SKU, ANY_NUMBER))
+
+	token := "PutItemsInCart" + utils.RandomImpl{}.GenStr()
+	exp_skuID := EXISTED_SKU
+	number := uint(10)
+	_, expIf := s.generateExp(exp_skuID, number, token)
+	ci := s.cs.PutItemsInCart(token, exp_skuID, number)
+	s.NotNil(ci)
+	s.EqualValues(expIf, ci)
+}
+
 func (s *CartServiceTestSuite) generateExp(sku_id string, quantity uint, token string) (*goods.SKU, *CartInfoVM) {
 	gd := s.cs.sr.First(sku_id)
 	expItem := NewCartItemVMBuilder(gd).quantity(quantity).picStr(configs.Cfg.GoodsPicPrefix() + gd.PicStr).build()

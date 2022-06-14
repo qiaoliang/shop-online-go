@@ -46,7 +46,7 @@ func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint)
 	if ci == nil {
 		ci = cs.fetchCartItemsFromPersistance(token)
 		if ci == nil {
-			ci = cs.CreateCartInfoFor(token, sku, 0)
+			ci = cs.CreateCartInfoFor(token, sku, quantity)
 			return ci
 		}
 	}
