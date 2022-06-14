@@ -6,7 +6,7 @@ import (
 )
 
 type CartRepo struct {
-	cartInfos map[string]*CartInfo
+	cartInfos map[string]*CartInfoVM
 }
 
 var cartRepo CartRepoIf
@@ -18,7 +18,7 @@ func init() {
 }
 func GetCartsRepo() CartRepoIf {
 	if cartRepo == nil {
-		cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
+		cartRepo = &CartRepo{make(map[string]*CartInfoVM, 0)}
 	}
 	return cartRepo
 }
@@ -47,7 +47,7 @@ func (cs *CartRepo) SaveUserCartItem(uci UserCartItem) error {
 	//TODO: save to memory db, not implemented
 	return nil
 }
-func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *CartInfoVM {
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
 		fmt.Println("goodsDetail is nil")
@@ -62,7 +62,7 @@ func (cs *CartRepo) PutItemsInCart(token string, gid string, quantity uint) *Car
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
-func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfo {
+func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM {
 
 	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
 	if goodsDetail == nil {
@@ -76,17 +76,17 @@ func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quanti
 	return cs.cartInfos[token]
 }
 
-func (cs *CartRepo) GetCartByToken(token string) *CartInfo {
+func (cs *CartRepo) GetCartByToken(token string) *CartInfoVM {
 	if _, ok := cs.cartInfos[token]; !ok {
 		return nil
 	}
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }
-func (cs *CartRepo) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfo {
+func (cs *CartRepo) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfoVM {
 	items := make([]CartItemVM, 0)
 	ips := make([]ItemPairVM, 0)
-	ci := &CartInfo{token, quantity, items, ips}
+	ci := &CartInfoVM{token, quantity, items, ips}
 	ci.AddMore(prod, quantity)
 	ci.caculateRedDot()
 	cs.cartInfos[token] = ci

@@ -2,6 +2,7 @@ package cart
 
 import (
 	"bookstore/app/configs"
+	"bookstore/app/goods"
 	"bookstore/app/testutils"
 	"testing"
 
@@ -34,14 +35,18 @@ func (s *CartServiceTestSuite) TeardownSuite() {
 func (s *CartServiceTestSuite) SetupTest() {}
 
 func (s *CartServiceTestSuite) Test_GetPersistance() {
-	cartRepo = nil
-	cartService = nil
-	cartService = newCartService(false)
-	_, isok := cartService.cr.(*CartRepo)
+	cs := newCartService(false)
+	_, isok := cs.cr.(*CartRepo)
 	s.True(isok)
-	cartRepo = nil
-	cartService = nil
-	cartService := newCartService(true)
-	_, ok := cartService.cr.(*CartRepoDB)
+	cs = newCartService(true)
+	_, ok := cs.cr.(*CartRepoDB)
 	s.True(ok)
+}
+func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
+	token := "create_cartInfo_token"
+	sku_id := "g7225946"
+	prod := goods.GetGoodsRepo().GetItemDetail(sku_id)
+	quantity := uint(10)
+	ci := s.cs.CreateCartInfoFor(token, prod, quantity)
+	s.NotNil(ci)
 }

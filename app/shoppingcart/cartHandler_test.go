@@ -12,7 +12,7 @@ import (
 )
 
 type CartJson struct {
-	Data *CartInfo `json:"data"`
+	Data *CartInfoVM `json:"data"`
 	testutils.JsonResult
 }
 
