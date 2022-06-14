@@ -30,8 +30,6 @@ type CartRepoDB struct {
 
 func init() {
 	GetCartsRepo()
-	gR := goods.GetGoodsRepo()
-	gR.LoadGoods()
 }
 func GetCartsRepoIf() CartRepoIf {
 	if cartRepo == nil {

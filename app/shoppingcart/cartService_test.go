@@ -84,15 +84,30 @@ func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
 
 }
 
-func (s *CartServiceTestSuite) Test_PutItemsInCart() {
-
+func (s *CartServiceTestSuite) Test_Can_not_Same_unexisted_SKU_In_Cart() {
 	s.Nil(s.cs.PutItemsInCart(ANY_TOKEN, UNEXISTED_SKU, ANY_NUMBER))
-
-	token := "PutItemsInCart" + utils.RandomImpl{}.GenStr()
+}
+func (s *CartServiceTestSuite) Test_Should_Put_a_new_cart_Item_Into_Cart() {
+	token := "Should_Put_a_new_cart_Item_Into_Cart" + utils.RandomImpl{}.GenStr()
 	exp_skuID := EXISTED_SKU
 	number := uint(10)
 	_, expIf := s.generateExp(exp_skuID, number, token)
 	ci := s.cs.PutItemsInCart(token, exp_skuID, number)
+	s.NotNil(ci)
+	s.EqualValues(expIf, ci)
+}
+func (s *CartServiceTestSuite) Test_Should_add_more_volume_for_same_cart_Item_in_Cart() {
+
+	token := "Should_add_more_volume_for_same_cart_Item" + utils.RandomImpl{}.GenStr()
+	exp_skuID := EXISTED_SKU
+	number := uint(10)
+	_, expIf := s.generateExp(exp_skuID, number, token)
+	s.cs.PutItemsInCart(token, exp_skuID, number)
+
+	more := uint(10)
+	expIf.Items[0].Quantity = number + more
+	expIf.Pairs[0].Volume = number + more
+	ci := s.cs.PutItemsInCart(token, exp_skuID, more)
 	s.NotNil(ci)
 	s.EqualValues(expIf, ci)
 }

@@ -10,7 +10,7 @@ import (
 
 type CartRepositoryTestSuite struct {
 	suite.Suite
-	gRepo *goods.GoodsRepo
+	gRepo *goods.GoodsRepoMem
 }
 
 func (st *CartRepositoryTestSuite) TestExample() {

@@ -6,23 +6,23 @@ import (
 )
 
 var lockGR = &sync.Mutex{}
-var goodsRepo *GoodsRepo
+var goodsRepo *GoodsRepoMem
 
-func GetGoodsRepo() *GoodsRepo {
+func GetGoodsRepo() *GoodsRepoMem {
 	lockGR.Lock()
 	defer lockGR.Unlock()
 	if goodsRepo == nil {
-		goodsRepo = &GoodsRepo{make([]GoodsItem, 0)}
+		goodsRepo = &GoodsRepoMem{make([]GoodsItem, 0)}
 	}
 
 	return goodsRepo
 }
 
-type GoodsRepo struct {
+type GoodsRepoMem struct {
 	items []GoodsItem
 }
 
-func (gr *GoodsRepo) GetItemDetail(id string) *GoodsDetail {
+func (gr *GoodsRepoMem) GetItemDetail(id string) *GoodsDetail {
 	goods := gr.GetGoodsList()
 	for _, item := range goods {
 		if item.sameAs(id) {
@@ -32,7 +32,7 @@ func (gr *GoodsRepo) GetItemDetail(id string) *GoodsDetail {
 	return nil
 }
 
-func (gr *GoodsRepo) LoadGoods() []GoodsItem {
+func (gr *GoodsRepoMem) LoadGoods() []GoodsItem {
 	if len(gr.items) != 0 {
 		return gr.GetGoodsList()
 	}
@@ -60,11 +60,11 @@ func (gr *GoodsRepo) LoadGoods() []GoodsItem {
 	return gr.items
 
 }
-func (gr *GoodsRepo) GetGoodsList() []GoodsItem {
+func (gr *GoodsRepoMem) GetGoodsList() []GoodsItem {
 	return gr.items
 }
 
-func (gr *GoodsRepo) createGoods(
+func (gr *GoodsRepoMem) createGoods(
 	id uint, cateId uint,
 	gid string, gName string, gStock uint,
 	unit string, logistics string,

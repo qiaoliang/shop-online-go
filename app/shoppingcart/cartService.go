@@ -45,11 +45,12 @@ func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint)
 	ci := cs.cached.get(token)
 	if ci == nil {
 		ci = cs.fetchCartItemsFromPersistance(token)
-		if ci == nil {
-			ci = cs.CreateCartInfoFor(token, sku, quantity)
-			return ci
-		}
 	}
+	if ci == nil {
+		ci = cs.CreateCartInfoFor(token, sku, quantity)
+		return ci
+	}
+
 	item, ip := ci.FindBy(skuId)
 	item.AddMore(quantity)
 	ip.AddMore(quantity)
