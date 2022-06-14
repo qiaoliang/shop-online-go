@@ -27,7 +27,7 @@ func (s *CartRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 func (s *CartRepoDBTestSuite) SetupSuite() {
 	cartRepo = nil
 	s.SupperSuite.SetupSuite()
-	s.repo = NewCartsRepo(configs.Cfg.Persistence)
+	s.repo = newCartsRepo(configs.Cfg.Persistence)
 }
 func (s *CartRepoDBTestSuite) TeardownSuite() {
 	s.SupperSuite.TeardownSuite()
@@ -92,4 +92,14 @@ func (s *CartRepoDBTestSuite) Test_FindMore() {
 	//clean up
 	ret = s.repo.DeleteUserCartItemsBy(token)
 	s.Nil(ret)
+}
+func (s *CartRepoDBTestSuite) Test_Get_CartRepo_DB() {
+	cartRepo = nil
+	cr := newCartsRepo(true)
+	_, isDB := cr.(*CartRepoDB)
+	s.True(isDB)
+	cartRepo = nil
+	cr = newCartsRepo(false)
+	_, isMem := cr.(*CartRepo)
+	s.True(isMem)
 }

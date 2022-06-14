@@ -28,19 +28,12 @@ func (c CachedCart) update(token string, cart *CartInfo) {
 }
 func GetCartsService() CartRepoIf {
 	if cartRepo == nil {
-		cartService = NewCartService(configs.Cfg.Persistence)
+		cartService = newCartService(configs.Cfg.Persistence)
 	}
 	return cartRepo
 }
-func NewCartService(persistance bool) *CartService {
-	if cartService == nil {
-		if persistance {
-			cartService = &CartService{make(map[string]*CartInfo, 0), goods.GetGoodsService(), NewCartsRepo(persistance)}
-		} else {
-			cartService = &CartService{make(map[string]*CartInfo, 0), nil, nil}
-		}
-	}
-	return cartService
+func newCartService(persistance bool) *CartService {
+	return &CartService{make(map[string]*CartInfo, 0), goods.GetGoodsService(), newCartsRepo(persistance)}
 }
 
 func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint) *CartInfo {

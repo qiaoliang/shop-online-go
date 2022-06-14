@@ -34,19 +34,16 @@ func init() {
 }
 func GetCartsRepoIf() CartRepoIf {
 	if cartRepo == nil {
-		cartRepo = NewCartsRepo(configs.Cfg.Persistence)
+		cartRepo = newCartsRepo(configs.Cfg.Persistence)
 	}
 	return cartRepo
 }
-func NewCartsRepo(persistance bool) CartRepoIf {
-	if cartRepo == nil {
-		if persistance {
-			cartRepo = &CartRepoDB{make(map[string]*CartInfo, 0), configs.Cfg.DBConnection()}
-		} else {
-			cartRepo = &CartRepo{make(map[string]*CartInfo, 0)}
-		}
+func newCartsRepo(persistance bool) CartRepoIf {
+	if persistance {
+		return &CartRepoDB{make(map[string]*CartInfo, 0), configs.Cfg.DBConnection()}
+	} else {
+		return &CartRepo{make(map[string]*CartInfo, 0)}
 	}
-	return cartRepo
 }
 
 func (cs *CartRepoDB) SaveUserCartItem(uci UserCartItem) error {
