@@ -31,9 +31,6 @@ func (st *GoodsHandlerSuite) SetupSuite() {
 
 func (st *GoodsHandlerSuite) Test_get_GoodsDetail() {
 	//构建参数
-	data := url.Values{}
-	data.Set("token", "anythingIsOKByNow")
-	data.Add("id", "g7225946")
 	params := map[string]string{
 		"token": "anythingIsOKByNow",
 		"id":    "g7225946",

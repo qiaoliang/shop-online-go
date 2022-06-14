@@ -19,9 +19,9 @@ type CategoryRepoDBTestSuite struct {
 func (s *CategoryRepoDBTestSuite) Test_get_categories_from_db() {
 	categories := s.db.GetList()
 	s.Equal(2, len(categories))
-	s.Equal(uint(1), categories[0].Id)
+	s.Equal(uint(0), categories[0].Id)
 	s.Equal("DevOps", categories[0].Name)
-	s.Equal(uint(2), categories[1].Id)
+	s.Equal(uint(1), categories[1].Id)
 	s.Equal("大数据", categories[1].Name)
 }
 

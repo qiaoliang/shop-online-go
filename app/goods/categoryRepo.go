@@ -18,13 +18,10 @@ func GetCategoryRepo() CategoryRepoIf {
 func NewCategoryRepo(persistence bool) CategoryRepoIf {
 	lockCR.Lock()
 	defer lockCR.Unlock()
-
 	if cateRepo == nil {
 		if persistence {
 			cateRepo = GetCategoryRepoDB(configs.Cfg.DBConnection())
-
 		} else {
-
 			cateRepo = &CategoryRepo{}
 		}
 	}

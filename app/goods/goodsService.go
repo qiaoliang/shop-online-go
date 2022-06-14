@@ -19,16 +19,17 @@ func GetGoodsService() *GoodsService {
 }
 
 func newGoodsService(persistance bool) *GoodsService {
-	repo := NewSkuRepo(persistance)
-	return &GoodsService{make([]GoodsItem, 0), repo}
+
+	return &GoodsService{make([]GoodsItem, 0), NewSkuRepo(persistance), NewCategoryRepo(persistance)}
 
 }
 
 type GoodsItems []GoodsItem
 
 type GoodsService struct {
-	items GoodsItems
-	repo  SkuRepoIf
+	items    GoodsItems
+	repo     SkuRepoIf
+	cateRepo CategoryRepoIf
 }
 
 func (gs *GoodsService) GetCategory(cId uint) GoodsItems {
