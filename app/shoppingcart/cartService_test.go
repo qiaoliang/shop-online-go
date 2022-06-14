@@ -74,11 +74,11 @@ func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
 	expGd, expIf := s.generateExp(exp_skuID, orgQuan, token)
 	s.cs.CreateCartInfoFor(token, expGd, orgQuan)
 
-	moreQuan := uint(30)
-	expIf.Items[0].Quantity = orgQuan + moreQuan
-	expIf.Pairs[0].Volume = orgQuan + moreQuan
+	updatedQuan := uint(30)
+	expIf.Items[0].Quantity = updatedQuan
+	expIf.Pairs[0].Volume = updatedQuan
 
-	ci := s.cs.ModifyQuantityOfGoodsInCate(token, exp_skuID, moreQuan)
+	ci := s.cs.ModifyQuantityOfGoodsInCate(token, exp_skuID, updatedQuan)
 
 	s.NotNil(ci)
 	s.EqualValues(expIf, ci)
