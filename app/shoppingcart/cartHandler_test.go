@@ -31,8 +31,6 @@ func TestShoppingCartHandlerSuite(t *testing.T) {
 
 // This will run before each test in the suite
 func (st *ShoppingCartHandlerSuite) SetupTest() {
-	cartRepo = nil
-	cartRepo = GetCartsRepo()
 }
 func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	st.router = setupTestRouter()

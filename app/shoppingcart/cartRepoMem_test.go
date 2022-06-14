@@ -1,42 +1,57 @@
 package cart
 
 import (
+	"bookstore/app/goods"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
 	"fmt"
+	_ "fmt"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 )
 
-type CartRepoDBTestSuite struct {
+type CartRepositoryTestSuite struct {
 	testutils.SupperSuite
-	repo CartRepoIf
+	repo  CartRepoIf
+	gRepo *goods.GoodsRepoMem
 }
 
-func TestCartRepoDBTestSuite(t *testing.T) {
-	suite.Run(t, new(CartRepoDBTestSuite))
+func (st *CartRepositoryTestSuite) TestExample() {
+	st.Equal(true, true)
+}
+
+func TestCartRepositoryTestSuite(t *testing.T) {
+	suite.Run(t, new(CartRepositoryTestSuite))
+}
+
+// This will run right before the test starts
+// and receives the suite and test names as input
+func (st *CartRepositoryTestSuite) BeforeTest(suiteName, testName string) {
 
 }
 
-func (s *CartRepoDBTestSuite) BeforeTest(suiteName, testName string) {}
+// This will run after test finishes
+// and receives the suite and test names as input
+func (st *CartRepositoryTestSuite) AfterTest(suiteName, testName string) {
+}
 
-func (s *CartRepoDBTestSuite) AfterTest(suiteName, testName string) {}
-
-func (s *CartRepoDBTestSuite) SetupSuite() {
+// This will run before before the tests in the suite are run
+func (st *CartRepositoryTestSuite) SetupSuite() {
 	cartRepo = nil
-	s.SupperSuite.SetupSuite()
-	s.repo = newCartsRepo(true)
-}
-func (s *CartRepoDBTestSuite) TeardownSuite() {
-	s.SupperSuite.TeardownSuite()
-	s.repo = nil
+	st.SupperSuite.SetupSuite()
+	st.repo = newCartsRepo(false)
+	st.gRepo = goods.GetGoodsRepo()
+	st.gRepo.LoadGoods()
 }
 
-func (s *CartRepoDBTestSuite) SetupTest() {
+// This will run before each test in the suite
+func (st *CartRepositoryTestSuite) SetupTest() {
+	cartRepo = nil
+	cartRepo = newCartsRepo(false)
 }
 
-func (s *CartRepoDBTestSuite) Test_Save() {
+func (s *CartRepositoryTestSuite) Test_Save() {
 	uci := NewUCIBuilder().token("test_save_UCI" + utils.RandomImpl{}.GenStr()).build()
 	ret := s.repo.SaveUserCartItem(uci)
 	s.Nil(ret)
@@ -45,7 +60,7 @@ func (s *CartRepoDBTestSuite) Test_Save() {
 	s.Nil(ret)
 }
 
-func (s *CartRepoDBTestSuite) Test_Update() {
+func (s *CartRepositoryTestSuite) Test_Update() {
 	uci := NewUCIBuilder().token("test_Update_UCI" + utils.RandomImpl{}.GenStr()).build()
 	ret := s.repo.SaveUserCartItem(uci)
 	s.Nil(ret)
@@ -58,7 +73,7 @@ func (s *CartRepoDBTestSuite) Test_Update() {
 	s.Nil(ret)
 
 }
-func (s *CartRepoDBTestSuite) Test_Get() {
+func (s *CartRepositoryTestSuite) Test_Get() {
 	exp := NewUCIBuilder().token("test_get_UCI" + utils.RandomImpl{}.GenStr()).build()
 	ret := s.repo.SaveUserCartItem(exp)
 	s.Nil(ret)
@@ -72,7 +87,7 @@ func (s *CartRepoDBTestSuite) Test_Get() {
 	s.Nil(ret)
 
 }
-func (s *CartRepoDBTestSuite) Test_FindMore() {
+func (s *CartRepositoryTestSuite) Test_FindMore() {
 	//arrange
 	token := "test_Find_More_UCI" + utils.RandomImpl{}.GenStr()
 	exp1 := NewUCIBuilder().token(token).skuId("new-Sku-id2").build()
@@ -92,7 +107,7 @@ func (s *CartRepoDBTestSuite) Test_FindMore() {
 	ret = s.repo.DeleteUserCartItemsBy(token)
 	s.Nil(ret)
 }
-func (s *CartRepoDBTestSuite) Test_Get_CartRepo_DB() {
+func (s *CartRepositoryTestSuite) Test_Get_CartRepo_DB() {
 	cartRepo = nil
 	cr := newCartsRepo(true)
 	_, isDB := cr.(*CartRepoDB)

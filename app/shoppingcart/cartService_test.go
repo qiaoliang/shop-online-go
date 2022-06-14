@@ -38,7 +38,7 @@ func (s *CartServiceTestSuite) SetupTest() {}
 
 func (s *CartServiceTestSuite) Test_GetPersistance() {
 	cs := newCartService(false)
-	_, isok := cs.cr.(*CartRepo)
+	_, isok := cs.cr.(*CartRepoMem)
 	s.True(isok)
 	cs = newCartService(true)
 	_, ok := cs.cr.(*CartRepoDB)

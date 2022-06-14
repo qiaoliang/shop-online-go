@@ -2,19 +2,12 @@ package cart
 
 import (
 	"bookstore/app/configs"
-	"bookstore/app/goods"
-	"fmt"
 	"log"
 
 	"gorm.io/gorm"
 )
 
 type CartRepoIf interface {
-	PutItemsInCart(token string, gid string, quantity uint) *CartInfoVM
-	ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM
-	GetCartByToken(token string) *CartInfoVM
-	CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfoVM
-
 	SaveUserCartItem(uci UserCartItem) error
 	DeleteUserCartItem(uci UserCartItem) error
 	DeleteUserCartItemsBy(token string) error
@@ -28,9 +21,6 @@ type CartRepoDB struct {
 	db        *gorm.DB
 }
 
-func init() {
-	GetCartsRepo()
-}
 func GetCartsRepoIf() CartRepoIf {
 	if cartRepo == nil {
 		cartRepo = newCartsRepo(configs.Cfg.Persistence)
@@ -41,7 +31,7 @@ func newCartsRepo(persistance bool) CartRepoIf {
 	if persistance {
 		return &CartRepoDB{make(map[string]*CartInfoVM, 0), configs.Cfg.DBConnection()}
 	} else {
-		return &CartRepo{make(map[string]*CartInfoVM, 0)}
+		return &CartRepoMem{make(map[string]*UserCart, 0)}
 	}
 }
 
@@ -73,46 +63,4 @@ func (cs *CartRepoDB) FindUserCartItemsBy(token string) []UserCartItem {
 	found := []UserCartItem{}
 	cs.db.Where(map[string]interface{}{"Token": token}).Find(&found)
 	return found
-}
-func (cs *CartRepoDB) PutItemsInCart(token string, gid string, quantity uint) *CartInfoVM {
-	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
-	if goodsDetail == nil {
-		log.Fatalf("sku %v is not found.\n", gid)
-		return nil
-	}
-	if _, ok := cs.cartInfos[token]; !ok {
-		return cs.CreateCartInfoFor(token, goodsDetail, quantity)
-	}
-	return nil
-}
-func (cs *CartRepoDB) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM {
-
-	goodsDetail := goods.GetGoodsRepo().GetItemDetail(gid)
-	if goodsDetail == nil {
-		fmt.Printf("没有找到 Gid 是 %v 的goodsDetail\n", gid)
-	}
-	if _, ok := cs.cartInfos[token]; !ok {
-		fmt.Printf("没有找到 token: %v \n", token)
-	}
-	cs.cartInfos[token].Modify(gid, quantity)
-	cs.cartInfos[token].caculateRedDot()
-	return cs.cartInfos[token]
-}
-
-func (cs *CartRepoDB) GetCartByToken(token string) *CartInfoVM {
-	if _, ok := cs.cartInfos[token]; !ok {
-		return nil
-	}
-	cs.cartInfos[token].caculateRedDot()
-	return cs.cartInfos[token]
-}
-func (cs *CartRepoDB) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfoVM {
-	items := make([]CartItemVM, 0)
-	ips := make([]ItemPairVM, 0)
-	ci := &CartInfoVM{token, quantity, items, ips}
-	ci.AddMore(prod, quantity)
-	ci.caculateRedDot()
-	cs.cartInfos[token] = ci
-	return ci
-
 }
