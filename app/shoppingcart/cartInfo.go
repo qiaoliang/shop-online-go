@@ -49,8 +49,8 @@ func (ci *CartInfoVM) caculateRedDot() {
 func (ci *CartInfoVM) getToken() string {
 	return ci.Token
 }
-func (ci *CartInfoVM) FindBy(skuid string) (CartItemVM, ItemPairVM) {
-	return *ci.findItemByGid(skuid), *ci.findPairByGid(skuid)
+func (ci *CartInfoVM) FindBy(skuid string) (*CartItemVM, *ItemPairVM) {
+	return ci.findItemByGid(skuid), ci.findPairByGid(skuid)
 
 }
 
@@ -88,11 +88,11 @@ func (ci *CartInfoVM) AddMore(prod *goods.GoodsDetail, quantity uint) {
 	ci.Pairs = append(ci.Pairs, ip)
 }
 
-func (ci *CartInfoVM) Modify(prod *goods.GoodsDetail, quantity uint) *CartItemVM {
-	item := ci.findItemByGid(prod.Gid)
+func (ci *CartInfoVM) Modify(gid string, quantity uint) *CartItemVM {
+	item := ci.findItemByGid(gid)
 	if item != nil {
 		item.Quantity = quantity
-		ip := ci.findPairByGid(prod.Gid)
+		ip := ci.findPairByGid(gid)
 		ip.Volume = item.Quantity
 		return item
 	}

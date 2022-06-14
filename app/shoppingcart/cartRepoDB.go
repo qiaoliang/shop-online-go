@@ -18,7 +18,7 @@ type CartRepoIf interface {
 	SaveUserCartItem(uci UserCartItem) error
 	DeleteUserCartItem(uci UserCartItem) error
 	DeleteUserCartItemsBy(token string) error
-	UpdateUserCartItem(uci UserCartItem) error
+	UpdateUserCartItem(uci *UserCartItem) error
 	GetUserCartItem(uci UserCartItem) *UserCartItem
 	FindUserCartItemsBy(token string) []UserCartItem
 }
@@ -61,8 +61,8 @@ func (cs *CartRepoDB) DeleteUserCartItemsBy(token string) error {
 	return ret.Error
 }
 
-func (cs *CartRepoDB) UpdateUserCartItem(uci UserCartItem) error {
-	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Select("*").Updates(&uci)
+func (cs *CartRepoDB) UpdateUserCartItem(uci *UserCartItem) error {
+	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Select("*").Updates(uci)
 	return ret.Error
 }
 func (cs *CartRepoDB) GetUserCartItem(uci UserCartItem) *UserCartItem {
@@ -96,7 +96,7 @@ func (cs *CartRepoDB) ModifyQuantityOfGoodsInCate(token string, gid string, quan
 	if _, ok := cs.cartInfos[token]; !ok {
 		fmt.Printf("没有找到 token: %v \n", token)
 	}
-	cs.cartInfos[token].Modify(goodsDetail, quantity)
+	cs.cartInfos[token].Modify(gid, quantity)
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }

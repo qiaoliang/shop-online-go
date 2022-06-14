@@ -11,7 +11,7 @@ var cartService *CartService
 
 type CartService struct {
 	cached CachedCart
-	gs     *goods.GoodsService
+	sr     goods.SkuRepoIf
 	cr     CartRepoIf
 }
 
@@ -26,30 +26,31 @@ func (c CachedCart) get(token string) *CartInfoVM {
 func (c CachedCart) update(token string, cart *CartInfoVM) {
 	c[token] = cart
 }
-func GetCartsService() CartRepoIf {
-	if cartRepo == nil {
+func GetCartsService() *CartService {
+	if cartService == nil {
 		cartService = newCartService(configs.Cfg.Persistence)
 	}
-	return cartRepo
+	return cartService
 }
 func newCartService(persistance bool) *CartService {
-	return &CartService{make(map[string]*CartInfoVM, 0), goods.GetGoodsService(), newCartsRepo(persistance)}
+	return &CartService{make(map[string]*CartInfoVM, 0), goods.NewSkuRepo(persistance), newCartsRepo(persistance)}
 }
 
 func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint) *CartInfoVM {
-	goodsDetail := cs.gs.GetItemDetail(skuId)
-	if goodsDetail == nil {
+	sku := cs.sr.First(skuId)
+	if sku == nil {
 		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
+		return nil
 	}
 	ci := cs.cached.get(token)
 	if ci == nil {
 		ci = cs.fetchCartItemsFromPersistance(token)
 		if ci == nil {
-			ci = cs.CreateCartInfoFor(token, goodsDetail, 0)
+			ci = cs.CreateCartInfoFor(token, sku, 0)
 			return ci
 		}
 	}
-	item, ip := ci.FindBy(goodsDetail.Gid)
+	item, ip := ci.FindBy(skuId)
 	item.AddMore(quantity)
 	ip.AddMore(quantity)
 	cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
@@ -57,11 +58,12 @@ func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint)
 	cs.cached.update(token, ci)
 	return ci
 }
-func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, skuId string, quantity uint) *CartInfoVM {
+func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM {
 
-	goodsDetail := cs.gs.GetItemDetail(skuId)
-	if goodsDetail == nil {
-		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
+	gd := cs.sr.First(gid)
+	if gd == nil {
+		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", gid)
+		return nil
 	}
 	ci := cs.cached.get(token)
 	if ci == nil {
@@ -70,8 +72,8 @@ func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, skuId string, q
 			return nil
 		}
 	}
-	item := ci.Modify(goodsDetail, quantity)
-	cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, *item))
+	item := ci.Modify(gid, quantity)
+	cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
 	ci.caculateRedDot()
 	return ci
 }
@@ -88,12 +90,12 @@ func (cs *CartService) fetchCartItemsFromPersistance(token string) *CartInfoVM {
 	if len(found) == 0 {
 		return nil
 	}
-	ci := cs.fromUCIsToVM(token, found)
+	ci := cs.fromUCIlistToVM(token, found)
 	cs.cached.update(token, ci)
 	return ci
 }
 
-func (cs *CartService) fromUCIsToVM(token string, found []UserCartItem) *CartInfoVM {
+func (cs *CartService) fromUCIlistToVM(token string, found []UserCartItem) *CartInfoVM {
 	ci := &CartInfoVM{token, 0, []CartItemVM{}, []ItemPairVM{}}
 	for _, v := range found {
 		item, ip := cs.fromUCIToVM(v)
@@ -122,8 +124,8 @@ func (cs *CartService) fromUCIToVM(uci UserCartItem) (CartItemVM, ItemPairVM) {
 	}
 	return civm, ipvm
 }
-func (cs *CartService) fromVMToUCI(token string, ci CartItemVM) UserCartItem {
-	uci := UserCartItem{
+func (cs *CartService) fromVMToUCI(token string, ci *CartItemVM) *UserCartItem {
+	return &UserCartItem{
 		token,
 		ci.Gid,
 		ci.RetrivePicStr(),
@@ -135,18 +137,17 @@ func (cs *CartService) fromVMToUCI(token string, ci CartItemVM) UserCartItem {
 		ci.Selected,
 		ci.OptionValueName,
 	}
-	return uci
 }
 
-func (cs *CartService) CreateCartInfoFor(token string, prod *goods.GoodsDetail, quantity uint) *CartInfoVM {
+func (cs *CartService) CreateCartInfoFor(token string, sku *goods.SKU, quantity uint) *CartInfoVM {
 	uci := UserCartItem{
 		Token:           token,
-		SkuId:           prod.Gid,
-		Pic:             prod.PicUrl,
-		Status:          prod.Status,
-		Name:            prod.Name,
+		SkuId:           sku.SkuId,
+		Pic:             sku.PicStr,
+		Status:          uint(sku.Status),
+		Name:            sku.Name,
 		SkuStrs:         "sku1,sku3",
-		Price:           prod.MinPrice,
+		Price:           sku.MinPrice,
 		Quantity:        quantity,
 		Selected:        "1",
 		OptionValueName: "OptionValueName",

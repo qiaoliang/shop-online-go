@@ -35,7 +35,7 @@ func (cs *CartRepo) GetUserCartItem(uci UserCartItem) *UserCartItem {
 	//TODO: save to memory db, not implemented
 	return nil
 }
-func (cs *CartRepo) UpdateUserCartItem(uci UserCartItem) error {
+func (cs *CartRepo) UpdateUserCartItem(uci *UserCartItem) error {
 	//TODO: save to memory db, not implemented
 	return nil
 }
@@ -71,7 +71,7 @@ func (cs *CartRepo) ModifyQuantityOfGoodsInCate(token string, gid string, quanti
 	if _, ok := cs.cartInfos[token]; !ok {
 		fmt.Printf("～～没有找到 token：%v", token)
 	}
-	cs.cartInfos[token].Modify(goodsDetail, quantity)
+	cs.cartInfos[token].Modify(gid, quantity)
 	cs.cartInfos[token].caculateRedDot()
 	return cs.cartInfos[token]
 }

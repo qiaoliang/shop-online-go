@@ -4,6 +4,7 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/goods"
 	"bookstore/app/testutils"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -42,11 +43,151 @@ func (s *CartServiceTestSuite) Test_GetPersistance() {
 	_, ok := cs.cr.(*CartRepoDB)
 	s.True(ok)
 }
+
+const (
+	ANY_NUMBER  = 8888
+	ANY_TOKEN   = "ANY"
+	UNEXISTED   = "unexisted_SKU"
+	EXISTED_SKU = "g7225946"
+)
+
 func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
+
+	s.Nil(s.cs.CreateCartInfoFor(ANY_TOKEN, &goods.SKU{SkuId: UNEXISTED}, ANY_NUMBER))
+
 	token := "create_cartInfo_token"
-	sku_id := "g7225946"
-	prod := goods.GetGoodsRepo().GetItemDetail(sku_id)
+	exp_skuID := EXISTED_SKU
 	quantity := uint(10)
-	ci := s.cs.CreateCartInfoFor(token, prod, quantity)
+	expGd, expIf := s.generateExp(exp_skuID, quantity, token)
+
+	ci := s.cs.CreateCartInfoFor(token, expGd, quantity)
+
 	s.NotNil(ci)
+	s.EqualValues(expIf, ci)
+}
+
+func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
+
+	token := "create_cartInfo_token"
+	exp_skuID := "g7225946"
+	orgQuan := uint(10)
+	expGd, expIf := s.generateExp(exp_skuID, orgQuan, token)
+	s.cs.CreateCartInfoFor(token, expGd, orgQuan)
+
+	moreQuan := uint(30)
+	expIf.Items[0].Quantity = orgQuan + moreQuan
+	expIf.Pairs[0].Volume = orgQuan + moreQuan
+
+	ci := s.cs.ModifyQuantityOfGoodsInCate(token, exp_skuID, moreQuan)
+
+	s.NotNil(ci)
+	s.EqualValues(expIf, ci)
+
+}
+func (s *CartServiceTestSuite) generateExp(sku_id string, quantity uint, token string) (*goods.SKU, *CartInfoVM) {
+	gd := s.cs.sr.First(sku_id)
+	expItem := NewCartItemVMBuilder(gd).quantity(quantity).picStr(configs.Cfg.GoodsPicPrefix() + gd.PicStr).build()
+	expIp := NewItemPairVMBuilder().gid(gd.SkuId).volume(quantity).build()
+	expIf := NewCartInfoVMBuilder().token(token).addItem(expItem).addIpair(expIp).build()
+	return gd, expIf
+}
+
+type CartInfoVMBuilder struct {
+	civm *CartInfoVM
+}
+
+func NewCartInfoVMBuilder() *CartInfoVMBuilder {
+	return &CartInfoVMBuilder{
+		civm: &CartInfoVM{
+			Token:  "",
+			RedDot: 0,
+			Items:  []CartItemVM{},
+			Pairs:  []ItemPairVM{},
+		},
+	}
+}
+func (s *CartInfoVMBuilder) token(token string) *CartInfoVMBuilder {
+	s.civm.Token = token
+	return s
+}
+func (s *CartInfoVMBuilder) addItem(it *CartItemVM) *CartInfoVMBuilder {
+	s.civm.Items = append(s.civm.Items, *it)
+	return s
+}
+func (s *CartInfoVMBuilder) addIpair(it *ItemPairVM) *CartInfoVMBuilder {
+	s.civm.Pairs = append(s.civm.Pairs, *it)
+	return s
+}
+
+func (s *CartInfoVMBuilder) build() *CartInfoVM {
+	s.civm.RedDot = uint(len(s.civm.Items))
+	return s.civm
+}
+
+type CartItemVMBuilder struct {
+	ci *CartItemVM
+}
+
+func NewCartItemVMBuilder(gd *goods.SKU) *CartItemVMBuilder {
+	return &CartItemVMBuilder{
+		&CartItemVM{
+			Gid:             gd.SkuId,
+			Pic:             gd.PicStr,
+			Status:          0,
+			Name:            gd.Name,
+			Sku:             []string{"sku1", "sku3"},
+			Price:           gd.MinPrice,
+			Quantity:        0,
+			Selected:        "1",
+			OptionValueName: "OptionValueName",
+		},
+	}
+}
+func (s *CartItemVMBuilder) gid(gid string) *CartItemVMBuilder {
+	s.ci.Gid = gid
+	return s
+}
+func (s *CartItemVMBuilder) picStr(picStr string) *CartItemVMBuilder {
+	s.ci.Pic = picStr
+	return s
+}
+func (s *CartItemVMBuilder) selected(sel string) *CartItemVMBuilder {
+	s.ci.Selected = sel
+	return s
+}
+
+func (s *CartItemVMBuilder) sku(skus string) *CartItemVMBuilder {
+	s.ci.Sku = strings.Split(skus, ",")
+	return s
+}
+func (s *CartItemVMBuilder) quantity(number uint) *CartItemVMBuilder {
+	s.ci.Quantity = number
+	return s
+}
+func (s *CartItemVMBuilder) build() *CartItemVM {
+	return s.ci
+}
+
+type ItemPairVMBuilder struct {
+	ip *ItemPairVM
+}
+
+func NewItemPairVMBuilder() *ItemPairVMBuilder {
+	return &ItemPairVMBuilder{
+		&ItemPairVM{
+			GoodsId: "undefined",
+			Volume:  0,
+		},
+	}
+}
+func (s *ItemPairVMBuilder) volume(volume uint) *ItemPairVMBuilder {
+	s.ip.Volume = volume
+	return s
+}
+func (s *ItemPairVMBuilder) gid(gid string) *ItemPairVMBuilder {
+	s.ip.GoodsId = gid
+	return s
+}
+func (s *ItemPairVMBuilder) build() *ItemPairVM {
+	return s.ip
 }

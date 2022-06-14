@@ -66,6 +66,9 @@ func (s State) StateStr() string {
 		return "Unknown"
 	}
 }
+func (gd *GoodsDetail) PicUrlSubstr() string {
+	return gd.PicUrl[len(configs.Cfg.GoodsPicPrefix()):]
+}
 func (gd *GoodsDetail) setMultiPics(picNum int) {
 
 	gd.Pics = make([]CarouselPicVM, 0)

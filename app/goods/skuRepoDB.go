@@ -23,9 +23,9 @@ func GetSkuRepo() SkuRepoIf {
 
 func NewSkuRepo(isPersistence bool) SkuRepoIf {
 	if isPersistence {
-		return getSkuRepoDB(configs.Cfg.DBConnection())
+		return SkuRepoDB{configs.Cfg.DBConnection()}
 	} else {
-		return &SkuRepoDB{}
+		return &SkuRepoMem{}
 	}
 }
 

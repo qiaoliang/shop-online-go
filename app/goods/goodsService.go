@@ -18,14 +18,10 @@ func GetGoodsService() *GoodsService {
 	return goodsService
 }
 
-func newGoodsService(usingDB bool) *GoodsService {
-	if usingDB {
-		db := configs.Cfg.DBConnection()
-		repo := getSkuRepoDB(db)
-		return &GoodsService{make([]GoodsItem, 0), repo}
-	} else {
-		return &GoodsService{make([]GoodsItem, 0), &SkuRepoMem{}}
-	}
+func newGoodsService(persistance bool) *GoodsService {
+	repo := NewSkuRepo(persistance)
+	return &GoodsService{make([]GoodsItem, 0), repo}
+
 }
 
 type GoodsItems []GoodsItem

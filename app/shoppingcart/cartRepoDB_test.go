@@ -52,7 +52,7 @@ func (s *CartRepoDBTestSuite) Test_Update() {
 	s.Nil(ret)
 	uci.Name = "updated_name"
 
-	ret = s.repo.UpdateUserCartItem(uci)
+	ret = s.repo.UpdateUserCartItem(&uci)
 	s.Nil(ret)
 	//clean up
 	ret = s.repo.DeleteUserCartItem(uci)
