@@ -53,8 +53,6 @@ const (
 
 func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
 
-	s.Nil(s.cs.CreateCartInfoFor(ANY_TOKEN, &goods.SKU{SkuId: UNEXISTED}, ANY_NUMBER))
-
 	token := "create_cartInfo_token"
 	exp_skuID := EXISTED_SKU
 	quantity := uint(10)
