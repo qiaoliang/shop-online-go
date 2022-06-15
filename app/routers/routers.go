@@ -18,7 +18,7 @@ import (
 func InitRouter() {
 	port := viper.Get("PORT").(int)
 	r := gin.Default()
-
+	// This is Demo, and not good on Prod.
 	r.Use(allowCrossDomainAccess())
 
 	r.StaticFS("/pic", http.Dir("./static"))
@@ -43,8 +43,10 @@ func SetupRouter(r *gin.Engine) {
 	v1.GET("/verification/pic/check", security.VerifyCapChar)
 	v1.GET("/verification/sms/get", security.GetSMSCode)
 
+	// Advertise management
 	v1.GET("/banner/list", banner.FetchBanners)
 
+	// User Management
 	v1.POST("/user/m/register", user.Register)
 	v1.POST("/user/m/login", user.Login)
 	v1.GET("/user/detail", user.GetUserDetail)
@@ -52,19 +54,23 @@ func SetupRouter(r *gin.Engine) {
 	v1.GET("/user/amount", user.GetUserAmount)
 	v1.GET("/user/logout", user.GetUserDetail)
 
+	//User ShippingAddress Management
 	v1.POST("/user/shipping-address/list", user.GetDeliveryAddressList)
 	v1.GET("/user/shipping-address/default", user.GetDefaultDeliveryAddress)
 	v1.POST("/user/shipping-address/add", user.AddDeliveryAddress)
 
+	// Order management
 	v1.GET("/order/statistics", order.GetOrderStatistics)
 	v1.GET("/discounts/statistics", order.DiscountStatistics)
 	v1.GET("/discounts/coupons", order.Coupons)
 
+	//Goods Management
 	v1.GET("/shop/goods/category/all", goods.FetchCatalogues)
 	v1.GET("/shop/goods/detail", goods.GetGoodsDetail)
 	v1.POST("/shop/goods/reputation", goods.FetchItemReputation)
 	v1.POST("/goods/list", goods.FetchGoodsList)
 
+	// Shopping Cart Management
 	v1.GET("/shopping-cart/info", cart.GetShopingCart)
 	v1.POST("/shopping-cart/add", cart.PutIntoCart)
 	v1.POST("/shopping-cart/modifyNumber", cart.ModifyNumberOfGoodsInCart)

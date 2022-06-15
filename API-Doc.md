@@ -15,7 +15,7 @@ URL 的前缀都是`http://{hostname:port}`
 
 ## v1 for shop
 
-### Verification 
+### Security 
 
 方法|URI|参数|版本|说明|
 |--|--|--|--|--|
@@ -40,7 +40,7 @@ URL 的前缀都是`http://{hostname:port}`
 |POST    |`/v1/user/m/login` |? |v1| user login  |
 |GET    |`/v1/user/detail` |? |v1| Get User Detail  |
 |GET    |`/v1/user/modify` |? |v1| Update User Info  |
-|GET    |`/v1/user/amount` |? |v1| Get User Amount  |
+|GET    |`/v1/user/amount` |? |v1| Get total number of Registered User |
 |GET    |`/v1/user/logout` |? |v1| Get User Detail  |
 
 ### Order Management
