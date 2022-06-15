@@ -5,21 +5,22 @@ import (
 	"bookstore/app/utils"
 	"errors"
 	"fmt"
+	"strconv"
 	"sync"
 )
 
 var lockUR = &sync.Mutex{}
 
-type MemoryUserRepo struct {
+type UserRepoMem struct {
 	userlist map[string]*User
 }
 
 var userRepo UserRepoIf
 
 func GetUserRepo() UserRepoIf {
-	return NewUserRepo(configs.Cfg.Persistence)
+	return newUserRepo(configs.Cfg.Persistence)
 }
-func NewUserRepo(persistence bool) UserRepoIf {
+func newUserRepo(persistence bool) UserRepoIf {
 	lockUR.Lock()
 	defer lockUR.Unlock()
 
@@ -29,7 +30,7 @@ func NewUserRepo(persistence bool) UserRepoIf {
 
 		} else {
 
-			userRepo = &MemoryUserRepo{make(map[string]*User, 10)}
+			userRepo = &UserRepoMem{make(map[string]*User, 10)}
 			userRepo.CreateAdmin("13900007997", "1234")
 		}
 	}
@@ -40,41 +41,42 @@ func GetMemoryUserRepo() UserRepoIf {
 	lockUR.Lock()
 	defer lockUR.Unlock()
 	if userRepo == nil {
-		userRepo = &MemoryUserRepo{make(map[string]*User, 10)}
+		userRepo = &UserRepoMem{make(map[string]*User, 10)}
 		userRepo.CreateAdmin("13900007997", "1234")
 	}
 	return userRepo
 }
 
-func (r *MemoryUserRepo) TotalUsers() int {
+func (r *UserRepoMem) TotalUsers() int {
 	return len(r.userlist)
 }
 
-func (r *MemoryUserRepo) DeleteByMobile(mobile string) {
+func (r *UserRepoMem) DeleteByMobile(mobile string) {
 	//TODO: 未实现
 }
 
-func (r *MemoryUserRepo) findUser(mobile string, pwd string) *User {
+func (r *UserRepoMem) findUser(mobile string, pwd string) *User {
 	found := r.retriveUserByMobile(mobile)
 	if found == nil || found.Password != pwd {
 		return nil
 	}
 	return found
 }
-func (r *MemoryUserRepo) retriveUserByMobile(mobile string) *User {
+func (r *UserRepoMem) retriveUserByMobile(mobile string) *User {
 	return r.userlist[mobile]
 }
 
 type UserIdGen func() string
 
 func genUId() string {
-	return fmt.Sprintf("userId%v", utils.NewRandom().GenStr())
+	return fmt.Sprintf("userId%v", utils.RandomImpl{}.GenStr())
 }
 
-func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string, genUserId UserIdGen) (user *User, err error) {
+func (r *UserRepoMem) CreateUser(mobile string, pwd string, nickname string, autologin string, genUserId UserIdGen) (user *User, err error) {
 	if r.findUser(mobile, pwd) != nil {
 		return nil, errors.New("hello,error")
 	}
+	al, _ := strconv.Atoi(autologin)
 	userId := genUserId()
 	avatarUrl := utils.NewRandom().GenAavatarStr()
 	r.userlist[mobile] = &User{
@@ -85,13 +87,13 @@ func (r *MemoryUserRepo) CreateUser(mobile string, pwd string, nickname string, 
 		AvatarUrl:   avatarUrl,
 		Province:    "未知",
 		City:        "未知",
-		AutoLogin:   0,
+		AutoLogin:   uint(al),
 		UserInfo:    "FakeUserInfo",
-		UserLevelId: 1,
+		UserLevelId: GREENTYPE,
 		UserLevel:   &UserLevel{GREENTYPE, GREENTYPE.String()},
 	}
 	return r.userlist[mobile], nil
 }
-func (r *MemoryUserRepo) CreateAdmin(mobile string, pwd string) {
-	r.CreateUser(mobile, pwd, "超级塞亚人", genUId)
+func (r *UserRepoMem) CreateAdmin(mobile string, pwd string) {
+	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
 }

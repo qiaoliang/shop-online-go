@@ -30,10 +30,7 @@ func (suite *SupperSuite) SetupSuite() {
 	}
 }
 func (suite *SupperSuite) TeardownSuite() {
-	if configs.Cfg.Persistence {
-		configs.Cfg.Downgrade()
-		configs.Cfg.DBDisconnect()
-	}
+
 }
 
 // This will run before each test in the suite

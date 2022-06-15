@@ -32,21 +32,21 @@ func (ur *UserRepoTestSuite) SetupSuite() {}
 // This will run before each test in the suite
 func (ur *UserRepoTestSuite) SetupTest() {
 	userRepo = nil
-	userRepo = GetMemoryUserRepo()
+	userRepo = newUserRepo(false)
 }
 
 func (suite *UserRepoTestSuite) Test_create_user() {
 	suite.Equal(1, userRepo.TotalUsers())
-	user, _ := userRepo.CreateUser("mobile1", "pwd1", "nickname2", genUId)
+	user, _ := userRepo.CreateUser("mobile1", "pwd1", "nickname2", "1", genUId)
 
 	suite.Equal(2, userRepo.TotalUsers())
 	suite.Equal("mobile1", user.Mobile)
-	userRepo.CreateUser("mobile2", "pwd2", "nickname2", genUId)
+	userRepo.CreateUser("mobile2", "pwd2", "nickname2", "1", genUId)
 	suite.Equal(3, userRepo.TotalUsers())
 }
 
 func (suite *UserRepoTestSuite) Test_find_user_by_mobile_and_pwd() {
-	userRepo.CreateUser("mobile", "pwd", "nickname", genUId)
+	userRepo.CreateUser("mobile", "pwd", "nickname", "1", genUId)
 	result := userRepo.findUser("mobile", "pwd")
 	suite.NotEmpty(result)
 	pattern := configs.Cfg.AvatarPicPrefix() + "[a-l]\\.jpeg$"
@@ -55,7 +55,7 @@ func (suite *UserRepoTestSuite) Test_find_user_by_mobile_and_pwd() {
 	suite.Equal("mobile", result.Mobile)
 }
 func (suite *UserRepoTestSuite) Test_retriveUserByMobile() {
-	userRepo.CreateUser("mobile", "pwd", "nickname", genUId)
+	userRepo.CreateUser("mobile", "pwd", "nickname", "1", genUId)
 	result := userRepo.retriveUserByMobile("mobile")
 	suite.NotEmpty(result)
 	result = userRepo.retriveUserByMobile("noexistedUser")

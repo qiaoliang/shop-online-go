@@ -10,12 +10,17 @@ type User struct {
 	City        string     `json:"city"`
 	AutoLogin   uint       `json:"autoLogin"`
 	UserInfo    string     `json:"userInfo"`
-	UserLevelId int32      `json:"-"`
+	UserLevelId UserType   `json:"-"  gorm:"column:User_Level_Id"`
 	UserLevel   *UserLevel `json:"userLevel" gorm:"-"`
 }
+
 type UserLevel struct {
 	Level UserType `json:"id"`
 	Name  string   `json:"name"`
+}
+
+func (s *User) inflate() {
+	s.UserLevel = &UserLevel{s.UserLevelId, s.UserLevelId.String()}
 }
 
 type UserType int32

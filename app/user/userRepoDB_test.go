@@ -57,10 +57,10 @@ func (ur *UserRepoDBTestSuite) Test_get_DB_REPO_Instance() {
 }
 
 func (ur *UserRepoDBTestSuite) Test_total_users() {
-	ur.Equal(1, ur.repo.TotalUsers())
+	ur.True(ur.repo.TotalUsers() >= 1)
 }
 func (ur *UserRepoDBTestSuite) Test_Create_users() {
-	ur.repo.CreateUser("mymobile", "mypwd", "nickname", genUId)
+	ur.repo.CreateUser("mymobile", "mypwd", "nickname", "1", genUId)
 	result := ur.repo.retriveUserByMobile("mymobile")
 	ur.Equal("mymobile", result.Mobile)
 	ur.NotContains(result.AvatarUrl, "http://localhost:9090/pic/avatar/")
@@ -83,7 +83,7 @@ func (ur *UserRepoDBTestSuite) Test_find_user_by_mobile_and_pwd() {
 func (ur *UserRepoDBTestSuite) Test_retriveUserByMobile() {
 	result := ur.repo.retriveUserByMobile("13900007997")
 	ur.NotEmpty(result)
-	ur.Equal(int32(0), result.UserLevelId)
+	ur.Equal(GREENTYPE, result.UserLevelId)
 	ur.Equal("这是UserInfo", result.UserInfo)
 	ur.Equal("a.jpeg", result.AvatarUrl)
 	result = userRepo.retriveUserByMobile("noexistedUser")

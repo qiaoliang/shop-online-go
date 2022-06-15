@@ -3,6 +3,7 @@ package user
 import (
 	"bookstore/app/utils"
 	"errors"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -11,7 +12,7 @@ type UserRepoIf interface {
 	TotalUsers() int
 	findUser(mobile string, pwd string) *User
 	retriveUserByMobile(mobile string) *User
-	CreateUser(mobile string, pwd string, nickname string, genUserId UserIdGen) (user *User, err error)
+	CreateUser(mobile string, pwd string, nickname string, autologin string, genUserId UserIdGen) (user *User, err error)
 	CreateAdmin(mobile string, pwd string)
 	DeleteByMobile(mobile string)
 }
@@ -53,11 +54,13 @@ func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
 	return &user
 }
 
-func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string, genUserId UserIdGen) (user *User, err error) {
+func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string, autologin string, genUserId UserIdGen) (user *User, err error) {
 	if r.findUser(mobile, pwd) != nil {
 		return nil, errors.New("hello,error")
 	}
 	userId := genUserId()
+
+	al, _ := strconv.Atoi(autologin)
 	avatarUrl := utils.NewRandom().GenAavatarStr()
 	newUser := &User{
 		Id:          userId,
@@ -67,7 +70,7 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string, genU
 		AvatarUrl:   avatarUrl,
 		Province:    "未知",
 		City:        "未知",
-		AutoLogin:   0,
+		AutoLogin:   uint(al),
 		UserInfo:    "FakeUserInfo",
 		UserLevelId: 1,
 		UserLevel:   &UserLevel{GREENTYPE, GREENTYPE.String()},
@@ -80,5 +83,5 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string, genU
 	return r.userlist[mobile], nil
 }
 func (r *UserRepoDB) CreateAdmin(mobile string, pwd string) {
-	r.CreateUser(mobile, pwd, "超级塞亚人", genUId)
+	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
 }

@@ -32,10 +32,10 @@ func FetchGoodsList(c *gin.Context) {
 	pageSize := c.DefaultPostForm("pageSize", "10")
 	categoryId := c.PostForm("categoryId")
 	catalogueId, _ := strconv.Atoi(categoryId)
-	id := uint(catalogueId)
+	cateId := uint(catalogueId)
 
 	// logic
-	result := getGoods(page, pageSize, id)
+	result := getGoods(page, pageSize, cateId)
 
 	// response
 	c.JSON(http.StatusOK, gin.H{

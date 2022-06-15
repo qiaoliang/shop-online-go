@@ -1,68 +1,80 @@
 package user
 
 import (
+	"bookstore/app/testutils"
+	"bookstore/app/utils"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
 )
 
-var AdminMobile = "13900007997"
-var AdminPwd = "1234"
-
 type UserServiceTestSuite struct {
-	suite.Suite
+	testutils.SupperSuite
+	us *UserService
 }
 
-// We need this function to kick off the test suite, otherwise
-// "go test" won't know about our tests
 func TestUserServiceTestSuite(t *testing.T) {
 	suite.Run(t, new(UserServiceTestSuite))
+
 }
 
 // This will run right before the test starts
 // and receives the suite and test names as input
-func (ur *UserServiceTestSuite) BeforeTest(suiteName, testName string) {}
+func (s *UserServiceTestSuite) BeforeTest(suiteName, testName string) {}
 
 // This will run after test finishes
 // and receives the suite and test names as input
-func (ur *UserServiceTestSuite) AfterTest(suiteName, testName string) {}
+func (s *UserServiceTestSuite) AfterTest(suiteName, testName string) {}
 
 // This will run before before the tests in the suite are run
-func (ur *UserServiceTestSuite) SetupSuite() {}
-
-// This will run before each test in the suite
-func (ur *UserServiceTestSuite) SetupTest() {
-	userService = nil
-	userService = GetUserService()
+func (s *UserServiceTestSuite) SetupSuite() {
+	s.SupperSuite.SetupSuite()
+	s.us = newUserService(true)
+}
+func (s *UserServiceTestSuite) TeardownSuite() {
+	s.SupperSuite.TeardownSuite()
+	s.us = newUserService(true)
 }
 
-func (suite *UserServiceTestSuite) Test_admin_login() {
-
-	user := GetUserService().login("diviceid", "deviceName", AdminMobile, "1234")
-	suite.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
-	suite.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
-	suite.Equal(AdminMobile, userService.userOnline[AdminMobile], "should find admin online")
-}
-func (suite *UserServiceTestSuite) Test_findUserByMobile() {
-	suite.loginAsAdmin()
-	suite.True(GetUserService().isOnline(AdminMobile))
-	user := GetUserService().FindUserByToken(AdminMobile)
-	suite.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
-	suite.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
-	offlineuser := GetUserService().FindUserByToken("offlineUser")
-	suite.True(offlineuser == nil)
+func (s *UserServiceTestSuite) SetupTest() {
 }
 
-func (suite *UserServiceTestSuite) Test_is_Online_after_register() {
-	n := GetUserService().RegisterNewUser("newMobile", "pwd", "nickString")
-	suite.Equal("newMobile", n.Mobile)
-	suite.True(GetUserService().isOnline("newMobile"))
-	r := GetUserService().findUser("newMobile", "pwd")
-	suite.Equal("newMobile", r.Mobile)
-	suite.Contains(r.AvatarUrl, ".jpeg")
-	suite.True(GetUserService().isOnline("newMobile"))
+var AdminMobile = "13900007997"
+var AdminPwd = "1234"
+
+func (s *UserServiceTestSuite) Test_assertUserRepoPersistance() {
 }
 
-func (suite *UserServiceTestSuite) loginAsAdmin() {
-	GetUserService().login("diviceid", "deviceName", AdminMobile, AdminPwd)
+func (s *UserServiceTestSuite) Test_admin_login() {
+
+	user, _ := s.us.login("diviceid", "deviceName", AdminMobile, "1234")
+	s.NotNil(user)
+	s.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
+	s.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
+	s.Equal(AdminMobile, s.us.userOnline[AdminMobile], "should find admin online")
+}
+func (s *UserServiceTestSuite) Test_findUserByMobile() {
+	s.loginAsAdmin()
+	s.True(s.us.isOnline(AdminMobile))
+	user := s.us.FindUserByToken(AdminMobile)
+	s.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
+	s.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
+	offlineuser := s.us.FindUserByToken("offlineUser")
+	s.True(offlineuser == nil)
+}
+
+func (s *UserServiceTestSuite) Test_is_Online_after_register() {
+	expMobile := "newMobile" + utils.RandomImpl{}.GenStr()
+	n, err := s.us.RegisterNewUser(expMobile, "pwd", "nickString", "0")
+	s.Nil(err)
+	s.Equal(expMobile, n.Mobile)
+	s.True(s.us.isOnline(expMobile))
+	r := s.us.findUser(expMobile, "pwd")
+	s.Equal(expMobile, r.Mobile)
+	s.Contains(r.AvatarUrl, ".jpeg")
+	s.True(s.us.isOnline(expMobile))
+}
+
+func (s *UserServiceTestSuite) loginAsAdmin() {
+	s.us.login("diviceid", "deviceName", AdminMobile, AdminPwd)
 }
