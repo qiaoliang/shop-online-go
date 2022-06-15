@@ -15,7 +15,6 @@ type UserServiceTestSuite struct {
 
 func TestUserServiceTestSuite(t *testing.T) {
 	suite.Run(t, new(UserServiceTestSuite))
-
 }
 
 // This will run right before the test starts
@@ -33,7 +32,7 @@ func (s *UserServiceTestSuite) SetupSuite() {
 }
 func (s *UserServiceTestSuite) TeardownSuite() {
 	s.SupperSuite.TeardownSuite()
-	s.us = newUserService(true)
+	s.us = nil
 }
 
 func (s *UserServiceTestSuite) SetupTest() {
