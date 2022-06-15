@@ -99,28 +99,17 @@ func prepare_Devops_category() GoodsItems {
 	return items
 }
 func prepare_GoodsItem_cd10_with_pics() GoodsItem {
-	gid := "g7225946"
-	gName := "持续交付1.0"
-	CatalogueId := 0
-	stock := 110
-	minPrice := "66.0"
-	origPrice := "99.0"
-	content := "DevOps 的第一本书"
-
-	item := assemble_Item(gid, gName, CatalogueId, stock, content, minPrice, origPrice)
-	return item
+	items := prepare_Devops_category()
+	return items[0]
 }
 
 func assemble_Item(gid string, gName string, CatalogueId int, stock int, content string, minPrice string, origPrice string) GoodsItem {
 	picExt := ".jpeg"
 	gd := aDetail(gid, gName, stock, content, picExt, minPrice, origPrice)
-
 	gd.Pics = append_pics_to_gd(gd.Gid)
-
 	item := aItem(gid, gName, CatalogueId, picExt, minPrice, origPrice, gd)
 	return item
 }
-
 func aDetail(gid string, gName string, stock int, content string, picExt string, minPrice string, origPrice string) GoodsDetail {
 	gd := GoodsDetail{
 		gid,
