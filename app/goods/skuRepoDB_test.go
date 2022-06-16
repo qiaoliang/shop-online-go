@@ -1,7 +1,6 @@
 package goods
 
 import (
-	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
 	"testing"
@@ -25,7 +24,7 @@ func (r *SkuRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 func (r *SkuRepoDBTestSuite) SetupSuite() {
 	r.SupperSuite.SetupSuite()
 	skuRepo = nil
-	r.repo = getSkuRepoDB(configs.Cfg.DBConnection())
+	r.repo = NewSkuRepo(true)
 }
 func (r *SkuRepoDBTestSuite) TeardownSuite() {
 	r.SupperSuite.TeardownSuite()
@@ -62,7 +61,7 @@ func (r *SkuRepoDBTestSuite) Test_Update() {
 	exp := r.prepare_a_sku()
 	exp.MinPrice = "0.0"
 	exp.CategoryId = 888
-	r.repo.Update(exp.SkuId, exp)
+	r.repo.Update(exp.SkuId, &exp)
 
 	found := r.repo.FindWithCarouselPics(exp.SkuId)
 	r.Equal("0.0", found.MinPrice)

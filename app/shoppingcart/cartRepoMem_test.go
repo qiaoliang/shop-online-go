@@ -14,7 +14,7 @@ import (
 type CartRepositoryTestSuite struct {
 	testutils.SupperSuite
 	repo  CartRepoIf
-	gRepo *goods.GoodsRepoMem
+	gRepo goods.SkuRepoIf
 }
 
 func (st *CartRepositoryTestSuite) TestExample() {
@@ -41,8 +41,8 @@ func (st *CartRepositoryTestSuite) SetupSuite() {
 	cartRepo = nil
 	st.SupperSuite.SetupSuite()
 	st.repo = newCartsRepo(false)
-	st.gRepo = goods.GetGoodsRepo()
-	st.gRepo.LoadGoods()
+	st.gRepo = goods.NewSkuRepo(false)
+	st.gRepo.FindAll()
 }
 
 // This will run before each test in the suite

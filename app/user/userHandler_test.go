@@ -1,7 +1,6 @@
 package user
 
 import (
-	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
 	"fmt"
@@ -13,7 +12,7 @@ import (
 )
 
 type UserHandlerSuite struct {
-	suite.Suite
+	testutils.SupperSuite
 	router *gin.Engine
 }
 
@@ -22,19 +21,14 @@ func TestUserHandlerSuite(t *testing.T) {
 }
 
 func (st *UserHandlerSuite) SetupSuite() {
+	st.SupperSuite.SetupSuite()
 	st.router = setupTestRouter()
-	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 }
 
-// This will run right before the test starts
-// and receives the suite and test names as input
 func (ur *UserHandlerSuite) BeforeTest(suiteName, testName string) {}
 
-// This will run after test finishes
-// and receives the suite and test names as input
 func (ur *UserHandlerSuite) AfterTest(suiteName, testName string) {}
 
-// This will run before each test in the suite
 func (ur *UserHandlerSuite) SetupTest() {
 }
 

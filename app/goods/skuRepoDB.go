@@ -9,6 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
+type GoodsRepoIf interface {
+}
+
 var lockSku = &sync.Mutex{}
 var skuRepo SkuRepoIf
 
@@ -25,12 +28,8 @@ func NewSkuRepo(isPersistence bool) SkuRepoIf {
 	if isPersistence {
 		return SkuRepoDB{configs.Cfg.DBConnection()}
 	} else {
-		return &SkuRepoMem{}
+		return &SkuRepoMem{map[string]SKU{}}
 	}
-}
-
-func getSkuRepoDB(db *gorm.DB) SkuRepoIf {
-	return SkuRepoDB{db}
 }
 
 type SkuRepoIf interface {
@@ -39,13 +38,13 @@ type SkuRepoIf interface {
 	FindWithCarouselPics(skuid string) *SKU
 	Create(sku SKU) error
 	Delete(sku SKU) error
-	Update(skuid string, sku SKU) error
+	Update(skuid string, sku *SKU) error
 }
 type SkuRepoDB struct {
 	db *gorm.DB
 }
 
-func (s SkuRepoDB) Update(skuid string, sku SKU) error {
+func (s SkuRepoDB) Update(skuid string, sku *SKU) error {
 	oSku := SKU{SkuId: skuid}
 	ret := s.db.Model(&oSku).Updates(sku)
 	return ret.Error
