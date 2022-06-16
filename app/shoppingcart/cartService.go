@@ -42,21 +42,30 @@ func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint)
 		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
 		return nil
 	}
-	ci := cs.cached.get(token)
+	ci := cs.findCartInfoFor(token)
 	if ci == nil {
-		ci = cs.fetchCartItemsFromPersistance(token)
-	}
-	if ci == nil {
-		ci = cs.CreateCartInfoFor(token, sku, quantity)
-		return ci
+		return cs.CreateCartItemFor(token, sku, quantity)
 	}
 
-	item, ip := ci.FindBy(skuId)
+	item, ip := ci.FindDetailBy(skuId)
+	if item == nil {
+		return cs.CreateCartItemFor(token, sku, quantity)
+	}
+
 	item.AddMore(quantity)
 	ip.AddMore(quantity)
 	cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
+
 	ci.caculateRedDot()
 	cs.cached.update(token, ci)
+	return ci
+}
+
+func (cs *CartService) findCartInfoFor(token string) *CartInfoVM {
+	ci := cs.cached.get(token)
+	if ci == nil {
+		ci = cs.fetchCartItems(token)
+	}
 	return ci
 }
 func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM {
@@ -66,12 +75,9 @@ func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, qua
 		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", gid)
 		return nil
 	}
-	ci := cs.cached.get(token)
+	ci := cs.findCartInfoFor(token)
 	if ci == nil {
-		ci = cs.fetchCartItemsFromPersistance(token)
-		if ci == nil {
-			return nil
-		}
+		return nil
 	}
 	item := ci.Modify(gid, quantity)
 	cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
@@ -82,11 +88,11 @@ func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, qua
 func (cs *CartService) GetCartByToken(token string) *CartInfoVM {
 	ret := cs.cached.get(token)
 	if ret == nil {
-		return cs.fetchCartItemsFromPersistance(token)
+		return cs.fetchCartItems(token)
 	}
 	return ret
 }
-func (cs *CartService) fetchCartItemsFromPersistance(token string) *CartInfoVM {
+func (cs *CartService) fetchCartItems(token string) *CartInfoVM {
 	found := cs.cr.FindUserCartItemsBy(token)
 	if len(found) == 0 {
 		return nil
@@ -140,7 +146,7 @@ func (cs *CartService) fromVMToUCI(token string, ci *CartItemVM) *UserCartItem {
 	}
 }
 
-func (cs *CartService) CreateCartInfoFor(token string, sku *goods.SKU, quantity uint) *CartInfoVM {
+func (cs *CartService) CreateCartItemFor(token string, sku *goods.SKU, quantity uint) *CartInfoVM {
 	uci := UserCartItem{
 		Token:           token,
 		SkuId:           sku.SkuId,
@@ -158,11 +164,14 @@ func (cs *CartService) CreateCartInfoFor(token string, sku *goods.SKU, quantity 
 		log.Fatalf("%v \n save db has error:\n%v\n", uci, err)
 		return nil
 	}
-	ci := &CartInfoVM{token, 0, []CartItemVM{}, []ItemPairVM{}}
+	ci := cs.cached.get(token)
+	if ci == nil {
+		ci = &CartInfoVM{token, 0, []CartItemVM{}, []ItemPairVM{}}
+		cs.cached.update(token, ci)
+	}
 	item, ip := cs.fromUCIToVM(uci)
 	ci.Items = append(ci.Items, item)
 	ci.Pairs = append(ci.Pairs, ip)
 	ci.RedDot = uint(len(ci.Items))
-	cs.cached.update(token, ci)
 	return ci
 }

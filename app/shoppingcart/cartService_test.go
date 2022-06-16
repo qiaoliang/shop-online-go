@@ -46,20 +46,21 @@ func (s *CartServiceTestSuite) Test_GetPersistance() {
 }
 
 const (
-	ANY_NUMBER    = 8888
-	ANY_TOKEN     = "ANY"
-	UNEXISTED_SKU = "unexisted_SKU"
-	EXISTED_SKU   = "g7225946"
+	ANY_NUMBER      = 8888
+	ANY_TOKEN       = "ANY"
+	UNEXISTED_SKU   = "unexisted_SKU"
+	EXISTED_SKU_ONE = "g7225946"
+	EXISTED_SKU_TWO = "g7225947"
 )
 
 func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
 
 	token := " Test_CreateCartInfoFor" + utils.RandomImpl{}.GenStr()
-	exp_skuID := EXISTED_SKU
+	exp_skuID := EXISTED_SKU_ONE
 	quantity := uint(10)
 	expGd, expIf := s.generateExp(exp_skuID, quantity, token)
 
-	ci := s.cs.CreateCartInfoFor(token, expGd, quantity)
+	ci := s.cs.CreateCartItemFor(token, expGd, quantity)
 
 	s.NotNil(ci)
 	s.EqualValues(expIf, ci)
@@ -68,10 +69,10 @@ func (s *CartServiceTestSuite) Test_CreateCartInfoFor() {
 func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
 
 	token := "ModifyQuantityOfGoodsInCate" + utils.RandomImpl{}.GenStr()
-	exp_skuID := EXISTED_SKU
+	exp_skuID := EXISTED_SKU_ONE
 	orgQuan := uint(10)
 	expGd, expIf := s.generateExp(exp_skuID, orgQuan, token)
-	s.cs.CreateCartInfoFor(token, expGd, orgQuan)
+	s.cs.CreateCartItemFor(token, expGd, orgQuan)
 
 	updatedQuan := uint(30)
 	expIf.Items[0].Quantity = updatedQuan
@@ -87,9 +88,9 @@ func (s *CartServiceTestSuite) Test_ModifyQuantityOfGoodsInCate() {
 func (s *CartServiceTestSuite) Test_Can_not_Same_unexisted_SKU_In_Cart() {
 	s.Nil(s.cs.PutItemsInCart(ANY_TOKEN, UNEXISTED_SKU, ANY_NUMBER))
 }
-func (s *CartServiceTestSuite) Test_Should_Put_a_new_cart_Item_Into_Cart() {
-	token := "Should_Put_a_new_cart_Item_Into_Cart" + utils.RandomImpl{}.GenStr()
-	exp_skuID := EXISTED_SKU
+func (s *CartServiceTestSuite) Test_Put_a_new_cart_Item_Into_Cart() {
+	token := "Test_Put_a_new_cart_Item_Into_Cart" + utils.RandomImpl{}.GenStr()
+	exp_skuID := EXISTED_SKU_ONE
 	number := uint(10)
 	_, expIf := s.generateExp(exp_skuID, number, token)
 	ci := s.cs.PutItemsInCart(token, exp_skuID, number)
@@ -99,7 +100,7 @@ func (s *CartServiceTestSuite) Test_Should_Put_a_new_cart_Item_Into_Cart() {
 func (s *CartServiceTestSuite) Test_Should_add_more_volume_for_same_cart_Item_in_Cart() {
 
 	token := "Should_add_more_volume_for_same_cart_Item" + utils.RandomImpl{}.GenStr()
-	exp_skuID := EXISTED_SKU
+	exp_skuID := EXISTED_SKU_ONE
 	number := uint(10)
 	_, expIf := s.generateExp(exp_skuID, number, token)
 	s.cs.PutItemsInCart(token, exp_skuID, number)
@@ -111,13 +112,35 @@ func (s *CartServiceTestSuite) Test_Should_add_more_volume_for_same_cart_Item_in
 	s.NotNil(ci)
 	s.EqualValues(expIf, ci)
 }
+func (s *CartServiceTestSuite) Test_add_multiple_sku_for_same_cart() {
 
+	token := "Test_add_multiple_sku_for_same_cart" + utils.RandomImpl{}.GenStr()
+	number1 := uint(10)
+
+	s.cs.PutItemsInCart(token, EXISTED_SKU_ONE, number1)
+
+	number2 := uint(10)
+	_, expItem, expIp := s.generateExpItem(EXISTED_SKU_TWO, number2, token)
+
+	ci := s.cs.PutItemsInCart(token, EXISTED_SKU_TWO, number2)
+	s.NotNil(ci)
+	s.EqualValues(expItem, ci.findItemByGid(EXISTED_SKU_TWO))
+	s.EqualValues(expIp, ci.findPairByGid(EXISTED_SKU_TWO))
+
+}
 func (s *CartServiceTestSuite) generateExp(sku_id string, quantity uint, token string) (*goods.SKU, *CartInfoVM) {
 	gd := s.cs.sr.First(sku_id)
 	expItem := NewCartItemVMBuilder(gd).quantity(quantity).picStr(configs.Cfg.GoodsPicPrefix() + gd.PicStr).build()
 	expIp := NewItemPairVMBuilder().gid(gd.SkuId).volume(quantity).build()
 	expIf := NewCartInfoVMBuilder().token(token).addItem(expItem).addIpair(expIp).build()
 	return gd, expIf
+}
+
+func (s *CartServiceTestSuite) generateExpItem(sku_id string, quantity uint, token string) (*goods.SKU, *CartItemVM, *ItemPairVM) {
+	gd := s.cs.sr.First(sku_id)
+	expItem := NewCartItemVMBuilder(gd).quantity(quantity).picStr(configs.Cfg.GoodsPicPrefix() + gd.PicStr).build()
+	expIp := NewItemPairVMBuilder().gid(gd.SkuId).volume(quantity).build()
+	return gd, expItem, expIp
 }
 
 type CartInfoVMBuilder struct {

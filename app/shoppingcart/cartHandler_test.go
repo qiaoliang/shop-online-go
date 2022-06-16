@@ -1,7 +1,6 @@
 package cart
 
 import (
-	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
 	"fmt"
@@ -18,7 +17,7 @@ type CartJson struct {
 }
 
 type ShoppingCartHandlerSuite struct {
-	suite.Suite
+	testutils.SupperSuite
 	router *gin.Engine
 }
 
@@ -33,8 +32,8 @@ func TestShoppingCartHandlerSuite(t *testing.T) {
 func (st *ShoppingCartHandlerSuite) SetupTest() {
 }
 func (st *ShoppingCartHandlerSuite) SetupSuite() {
+	st.SupperSuite.SetupSuite()
 	st.router = setupTestRouter()
-	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 }
 
 const (
@@ -46,18 +45,18 @@ func (st *ShoppingCartHandlerSuite) Test_add_one_item_to_shoppingcart_for_a_toke
 	data := url.Values{}
 	token := "an_token_" + utils.RandomImpl{}.GenStr()
 	data.Set("token", token)
-	data.Add("goodsId", EXISTED_SKU)
+	data.Add("goodsId", EXISTED_SKU_ONE)
 	data.Add("number", "5")
 
 	body := testutils.HttpPost(st.router, data, "/v1/shopping-cart/add")
 
 	exp := fmt.Sprintf(`{"code":0,"data":{"token":"%v","number":1,"items":[{"key":"%v","pic":"http://localhost:9090/pic/goods/%v.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":5,"selected":"1","optionValueName":"OptionValueName"}],"goods":[{"goodsId":"%v","number":5}]},"msg":"OK"}`,
-		token, EXISTED_SKU, EXISTED_SKU, EXISTED_SKU)
+		token, EXISTED_SKU_ONE, EXISTED_SKU_ONE, EXISTED_SKU_ONE)
 	st.Equal(exp, string(body), "should same.")
 }
 func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
 	st.Test_add_one_item_to_shoppingcart_for_a_token()
-	gid := EXISTED_SKU
+	gid := EXISTED_SKU_ONE
 	token := "second_token_" + utils.RandomImpl{}.GenStr()
 	quantity := "13"
 	data := url.Values{}
@@ -73,7 +72,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
 
 }
 func (st *ShoppingCartHandlerSuite) Test_add_more_items_in_shoppingcart_for_same_token() {
-	gid := EXISTED_SKU
+	gid := EXISTED_SKU_ONE
 	token := "same_token_" + utils.RandomImpl{}.GenStr()
 	GetCartsService().PutItemsInCart(token, gid, uint(46))
 	moreQuantity := "10"
@@ -89,7 +88,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_more_items_in_shoppingcart_for_same
 	st.Equal(exp, string(body))
 }
 func (st *ShoppingCartHandlerSuite) Test_Modify_number_of_item_in_shoppingcart_for_a_token() {
-	gid := EXISTED_SKU
+	gid := EXISTED_SKU_ONE
 	token := "same_token_" + utils.RandomImpl{}.GenStr()
 	initquantity := uint(10)
 	GetCartsService().PutItemsInCart(token, gid, initquantity)

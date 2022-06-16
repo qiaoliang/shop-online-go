@@ -49,7 +49,7 @@ func (ci *CartInfoVM) caculateRedDot() {
 func (ci *CartInfoVM) getToken() string {
 	return ci.Token
 }
-func (ci *CartInfoVM) FindBy(skuid string) (*CartItemVM, *ItemPairVM) {
+func (ci *CartInfoVM) FindDetailBy(skuid string) (*CartItemVM, *ItemPairVM) {
 	return ci.findItemByGid(skuid), ci.findPairByGid(skuid)
 
 }
