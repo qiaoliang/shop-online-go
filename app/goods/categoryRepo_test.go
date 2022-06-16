@@ -28,7 +28,7 @@ func (st *CategoryRepoTestSuite) SetupSuite() {
 
 func (st *CategoryRepoTestSuite) SetupTest() {
 	cateRepo = nil
-	cateRepo = GetCategoryRepo()
+	cateRepo = NewCategoryRepo(false)
 }
 
 func (st *CategoryRepoTestSuite) Test_goods_load_from_() {

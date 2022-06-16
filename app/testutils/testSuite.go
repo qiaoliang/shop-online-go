@@ -7,9 +7,6 @@ import (
 	"github.com/stretchr/testify/suite"
 )
 
-// We'll be able to store suite-wide
-// variables and add methods to this
-// test suite struct
 type SupperSuite struct {
 	suite.Suite
 }
@@ -29,9 +26,6 @@ func (suite *SupperSuite) SetupSuite() {
 		configs.Cfg.DBConnection()
 	}
 }
-func (suite *SupperSuite) TeardownSuite() {
+func (suite *SupperSuite) TeardownSuite() {}
 
-}
-
-// This will run before each test in the suite
 func (suite *SupperSuite) SetupTest() {}

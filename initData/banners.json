@@ -1,0 +1,30 @@
+[
+    {
+        "businessId":0,
+        "dateAdd":"2022-05-05 11:26:09",
+        "id":222083,
+        "linkUrl":"campaign_url_1",
+        "paixu":0,
+        "picUrl":"b0001.jpeg",
+        "remark":"remark_1",
+        "status":0,
+        "statusStr":"any",
+        "title":"any",
+        "type":"any",
+        "userId":1605
+    },
+    {
+        "businessId":1,
+        "dateAdd":"2022-05-05 11:26:09",
+        "id":222084,
+        "linkUrl":"campaign_url_2",
+        "paixu":0,
+        "picUrl":"b0002.jpeg",
+        "remark":"remark_2",
+        "status":0,
+        "statusStr":"any",
+        "title":"any",
+        "type":"any",
+        "userId":1606
+    }
+]

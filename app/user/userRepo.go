@@ -78,7 +78,7 @@ func (r *UserRepoMem) CreateUser(mobile string, pwd string, nickname string, aut
 	}
 	al, _ := strconv.Atoi(autologin)
 	userId := genUserId()
-	avatarUrl := utils.NewRandom().GenAavatarStr()
+	avatarUrl := utils.RandomMock{}.GenAavatarStr()
 	r.userlist[mobile] = &User{
 		Id:          userId,
 		Password:    pwd,

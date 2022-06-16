@@ -17,7 +17,6 @@ import (
 )
 
 type Config struct {
-	IsTestEnv   bool
 	Persistence bool
 	cfgDir      string
 	dbConn      *gorm.DB
@@ -63,7 +62,6 @@ func GetConfigInstance(cfgfile string) *Config {
 	viper.SetConfigFile(cfgfile)
 	viper.ReadInConfig()
 	Cfg = Config{
-		IsTestEnv:      viper.GetBool("IS_TEST_ENV"),
 		Persistence:    viper.GetBool("PERSISTANCE"),
 		Host:           viper.Get("HOST").(string),
 		Port:           viper.Get("PORT").(int),

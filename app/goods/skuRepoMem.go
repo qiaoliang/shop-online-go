@@ -1,6 +1,9 @@
 package goods
 
-import "errors"
+import (
+	"errors"
+	"sort"
+)
 
 type SkuRepoMem struct {
 	items map[string]SKU
@@ -30,14 +33,14 @@ func (s SkuRepoMem) Update(skuid string, sku *SKU) error {
 }
 
 func (s SkuRepoMem) FindAll() []SKU {
-	if len(s.items) == 0 {
-		return mapValues(s.items)
+	if len(s.items) != 0 {
+		return orderBySkuID(s.items)
 	}
 	// add the first catalouge
-	item1 := createSKU(0, 0, "g7225946", "持续交付1.0", 10, "册", "0", "一本DevOps的经典书。", ONSAIL, "66.0", "99.0", BOTH, "1")
-	item2 := createSKU(1, 0, "g7225947", "持续交付2.0", 20, "册", "0", "另一本DevOps的经典书。", ONSAIL, "99.0", "129.0", BOTH, "1")
-	item3 := createSKU(2, 0, "g7225948", "DevOps实战指南", 2, "册", "0", "DevOps 黄皮书。", ONSAIL, "55.0", "85.0", BOTH, "1")
-	item4 := createSKU(3, 0, "g7225949", "谷歌软件工程", 5, "册", "0", "解密硅谷头部互联网企业 如何打造软件工程文化。", ONSAIL, "77.0", "107.0", BOTH, "1")
+	item1 := createSKU(0, 0, "g7225946", "持续交付1.0", 110, "册", "1", "DevOps 的第一本书", ONSAIL, "66.0", "99.0", BOTH, "1")
+	item2 := createSKU(1, 0, "g7225947", "持续交付2.0", 200, "册", "1", "另一本DevOps的经典书。", ONSAIL, "99.0", "129.0", BOTH, "1")
+	item3 := createSKU(2, 0, "g7225948", "DevOps实战指南", 10, "册", "1", "DevOps 黄皮书。", ONSAIL, "55.0", "85.0", BOTH, "1")
+	item4 := createSKU(3, 0, "g7225949", "谷歌软件工程", 20, "册", "1", "解密硅谷头部互联网企业 如何打造软件工程文化。", ONSAIL, "77.0", "107.0", BOTH, "1")
 	s.items[item1.SkuId] = item1
 	s.items[item2.SkuId] = item2
 	s.items[item3.SkuId] = item3
@@ -54,13 +57,18 @@ func (s SkuRepoMem) FindAll() []SKU {
 	s.items[item6.SkuId] = item6
 	s.items[item7.SkuId] = item7
 	s.items[item8.SkuId] = item8
-	return mapValues(s.items)
+	return orderBySkuID(s.items)
 }
-func mapValues(m map[string]SKU) []SKU {
+func orderBySkuID(m map[string]SKU) []SKU {
 	v := make([]SKU, 0, len(m))
+	keys := make([]string, 0, len(m))
+	for k := range m {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
 
-	for _, value := range m {
-		v = append(v, value)
+	for _, key := range keys {
+		v = append(v, m[key])
 	}
 	return v
 }
@@ -96,12 +104,12 @@ func createSKU(
 			{
 				Id:     0,
 				SkuId:  gid,
-				PicStr: "01.jpeg",
+				PicStr: "-01.jpeg",
 			},
 			{
 				Id:     0,
 				SkuId:  gid,
-				PicStr: "02.jpeg",
+				PicStr: "-02.jpeg",
 			},
 		},
 	}

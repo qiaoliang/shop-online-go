@@ -1,7 +1,6 @@
 package utils
 
 import (
-	"bookstore/app/configs"
 	"math/rand"
 
 	"github.com/rs/xid"
@@ -14,13 +13,6 @@ type ShopRandom interface {
 
 type RandomMock struct{}
 
-func NewRandom() ShopRandom {
-	if configs.Cfg.IsTestEnv {
-		return RandomMock{}
-	} else {
-		return RandomImpl{}
-	}
-}
 func (i RandomMock) GenStr() string {
 	str := "0123456789abcdefghijklmnopqrstuvwxyz"
 	bytes := []byte(str)

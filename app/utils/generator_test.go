@@ -8,7 +8,7 @@ import (
 )
 
 func Test_generate_Aavatar(t *testing.T) {
-	str := NewRandom().GenAavatarStr()
+	str := RandomMock{}.GenAavatarStr()
 	reg, _ := regexp.Compile(`^[a-l]\.jpeg$`)
 	assert.True(t, reg.MatchString(str), "Should be a jpeg file")
 }

@@ -61,7 +61,7 @@ func (r *UserRepoDB) CreateUser(mobile string, pwd string, nickname string, auto
 	userId := genUserId()
 
 	al, _ := strconv.Atoi(autologin)
-	avatarUrl := utils.NewRandom().GenAavatarStr()
+	avatarUrl := utils.RandomMock{}.GenAavatarStr()
 	newUser := &User{
 		Id:          userId,
 		Password:    pwd,

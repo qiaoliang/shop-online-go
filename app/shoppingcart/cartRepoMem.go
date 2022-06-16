@@ -60,9 +60,10 @@ func (cs *CartRepoMem) SaveUserCartItem(uci UserCartItem) error {
 		cs.carts[uci.Token] = &cart
 		return nil
 	}
-	item, _ := cart.findUserCartItem(uci.SkuId)
+	item, index := cart.findUserCartItem(uci.SkuId)
 	if item != nil {
-		return errors.New("already has the sku id in the cart")
+		cart.Items[index] = uci
+		return nil
 	}
 	cart.Items = append(cart.Items, uci)
 	return nil

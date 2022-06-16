@@ -4,7 +4,9 @@ import (
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
 	"fmt"
+	"log"
 	"net/url"
+	"strconv"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -71,16 +73,19 @@ func (st *ShoppingCartHandlerSuite) Test_add_item_in_cart_for_another_token() {
 	st.Equal(exp, string(body))
 
 }
-func (st *ShoppingCartHandlerSuite) Test_add_more_items_in_shoppingcart_for_same_token() {
+func (st *ShoppingCartHandlerSuite) Test_add_more_quntity_for_same_goods_in_shoppingcart_for_same_token() {
 	gid := EXISTED_SKU_ONE
-	token := "same_token_" + utils.RandomImpl{}.GenStr()
-	GetCartsService().PutItemsInCart(token, gid, uint(46))
-	moreQuantity := "10"
+	token := "same_token_add_more" + utils.RandomImpl{}.GenStr()
+	alreadyHave := uint(46)
+	GetCartsService().PutItemsInCart(token, gid, alreadyHave)
+	log.Println("prepare a existed sku in cart for the token.")
+	extraQuantity := uint(10)
 	data := url.Values{}
 	data.Set("token", token)
 	data.Add("goodsId", gid)
-	data.Add("number", moreQuantity)
-	totalQuantity := uint(56)
+	data.Add("number", strconv.Itoa(int(extraQuantity)))
+	totalQuantity := alreadyHave + extraQuantity
+	//
 	body := string(testutils.HttpPost(st.router, data, "/v1/shopping-cart/add"))
 
 	exp := fmt.Sprintf(`{"code":0,"data":{"token":"%v","number":1,"items":[{"key":"%v","pic":"http://localhost:9090/pic/goods/%v.jpeg","status":0,"name":"持续交付1.0","sku":["sku1","sku3"],"price":"66.0","number":%v,"selected":"1","optionValueName":"OptionValueName"}],"goods":[{"goodsId":"%v","number":%v}]},"msg":"OK"}`,
