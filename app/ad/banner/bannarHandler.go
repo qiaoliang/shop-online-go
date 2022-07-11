@@ -1,19 +1,20 @@
 package ad
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
-type Banners []Banner
+type Banners []BannerVM
 
 func FetchBanners(c *gin.Context) {
 	bt, err := c.GetQuery("type")
-	if !err {
+	if !err || bt == "" {
 		bt = "indexBanner"
 	}
 	t, err := c.GetQuery("token")
-	if !err {
+	if !err || t == "" {
 		t = "NoToken"
 	}
 

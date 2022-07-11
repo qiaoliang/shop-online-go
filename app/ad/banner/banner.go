@@ -1,6 +1,6 @@
 package ad
 
-type Banner struct {
+type BannerVM struct {
 	BusinessId uint   `json:"businessId"`
 	DateAdd    string `json:"dateAdd"`
 	Id         uint   `json:"id"`

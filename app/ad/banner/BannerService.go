@@ -7,7 +7,7 @@ import (
 var bs *BannerService
 
 type BannerService struct {
-	bl Banners
+	defaultlist Banners
 }
 
 func GetBannerService() *BannerService {
@@ -17,18 +17,20 @@ func GetBannerService() *BannerService {
 	return bs
 }
 func newBannerService(persistance bool) *BannerService {
-	return &BannerService{make(Banners, 0)}
+	default_list := defaultList()
+	return &BannerService{default_list}
 }
 func (s *BannerService) FetchBanners(btype string, token string) Banners {
 	if btype == "indexBanner" {
-		return s.initBannerData()
+		return s.defaultlist
 	}
-	//TODO: 需要实现根据 Banner 的类型与用户token ，返回不同的 Banner 广告
-	return s.bl
+	//TODO: 根据 Banner Type  和 token ，返回不同的 Banner 广告
+	return nil
 }
 
-func (s *BannerService) initBannerData() Banners {
-	ban1 := &Banner{
+func defaultList() Banners {
+	ret := make(Banners, 0)
+	ban1 := &BannerVM{
 		0,
 		"2022-05-05 11:26:09",
 		222083,
@@ -43,7 +45,7 @@ func (s *BannerService) initBannerData() Banners {
 		1605,
 	}
 
-	ban2 := &Banner{
+	ban2 := &BannerVM{
 		1,
 		"2022-05-05 11:26:09",
 		222084,
@@ -57,7 +59,7 @@ func (s *BannerService) initBannerData() Banners {
 		"any",
 		1606,
 	}
-	s.bl = append(s.bl, *ban1)
-	s.bl = append(s.bl, *ban2)
-	return s.bl
+	ret = append(ret, *ban1)
+	ret = append(ret, *ban2)
+	return ret
 }
