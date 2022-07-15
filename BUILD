@@ -14,6 +14,7 @@ go_library(
     deps =[
         "//app/configs",
         "//app/routers",
+        "//app/goods",
     ],
     visibility = ["//visibility:private"],
 )
