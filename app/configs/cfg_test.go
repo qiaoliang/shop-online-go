@@ -27,8 +27,8 @@ func (s *ConfigTestSuite) Test_MigretionPath() {
 }
 
 func (s *ConfigTestSuite) Test_DB_Migration_Scripts_exists() {
-	_, err := os.Stat(s.cfg.cfgDir + "/" + s.cfg.DBMigrateDir)
-	s.Nil(err)
+	_, err := os.Stat(s.cfg.cfgDir + s.cfg.DBMigrateDir)
+	s.Nil(err, s.cfg.cfgDir+"/")
 
 }
 func (s *ConfigTestSuite) Test_BannerPath() {
@@ -58,7 +58,7 @@ func (s *ConfigTestSuite) AfterTest(suiteName, testName string) {}
 
 // This will run before before the tests in the suite are run
 func (s *ConfigTestSuite) SetupSuite() {
-	s.cfg = GetConfigInstance("config-test.yaml")
+	s.cfg = GetConfigInstance("../../config-test.yaml")
 }
 
 // This will run before each test in the suite

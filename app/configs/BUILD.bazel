@@ -28,8 +28,9 @@ go_test(
 
 filegroup(
     name = "test_data",
-    srcs = ["config-test.yaml"],
     data =[
         "//:db_files",
+        "//:cfgfile_for_test",
+        "//:pic_files",
     ],
 )

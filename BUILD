@@ -66,4 +66,7 @@ filegroup(
 filegroup(
     name = "pic_files",
     srcs = glob(["static/**/*.*"]),
+    visibility =[
+        "//app/configs:__pkg__",
+    ],
 )
