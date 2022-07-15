@@ -11,6 +11,10 @@ go_library(
         "main.go",
     ],
     importpath = "github.com/example/project",
+    deps =[
+        "//app/configs",
+        "//app/routers",
+    ],
     visibility = ["//visibility:private"],
 )
 
