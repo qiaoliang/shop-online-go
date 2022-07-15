@@ -1,0 +1,43 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "goods",
+    srcs = [
+        "book.go",
+        "bookHandler.go",
+        "category.go",
+        "categoryHandler.go",
+        "categoryRepo.go",
+        "categoryRepoDB.go",
+        "goodsHandler.go",
+        "goodsItem.go",
+        "goodsService.go",
+        "sku.go",
+        "skuRepoDB.go",
+        "skuRepoMem.go",
+    ],
+    importpath = "github.com/example/project/app/goods",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@io_gorm_gorm//:go_default_library",
+    ],
+)
+
+go_test(
+    name = "goods_test",
+    srcs = [
+        "bookHandler_test.go",
+        "categoryHandler_test.go",
+        "categoryRepoDB_test.go",
+        "categoryRepo_test.go",
+        "goodsHandler_test.go",
+        "goodsService_test.go",
+        "skuRepoDB_test.go",
+    ],
+    embed = [":goods"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_stretchr_testify//suite:go_default_library",
+    ],
+)

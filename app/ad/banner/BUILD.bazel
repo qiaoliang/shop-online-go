@@ -1,0 +1,24 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "banner",
+    srcs = [
+        "BannerService.go",
+        "bannarHandler.go",
+        "banner.go",
+        "bannerVMBuilder.go",
+    ],
+    importpath = "github.com/example/project/app/ad/banner",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_gin_gonic_gin//:go_default_library"],
+)
+
+go_test(
+    name = "banner_test",
+    srcs = ["bannerHandler_test.go"],
+    embed = [":banner"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_stretchr_testify//suite:go_default_library",
+    ],
+)

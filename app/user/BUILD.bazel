@@ -1,0 +1,34 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "user",
+    srcs = [
+        "user.go",
+        "userHandler.go",
+        "userRepo.go",
+        "userRepoDB.go",
+        "userService.go",
+        "userVM.go",
+    ],
+    importpath = "github.com/example/project/app/user",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@io_gorm_gorm//:go_default_library",
+    ],
+)
+
+go_test(
+    name = "user_test",
+    srcs = [
+        "useService_test.go",
+        "userHandler_test.go",
+        "userRepoDB_test.go",
+        "userRepo_test.go",
+    ],
+    embed = [":user"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_stretchr_testify//suite:go_default_library",
+    ],
+)

@@ -1,0 +1,15 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "testutils",
+    srcs = [
+        "testSuite.go",
+        "utilsForTest.go",
+    ],
+    importpath = "github.com/example/project/app/testutils",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_stretchr_testify//suite:go_default_library",
+    ],
+)

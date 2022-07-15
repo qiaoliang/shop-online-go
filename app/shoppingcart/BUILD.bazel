@@ -1,0 +1,35 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "shoppingcart",
+    srcs = [
+        "cartHandler.go",
+        "cartModel.go",
+        "cartRepoDB.go",
+        "cartRepoMem.go",
+        "cartService.go",
+        "cartViewModel.go",
+        "userCartItemBuilder.go",
+    ],
+    importpath = "github.com/example/project/app/shoppingcart",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@io_gorm_gorm//:go_default_library",
+    ],
+)
+
+go_test(
+    name = "shoppingcart_test",
+    srcs = [
+        "cartHandler_test.go",
+        "cartRepoDB_test.go",
+        "cartRepoMem_test.go",
+        "cartService_test.go",
+    ],
+    embed = [":shoppingcart"],
+    deps = [
+        "@com_github_gin_gonic_gin//:go_default_library",
+        "@com_github_stretchr_testify//suite:go_default_library",
+    ],
+)

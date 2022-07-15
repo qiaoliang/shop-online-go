@@ -1,0 +1,16 @@
+load("@io_bazel_rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "utils",
+    srcs = ["generator.go"],
+    importpath = "github.com/example/project/app/utils",
+    visibility = ["//visibility:public"],
+    deps = ["@com_github_rs_xid//:go_default_library"],
+)
+
+go_test(
+    name = "utils_test",
+    srcs = ["generator_test.go"],
+    embed = [":utils"],
+    deps = ["@com_github_stretchr_testify//assert:go_default_library"],
+)
