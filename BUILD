@@ -45,13 +45,32 @@ filegroup(
     ],
 )
 
+package_group(
+    name = "package_for_test",
+    packages = [
+        "//app/configs",
+        "//app/goods",
+    ],
+)
+
+filegroup(
+    name = "test_data",
+    data =[
+        "//:db_files",
+        "//:cfgfile_for_test",
+    ],
+    visibility =[
+        ":package_for_test",
+    ],
+)
+
 filegroup(
     name = "cfgfile_for_test",
     srcs = [
         "config-test.yaml",
     ],
     visibility =[
-        "//app/configs:__pkg__",
+        ":package_for_test",
     ],
 )
 
@@ -59,7 +78,7 @@ filegroup(
     name = "db_files",
     srcs = glob(["dbscripts/*.sql"]),
     visibility =[
-        "//app/configs:__pkg__",
+        ":package_for_test",
     ],
 )
 
@@ -67,6 +86,6 @@ filegroup(
     name = "pic_files",
     srcs = glob(["static/**/*.*"]),
     visibility =[
-        "//app/configs:__pkg__",
+        ":package_for_test",
     ],
 )

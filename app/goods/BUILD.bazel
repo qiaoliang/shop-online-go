@@ -43,4 +43,7 @@ go_test(
         "@com_github_gin_gonic_gin//:go_default_library",
         "@com_github_stretchr_testify//suite:go_default_library",
     ],
+    data =[
+        "//:test_data",
+    ]
 )

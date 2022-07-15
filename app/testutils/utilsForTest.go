@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"path/filepath"
-	"runtime"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,10 +26,7 @@ func JsonToStruct(jsonStr string, data interface{}) {
 
 }
 func GetConfigFileForTest() string {
-	_, filename, _, _ := runtime.Caller(0)
-	path, _ := filepath.Abs(filename)
-	path = filepath.Dir(path) + "/../../config-test.yaml"
-	return path
+	return "../../config-test.yaml"
 }
 
 func HttpPatch1(reqURL string, data map[string]interface{}, r *gin.Engine) string {

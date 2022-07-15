@@ -22,15 +22,6 @@ go_test(
     embed = [":configs"],
     deps = ["@com_github_stretchr_testify//suite:go_default_library"],
     data =[
-        ":test_data",
+        "//:test_data",
     ]
-)
-
-filegroup(
-    name = "test_data",
-    data =[
-        "//:db_files",
-        "//:cfgfile_for_test",
-        "//:pic_files",
-    ],
 )
