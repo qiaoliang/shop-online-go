@@ -1,6 +1,6 @@
 package user
 
-import "bookstore/app/configs"
+import "github.com/example/project/app/configs"
 
 type UserVM struct {
 	Token     string    `json:"token"`

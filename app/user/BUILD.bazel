@@ -13,6 +13,9 @@ go_library(
     importpath = "github.com/example/project/app/user",
     visibility = ["//visibility:public"],
     deps = [
+        "//app/configs",
+        "//app/utils",
+        "//app/addresses",
         "@com_github_gin_gonic_gin//:go_default_library",
         "@io_gorm_gorm//:go_default_library",
     ],
