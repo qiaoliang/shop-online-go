@@ -23,6 +23,9 @@ go_binary(
     name = "project",
     embed = [":project_lib"],
     visibility = ["//visibility:public"],
+    data = [
+        "//:datas_for_prod",
+    ],
 )
 
 go_test(
@@ -30,4 +33,37 @@ go_test(
     srcs = ["initData_test.go"],
     embed = [":project_lib"],
     deps = ["@com_github_stretchr_testify//suite:go_default_library"],
+)
+
+filegroup(
+    name = "datas_for_prod",
+    srcs =
+        ["config.yaml"],
+    data =[
+        ":db_files",
+        ":pic_files",
+    ],
+)
+
+filegroup(
+    name = "cfgfile_for_test",
+    srcs = [
+        "config-test.yaml",
+    ],
+    visibility =[
+        "//app/configs:__pkg__",
+    ],
+)
+
+filegroup(
+    name = "db_files",
+    srcs = glob(["dbscripts/*.sql"]),
+    visibility =[
+        "//app/configs:__pkg__",
+    ],
+)
+
+filegroup(
+    name = "pic_files",
+    srcs = glob(["static/**/*.*"]),
 )

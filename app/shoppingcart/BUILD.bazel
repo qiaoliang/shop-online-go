@@ -15,7 +15,9 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//app/configs",
-        "//app/goods",        
+        "//app/goods",
+        "//app/utils",
+        "//app/testutils",        
         "@com_github_gin_gonic_gin//:go_default_library",
         "@io_gorm_gorm//:go_default_library",
     ],

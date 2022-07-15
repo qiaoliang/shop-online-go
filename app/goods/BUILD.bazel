@@ -21,6 +21,7 @@ go_library(
     deps = [
         "//app/configs",
         "//app/testutils",
+        "//app/utils",
         "@com_github_gin_gonic_gin//:go_default_library",
         "@io_gorm_gorm//:go_default_library",
     ],

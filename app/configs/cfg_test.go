@@ -58,7 +58,7 @@ func (s *ConfigTestSuite) AfterTest(suiteName, testName string) {}
 
 // This will run before before the tests in the suite are run
 func (s *ConfigTestSuite) SetupSuite() {
-	s.cfg = GetConfigInstance("../../config-test.yaml")
+	s.cfg = GetConfigInstance("config-test.yaml")
 }
 
 // This will run before each test in the suite

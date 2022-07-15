@@ -1,0 +1,21 @@
+PERSISTANCE: true
+RESOURCES:
+  STATIC_PIC_URI: "http://localhost:9090/pic"
+  BANNERS_RELETIVE_PATH: "banners/"
+  GOODS_RELETIVE_PATH: "goods/"
+  AVARAE_RELETIVE_PATH: "avatar/"
+
+HOST: "http://localhost"
+PORT: 9090
+MYSQL:
+  DB_USERNAME: root
+  DB_PASSWORD: "123"
+  BASE_URL: localhost
+  DB_PORT: 3306
+  DB_NAME: bookstore
+  DB_MIG_PROTO: "file://"
+  DB_MIG_DIR: "dbscripts"
+
+SQLITE:
+  DB_FILE: data/bookstore.db
+  DB_MEMORY: file::memory:?cache=shared
