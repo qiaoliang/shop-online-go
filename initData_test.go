@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bookstore/app/goods"
 	"testing"
+
+	"github.com/example/project/app/goods"
 
 	"github.com/stretchr/testify/suite"
 )

@@ -5,11 +5,12 @@ import (
 	"strconv"
 
 	banner "bookstore/app/ad/banner"
-	"bookstore/app/goods"
-	"bookstore/app/order"
-	"bookstore/app/security"
 	cart "bookstore/app/shoppingcart"
-	"bookstore/app/user"
+
+	"github.com/example/project/app/goods"
+	"github.com/example/project/app/order"
+	"github.com/example/project/app/security"
+	"github.com/example/project/app/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"

@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"bookstore/app/configs"
+	"github.com/example/project/app/configs"
 
 	"github.com/gin-gonic/gin"
 )

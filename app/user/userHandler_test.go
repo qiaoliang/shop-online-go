@@ -1,11 +1,12 @@
 package user
 
 import (
-	"bookstore/app/testutils"
-	"bookstore/app/utils"
 	"fmt"
 	"net/url"
 	"testing"
+
+	"github.com/example/project/app/testutils"
+	"github.com/example/project/app/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"

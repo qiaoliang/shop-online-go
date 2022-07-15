@@ -1,13 +1,14 @@
 package cart
 
 import (
-	"bookstore/app/testutils"
-	"bookstore/app/utils"
 	"fmt"
 	"log"
 	"net/url"
 	"strconv"
 	"testing"
+
+	"github.com/example/project/app/testutils"
+	"github.com/example/project/app/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"

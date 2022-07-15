@@ -1,10 +1,11 @@
 package goods
 
 import (
-	"bookstore/app/configs"
 	"fmt"
 	"log"
 	"sync"
+
+	"github.com/example/project/app/configs"
 
 	"gorm.io/gorm"
 )

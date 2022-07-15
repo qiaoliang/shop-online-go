@@ -1,9 +1,10 @@
 package goods
 
 import (
-	"bookstore/app/configs"
 	"strconv"
 	"sync"
+
+	"github.com/example/project/app/configs"
 )
 
 var lockGS sync.Mutex

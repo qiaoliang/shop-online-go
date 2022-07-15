@@ -1,10 +1,11 @@
 package cart
 
 import (
-	"bookstore/app/configs"
-	"bookstore/app/goods"
 	"log"
 	"strings"
+
+	"github.com/example/project/app/configs"
+	"github.com/example/project/app/goods"
 )
 
 var cartService *CartService

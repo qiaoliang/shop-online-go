@@ -1,11 +1,12 @@
 package goods
 
 import (
-	"bookstore/app/configs"
-	"bookstore/app/testutils"
 	"net/url"
 	"strconv"
 	"testing"
+
+	"github.com/example/project/app/configs"
+	"github.com/example/project/app/testutils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"

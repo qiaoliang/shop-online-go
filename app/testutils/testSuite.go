@@ -1,8 +1,9 @@
 package testutils
 
 import (
-	"bookstore/app/configs"
 	"testing"
+
+	"github.com/example/project/app/configs"
 
 	"github.com/stretchr/testify/suite"
 )

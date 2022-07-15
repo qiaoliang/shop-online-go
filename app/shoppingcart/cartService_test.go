@@ -1,12 +1,13 @@
 package cart
 
 import (
-	"bookstore/app/configs"
-	"bookstore/app/goods"
-	"bookstore/app/testutils"
-	"bookstore/app/utils"
 	"strings"
 	"testing"
+
+	"github.com/example/project/app/configs"
+	"github.com/example/project/app/goods"
+	"github.com/example/project/app/testutils"
+	"github.com/example/project/app/utils"
 
 	"github.com/stretchr/testify/suite"
 )

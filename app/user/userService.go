@@ -1,10 +1,11 @@
 package user
 
 import (
-	"bookstore/app/addresses"
-	"bookstore/app/configs"
 	"errors"
 	"sync"
+
+	"github.com/example/project/app/addresses"
+	"github.com/example/project/app/configs"
 )
 
 var lockUS = &sync.Mutex{}

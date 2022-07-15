@@ -1,8 +1,8 @@
 package main
 
 import (
-	"bookstore/app/configs"
-	"bookstore/app/routers"
+	"github.com/example/project/app/configs"
+	"github.com/example/project/app/routers"
 )
 
 func init() {

@@ -1,7 +1,7 @@
 package ad
 
 import (
-	"bookstore/app/configs"
+	"github.com/example/project/app/configs"
 )
 
 var bs *BannerService

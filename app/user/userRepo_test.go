@@ -1,9 +1,10 @@
 package user
 
 import (
-	"bookstore/app/configs"
 	"regexp"
 	"testing"
+
+	"github.com/example/project/app/configs"
 
 	"github.com/stretchr/testify/suite"
 )

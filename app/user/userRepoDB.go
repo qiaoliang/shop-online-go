@@ -1,9 +1,10 @@
 package user
 
 import (
-	"bookstore/app/utils"
 	"errors"
 	"strconv"
+
+	"github.com/example/project/app/utils"
 
 	"gorm.io/gorm"
 )

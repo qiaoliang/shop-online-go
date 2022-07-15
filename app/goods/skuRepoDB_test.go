@@ -1,9 +1,10 @@
 package goods
 
 import (
-	"bookstore/app/testutils"
-	"bookstore/app/utils"
 	"testing"
+
+	"github.com/example/project/app/testutils"
+	"github.com/example/project/app/utils"
 
 	"github.com/stretchr/testify/suite"
 )

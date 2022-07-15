@@ -1,12 +1,13 @@
 package main
 
 import (
-	"bookstore/app/goods"
 	"encoding/json"
 	"io/ioutil"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/example/project/app/goods"
 )
 
 func initCategories(str []byte) ([]goods.Category, error) {

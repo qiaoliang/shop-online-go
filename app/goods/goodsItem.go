@@ -1,8 +1,9 @@
 package goods
 
 import (
-	"bookstore/app/configs"
 	"fmt"
+
+	"github.com/example/project/app/configs"
 )
 
 type GoodsItem struct {

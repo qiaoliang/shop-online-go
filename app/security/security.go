@@ -1,10 +1,11 @@
 package security
 
 import (
-	"bookstore/app/configs"
 	"fmt"
 	"image/color"
 	"net/http"
+
+	"github.com/example/project/app/configs"
 
 	"github.com/afocus/captcha"
 	"github.com/gin-gonic/gin"

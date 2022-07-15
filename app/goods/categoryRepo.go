@@ -1,8 +1,9 @@
 package goods
 
 import (
-	"bookstore/app/configs"
 	"sync"
+
+	"github.com/example/project/app/configs"
 )
 
 var lockCR = &sync.Mutex{}

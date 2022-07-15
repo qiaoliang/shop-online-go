@@ -1,8 +1,9 @@
 package ad
 
 import (
-	"bookstore/app/testutils"
 	"testing"
+
+	"github.com/example/project/app/testutils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"

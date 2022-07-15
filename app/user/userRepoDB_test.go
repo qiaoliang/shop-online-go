@@ -1,11 +1,12 @@
 package user
 
 import (
-	"bookstore/app/configs"
-	"bookstore/app/testutils"
 	"math/rand"
 	"regexp"
 	"testing"
+
+	"github.com/example/project/app/configs"
+	"github.com/example/project/app/testutils"
 
 	"github.com/stretchr/testify/suite"
 )

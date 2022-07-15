@@ -1,8 +1,9 @@
 package cart
 
 import (
-	"bookstore/app/configs"
 	"log"
+
+	"github.com/example/project/app/configs"
 
 	"gorm.io/gorm"
 )

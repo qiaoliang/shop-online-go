@@ -1,9 +1,10 @@
 package goods
 
 import (
-	"bookstore/app/testutils"
 	"net/http"
 	"strconv"
+
+	"github.com/example/project/app/testutils"
 
 	"github.com/gin-gonic/gin"
 )
