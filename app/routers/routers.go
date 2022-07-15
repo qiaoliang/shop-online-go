@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"strconv"
 
-	banner "bookstore/app/ad/banner"
-	cart "bookstore/app/shoppingcart"
+	banner "github.com/example/project/app/ad/banner"
+	cart "github.com/example/project/app/shoppingcart"
 
 	"github.com/example/project/app/goods"
 	"github.com/example/project/app/order"
