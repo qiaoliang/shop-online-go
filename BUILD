@@ -50,6 +50,10 @@ package_group(
     packages = [
         "//app/configs",
         "//app/goods",
+        "//app/shoppingcart",
+        "//app/user",
+        "//app/utils",
+        
     ],
 )
 
