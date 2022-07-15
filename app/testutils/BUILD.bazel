@@ -9,6 +9,7 @@ go_library(
     importpath = "github.com/example/project/app/testutils",
     visibility = ["//visibility:public"],
     deps = [
+        "//app/configs",
         "@com_github_gin_gonic_gin//:go_default_library",
         "@com_github_stretchr_testify//suite:go_default_library",
     ],
