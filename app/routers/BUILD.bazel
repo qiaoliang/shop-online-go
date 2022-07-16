@@ -7,7 +7,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//app/goods",
-        "//app/ad/banner",        
+        "//app/banner",        
         "//app/shoppingcart",        
         "//app/order",        
         "//app/security",        

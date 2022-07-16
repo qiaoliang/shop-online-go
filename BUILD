@@ -53,7 +53,8 @@ package_group(
         "//app/shoppingcart",
         "//app/user",
         "//app/utils",
-        
+        "//app/banner",
+        "//app/testutils",
     ],
 )
 
