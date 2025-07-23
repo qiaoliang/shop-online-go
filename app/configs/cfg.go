@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 
 	gormMysql "gorm.io/driver/mysql"
+	sqlite "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -32,6 +33,9 @@ type Config struct {
 	DBMigrateProto  string
 	DBMigrateDir    string
 	m               *migrate.Migrate
+
+	SQLiteDBFile   string
+	SQLiteDBMemory string
 
 	StaticPic  string
 	BannerPath string
@@ -72,6 +76,9 @@ func GetConfigInstance(cfgfile string) *Config {
 		DBName:         viper.Get("MYSQL.DB_NAME").(string),
 		DBMigrateProto: viper.Get("MYSQL.DB_MIG_PROTO").(string),
 		DBMigrateDir:   viper.Get("MYSQL.DB_MIG_DIR").(string),
+
+		SQLiteDBFile:   viper.GetString("SQLITE.DB_FILE"),
+		SQLiteDBMemory: viper.GetString("SQLITE.DB_MEMORY"),
 
 		StaticPic:  viper.Get("RESOURCES.STATIC_PIC_URI").(string),
 		GoodsPath:  viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
@@ -154,12 +161,16 @@ func (cfg *Config) getDbURI() string {
 }
 func (cfg *Config) DBConnection() *gorm.DB {
 	if cfg.dbConn == nil {
-		dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
-
-		cfg.dbConn, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
+		if cfg.Persistence {
+			dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
+			cfg.dbConn, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
+		} else {
+			// Use SQLite in-memory database
+			cfg.dbConn, err = gorm.Open(sqlite.Open(cfg.SQLiteDBMemory), &gorm.Config{})
+		}
 
 		if err != nil {
-			panic("Failed to connect database")
+			panic("Failed to connect database: " + err.Error())
 		}
 	}
 	return cfg.dbConn

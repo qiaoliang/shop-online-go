@@ -10,7 +10,9 @@ func init() {
 }
 func main() {
 	configs.GetConfigInstance("config.yaml")
-	configs.Cfg.Upgrade()
-	configs.Cfg.DBConnection()
+	if configs.Cfg.Persistence {
+		configs.Cfg.Upgrade()
+		configs.Cfg.DBConnection()
+	}
 	routers.InitRouter()
 }
