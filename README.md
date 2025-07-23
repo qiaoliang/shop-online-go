@@ -53,10 +53,11 @@
     ```
 
 3.  **编译应用程序**:
-    在项目根目录下执行以下命令编译应用程序：
+    在项目根目录下执行以下命令下载依赖包，并编译应用程序：
 
     ```bash
-    go build -o shop-online-go main.go
+	go mod tidy -compat=2.17    
+	go build -o shop-online-go main.go
     ```
 
     这将在当前目录生成一个名为 `shop-online-go` 的可执行文件。

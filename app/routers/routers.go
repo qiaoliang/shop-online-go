@@ -24,6 +24,14 @@ func InitRouter() {
 
 	r.StaticFS("/pic", http.Dir("./static"))
 
+	r.GET("/", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"data": nil,
+			"msg": "商城后台已经正常启动。",
+		})
+	})
+
 	r.GET("/ping", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
 			"message": "pong",

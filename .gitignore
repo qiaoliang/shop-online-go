@@ -1,4 +1,5 @@
 *.out
+go.sum
 bookstore
 .vscode/
 **/.DS_Store
