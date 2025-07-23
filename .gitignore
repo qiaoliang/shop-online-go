@@ -3,3 +3,4 @@ bookstore
 .vscode/
 **/.DS_Store
 bazel-*
+shop-online-go
