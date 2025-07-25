@@ -1,47 +1,129 @@
 ---
-description: Code Quality Guidelines
-globs: 
+alwaysApply: true
 ---
-# Code Quality Guidelines
 
-## Verify Information
-Always verify information before presenting it. Do not make assumptions or speculate without clear evidence.
+# 代码质量指南
 
-## File-by-File Changes
-Make changes file by file and give me a chance to spot mistakes.
+## 信息核实
 
-## No Apologies
-Never use apologies.
+在呈现信息前务必核实，不要在没有明确证据的情况下做假设或猜测。
 
-## No Understanding Feedback
-Avoid giving feedback about understanding in comments or documentation.
+## 按文件修改
 
-## No Whitespace Suggestions
-Don't suggest whitespace changes.
+逐个文件进行更改，给我发现错误的机会。
 
-## No Summaries
-Don't summarize changes made.
+## 不要道歉
 
-## No Inventions
-Don't invent changes other than what's explicitly requested.
+不要使用道歉语句。
 
-## No Unnecessary Confirmations
-Don't ask for confirmation of information already provided in the context.
+## 不要反馈理解
 
-## Preserve Existing Code
-Don't remove unrelated code or functionalities. Pay attention to preserving existing structures.
+在注释或文档中避免反馈“已理解”之类的信息。
 
-## Single Chunk Edits
-Provide all edits in a single chunk instead of multiple-step instructions or explanations for the same file.
+## 不建议空白字符更改
 
-## No Implementation Checks
-Don't ask the user to verify implementations that are visible in the provided context.
+不要建议仅涉及空白字符的更改。
 
-## No Unnecessary Updates
-Don't suggest updates or changes to files when there are no actual modifications needed.
+## 不要总结更改内容
 
-## Provide Real File Links
-Always provide links to the real files, not x.md.
+不要总结已做的更改。
 
-## No Current Implementation
-Don't show or discuss the current implementation unless specifically requested.
+## 不要凭空添加内容
+
+除非有明确要求，否则不要凭空添加更改。
+
+## 不要重复确认
+
+不要对已在上下文中提供的信息重复请求确认。
+
+## 保留现有代码
+
+不要移除无关的代码或功能，注意保持现有结构。
+
+## 单块编辑
+
+对同一文件的更改应一次性给出，而不是分多步说明或操作。
+
+## 不要让用户检查实现
+
+不要让用户去核查上下文中已可见的实现。
+
+## 不要建议无实际更改的更新
+
+没有实际修改时，不要建议更新或更改文件。
+
+## 提供真实文件链接
+
+始终提供真实文件的链接，而不是 x.md。
+
+## 不要展示当前实现
+
+除非有明确要求，否则不要展示或讨论当前实现。
+始终提供真实文件的链接，而不是 x.md。
+
+## 不展示当前实现
+
+除非有明确要求，否则不要展示或讨论当前实现。
+
+# 代码质量指南
+
+## 信息核实
+
+在呈现信息前务必核实，不要在没有明确证据的情况下做假设或猜测。
+
+## 按文件修改
+
+逐个文件进行更改，给我发现错误的机会。
+
+## 不要道歉
+
+不要使用道歉语句。
+
+## 不要反馈理解
+
+在注释或文档中避免反馈“已理解”之类的信息。
+
+## 不建议空白字符更改
+
+不要建议仅涉及空白字符的更改。
+
+## 不要总结更改内容
+
+不要总结已做的更改。
+
+## 不要凭空添加内容
+
+除非有明确要求，否则不要凭空添加更改。
+
+## 不要重复确认
+
+不要对已在上下文中提供的信息重复请求确认。
+
+## 保留现有代码
+
+不要移除无关的代码或功能，注意保持现有结构。
+
+## 单块编辑
+
+对同一文件的更改应一次性给出，而不是分多步说明或操作。
+
+## 不要让用户检查实现
+
+不要让用户去核查上下文中已可见的实现。
+
+## 不要建议无实际更改的更新
+
+没有实际修改时，不要建议更新或更改文件。
+
+## 提供真实文件链接
+
+始终提供真实文件的链接，而不是 x.md。
+
+## 不要展示当前实现
+
+除非有明确要求，否则不要展示或讨论当前实现。
+始终提供真实文件的链接，而不是 x.md。
+
+## 不展示当前实现
+
+除非有明确要求，否则不要展示或讨论当前实现。
