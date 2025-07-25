@@ -1,0 +1,21 @@
+---
+description:
+globs:
+alwaysApply: false
+---
+
+# 技术栈与架构偏好
+
+本项目采用如下技术栈和架构模式：
+
+- **后端语言**: Go
+- **Web框架**: Gin
+- **配置管理**: Viper
+- **数据库**: MySQL
+- **ORM**: GORM
+- **依赖管理**: Go Modules
+- **架构类型**: 单体应用架构，模块化设计，三层架构（Handler/Controller, Service, Repository）
+- **主要目录结构**：app/（业务模块）、dbscripts/（数据库脚本）、docs/（文档）、initData/（初始化数据）、static/（静态资源）、main.go（入口）、go.mod（依赖）
+- **业务模块分层**：表现层（Handler/Controller）、业务逻辑层（Service）、数据访问层（Repository）
+
+详细说明请参考 [project_intro.md](mdc:docs/project_intro.md) 和 [project_structure.md](mdc:docs/project_structure.md)。
