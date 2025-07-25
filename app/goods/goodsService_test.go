@@ -1,12 +1,11 @@
 package goods
 
 import (
-	"log"
 	"strconv"
 	"testing"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/testutils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -26,7 +25,10 @@ func (s *GoodsServiceTestSuite) AfterTest(suiteName, testName string) {}
 
 func (s *GoodsServiceTestSuite) SetupSuite() {
 	s.SupperSuite.SetupSuite()
-	s.serv = newGoodsService(true)
+	db := configs.Cfg.DBConnection()
+	skuRepo := NewSkuRepoDB(db)
+	cateRepo := &CategoryRepo{}
+	s.serv = NewGoodsService(skuRepo, cateRepo)
 }
 func (s *GoodsServiceTestSuite) TeardownSuite() {
 	s.SupperSuite.TeardownSuite()
@@ -36,55 +38,16 @@ func (s *GoodsServiceTestSuite) TeardownSuite() {
 func (s *GoodsServiceTestSuite) SetupTest() {}
 
 func (s *GoodsServiceTestSuite) Test_get_GoodsDetail() {
-	exp := prepare_GoodsItem_cd10_with_pics()
-	ret := s.serv.GetItemDetail(exp.Gid)
-	s.NotNil(ret)
-	s.EqualValues(exp.GoodsDetail, *ret)
-}
-func (s *GoodsServiceTestSuite) Test_get_GoodsDetail_from_cache() {
-	cachedItem := prepare_GoodsItem_cd10_with_pics()
-	cachedItem.Gid = "IamCached"
-	cachedItem.GoodsDetail.Gid = "IamCached"
-	s.serv.items = append(s.serv.items, cachedItem)
-
-	ret := s.serv.GetItemDetail("IamCached")
-	s.NotNil(ret)
-	s.EqualValues(cachedItem.GoodsDetail, *ret)
-
+	result := s.serv.GetItemDetail("g7225946")
+	exp := GoodsDetail{Gid: "g7225946", Name: "持续交付1.0", Pics: []CarouselPicVM{CarouselPicVM{Id: "g7225946-01", Pic: "http://localhost:9090/pic/goods/g7225946-01.jpeg"}, CarouselPicVM{Id: "g7225946-02", Pic: "http://localhost:9090/pic/goods/g7225946-02.jpeg"}}, ItemId: 0, Stock: 10, Unit: "本", Logistics: "1", Content: "这是第一本 DevOps 的书", Status: 0, StatusStr: "在售", PicUrl: "http://localhost:9090/pic/goods/g7225946.jpeg", MinPrice: "66.0", OriginalPrice: "99.0", AfterSale: "1"}
+	s.Equal(exp, *result)
 }
 
-func (s *GoodsServiceTestSuite) Test_get_Goods_for_a_category() {
-	s.serv.LoadGoods()
-	log.Printf("%v\n", s.serv.items)
-	result := s.serv.GetCategory(uint(0))
-	s.Equal(4, len(result))
-
-	exp := prepare_Devops_category()
-	s.EqualValues(exp, result)
-}
 func (s *GoodsServiceTestSuite) Test_SKU_to_Item() {
-	exp := prepare_GoodsItem_cd10_with_pics()
-
-	sku := prepareSku_Cd10_With_Pics()
-	ret := s.serv.skuToGoodsItem(sku)
-	s.EqualValues(&exp, ret)
-}
-
-func (s *GoodsServiceTestSuite) Test_Load_GoodsItems() {
-	ret := s.serv.LoadGoods()
-	s.Equal(8, len(ret))
-	exp := prepare_GoodsItem_cd10_with_pics()
-	var r GoodsItem
-	found := false
-	for _, v := range ret {
-		if v.Gid == exp.Gid {
-			found = true
-			r = v
-			break
-		}
-	}
-	s.True(found)
-	s.EqualValues(exp, r)
+	sku := s.serv.repo.FindWithCarouselPics("g7225946")
+	item := s.serv.skuToGoodsItem(*sku)
+	exp := &GoodsItem{Gid: "g7225946", Name: "持续交付1.0", CategoryId: 0, RecommendStatus: "1", PicUrl: "http://localhost:9090/pic/goods/g7225946.jpeg", MinPrice: "66.0", OriginalPrice: "99.0", GoodsDetail: GoodsDetail{Gid: "g7225946", Name: "持续交付1.0", Pics: []CarouselPicVM{CarouselPicVM{Id: "g7225946-01", Pic: "http://localhost:9090/pic/goods/g7225946-01.jpeg"}, CarouselPicVM{Id: "g7225946-02", Pic: "http://localhost:9090/pic/goods/g7225946-02.jpeg"}}, ItemId: 0, Stock: 10, Unit: "本", Logistics: "1", Content: "这是第一本 DevOps 的书", Status: 0, StatusStr: "在售", PicUrl: "http://localhost:9090/pic/goods/g7225946.jpeg", MinPrice: "66.0", OriginalPrice: "99.0", AfterSale: "1"}}
+	s.Equal(exp, item)
 }
 
 func prepare_Devops_category() GoodsItems {
@@ -118,7 +81,7 @@ func aDetail(gid string, gName string, stock int, content string, picExt string,
 		nil,
 		0,
 		uint(stock),
-		"册",
+		"本",
 		"1",
 		content,
 		uint(SalingStatus(ONSAIL)),

@@ -4,8 +4,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/testutils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -26,8 +26,13 @@ func TestGoodsHandlerSuite(t *testing.T) {
 }
 
 func (st *GoodsHandlerSuite) SetupSuite() {
-	st.router = st.setupTestRouter()
 	configs.GetConfigInstance(testutils.GetConfigFileForTest())
+	db := configs.Cfg.DBConnection()
+	skuRepo := NewSkuRepoDB(db)
+	cateRepo := &CategoryRepo{}
+	goodsService := NewGoodsService(skuRepo, cateRepo)
+	goodsHandler := NewGoodsHandler(goodsService)
+	st.router = st.setupTestRouter(goodsHandler)
 }
 
 func (st *GoodsHandlerSuite) Test_get_GoodsDetail() {
@@ -38,7 +43,7 @@ func (st *GoodsHandlerSuite) Test_get_GoodsDetail() {
 	}
 	//构建返回值
 	//调用请求接口
-	exp := `{"code":0,"data":{"id":"g7225946","name":"持续交付1.0","pics":[{"id":"g7225946-01","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg"},{"id":"g7225946-02","pic":"http://localhost:9090/pic/goods/g7225946-02.jpeg"}],"goodsId":0,"stores":110,"unit":"册","logistics":"1","content":"DevOps 的第一本书","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","afterSale":"1"},"msg":"OK"}`
+	exp := `{"code":0,"data":{"id":"g7225946","name":"持续交付1.0","pics":[{"id":"g7225946-01","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg"},{"id":"g7225946-02","pic":"http://localhost:9090/pic/goods/g7225946-02.jpeg"}],"goodsId":0,"stores":10,"unit":"本","logistics":"1","content":"这是第一本 DevOps 的书","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","afterSale":"1"},"msg":"OK"}`
 
 	body := testutils.HttpGet("/v1/shop/goods/detail", params, st.router)
 	st.Equal(exp, body, "should same.")
@@ -52,7 +57,7 @@ func (st *GoodsHandlerSuite) Test_fetch_GoodsList() {
 
 	//构建返回值
 	//调用请求接口
-	exp := `{"code":0,"data":{"result":[{"id":"g7225946","name":"持续交付1.0","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","goodsDetail":{"id":"g7225946","name":"持续交付1.0","pics":[{"id":"g7225946-01","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg"},{"id":"g7225946-02","pic":"http://localhost:9090/pic/goods/g7225946-02.jpeg"}],"goodsId":0,"stores":110,"unit":"册","logistics":"1","content":"DevOps 的第一本书","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","afterSale":"1"}},{"id":"g7225947","name":"持续交付2.0","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","minPrice":"99.0","originalPrice":"129.0","goodsDetail":{"id":"g7225947","name":"持续交付2.0","pics":[{"id":"g7225947-01","pic":"http://localhost:9090/pic/goods/g7225947-01.jpeg"},{"id":"g7225947-02","pic":"http://localhost:9090/pic/goods/g7225947-02.jpeg"}],"goodsId":0,"stores":200,"unit":"册","logistics":"1","content":"另一本DevOps的经典书。","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","minPrice":"99.0","originalPrice":"129.0","afterSale":"1"}},{"id":"g7225948","name":"DevOps实战指南","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225948.jpeg","minPrice":"55.0","originalPrice":"85.0","goodsDetail":{"id":"g7225948","name":"DevOps实战指南","pics":[{"id":"g7225948-01","pic":"http://localhost:9090/pic/goods/g7225948-01.jpeg"},{"id":"g7225948-02","pic":"http://localhost:9090/pic/goods/g7225948-02.jpeg"}],"goodsId":0,"stores":10,"unit":"册","logistics":"1","content":"DevOps 黄皮书。","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225948.jpeg","minPrice":"55.0","originalPrice":"85.0","afterSale":"1"}},{"id":"g7225949","name":"谷歌软件工程","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225949.jpeg","minPrice":"77.0","originalPrice":"107.0","goodsDetail":{"id":"g7225949","name":"谷歌软件工程","pics":[{"id":"g7225949-01","pic":"http://localhost:9090/pic/goods/g7225949-01.jpeg"},{"id":"g7225949-02","pic":"http://localhost:9090/pic/goods/g7225949-02.jpeg"}],"goodsId":0,"stores":20,"unit":"册","logistics":"1","content":"解密硅谷头部互联网企业 如何打造软件工程文化。","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225949.jpeg","minPrice":"77.0","originalPrice":"107.0","afterSale":"1"}}],"totalRow":4},"msg":"OK"}`
+	exp := `{"code":0,"data":{"result":[{"id":"g7225946","name":"持续交付1.0","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","goodsDetail":{"id":"g7225946","name":"持续交付1.0","pics":[{"id":"g7225946-01","pic":"http://localhost:9090/pic/goods/g7225946-01.jpeg"},{"id":"g7225946-02","pic":"http://localhost:9090/pic/goods/g7225946-02.jpeg"}],"goodsId":0,"stores":10,"unit":"本","logistics":"1","content":"这是第一本 DevOps 的书","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225946.jpeg","minPrice":"66.0","originalPrice":"99.0","afterSale":"1"}},{"id":"g7225947","name":"持续交付2.0","catalogueId":0,"recommendStatus":"1","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","minPrice":"88.0","originalPrice":"120.0","goodsDetail":{"id":"g7225947","name":"持续交付2.0","pics":[{"id":"g7225947-01","pic":"http://localhost:9090/pic/goods/g7225947-01.jpeg"},{"id":"g7225947-02","pic":"http://localhost:9090/pic/goods/g7225947-02.jpeg"}],"goodsId":0,"stores":20,"unit":"本","logistics":"1","content":"这是第二本 DevOps 的书","status":0,"statusStr":"在售","pic":"http://localhost:9090/pic/goods/g7225947.jpeg","minPrice":"88.0","originalPrice":"120.0","afterSale":"1"}}],"totalRow":2},"msg":"OK"}`
 
 	body := testutils.HttpPost(st.router, data, "/v1/goods/list")
 	st.Equal(exp, body, "should same.")
@@ -65,12 +70,11 @@ func (st *GoodsHandlerSuite) Test_fetch_GoodsList() {
 	st.NotEqual(exp, body, "should not same.")
 
 }
-func (st *GoodsHandlerSuite) setupTestRouter() *gin.Engine {
+func (st *GoodsHandlerSuite) setupTestRouter(handler *GoodsHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
-
-	v1.GET("/shop/goods/detail", GetGoodsDetail)
-	v1.POST("/goods/list", FetchGoodsList)
+	v1.GET("/shop/goods/detail", handler.GetGoodsDetail)
+	v1.POST("/goods/list", handler.FetchGoodsList)
 	return router
 }

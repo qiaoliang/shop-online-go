@@ -3,7 +3,7 @@ package testutils
 import (
 	"testing"
 
-	"github.com/example/project/app/configs"
+	"bookstore/app/configs"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -22,10 +22,7 @@ func (suite *SupperSuite) AfterTest(suiteName, testName string) {}
 
 func (suite *SupperSuite) SetupSuite() {
 	configs.GetConfigInstance(GetConfigFileForTest())
-	if configs.Cfg.Persistence {
-		configs.Cfg.Upgrade()
-		configs.Cfg.DBConnection()
-	}
+	configs.Cfg.DBConnection()
 }
 func (suite *SupperSuite) TeardownSuite() {}
 

@@ -1,6 +1,6 @@
 package ad
 
-import "github.com/example/project/app/configs"
+import "bookstore/app/configs"
 
 type BannerVMBuilder struct {
 	b BannerVM

@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/goods"
-	"github.com/example/project/app/testutils"
-	"github.com/example/project/app/utils"
+	"bookstore/app/configs"
+	"bookstore/app/goods"
+	"bookstore/app/testutils"
+	"bookstore/app/utils"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -27,23 +27,24 @@ func (s *CartServiceTestSuite) AfterTest(suiteName, testName string) {}
 
 func (s *CartServiceTestSuite) SetupSuite() {
 	s.SupperSuite.SetupSuite()
-	s.cs = newCartService(configs.Cfg.Persistence)
+	db := configs.Cfg.DBConnection()
+	goodsRepo := goods.NewSkuRepoDB(db)
+	repo := NewCartRepoDB(db)
+	s.cs = NewCartService(goodsRepo, repo)
 }
 func (s *CartServiceTestSuite) TeardownSuite() {
 	s.SupperSuite.TeardownSuite()
 	s.cs = nil
-	cartRepo = nil
 	cartService = nil
 }
 func (s *CartServiceTestSuite) SetupTest() {}
 
 func (s *CartServiceTestSuite) Test_GetPersistance() {
-	cs := newCartService(false)
-	_, isok := cs.cr.(*CartRepoMem)
-	s.True(isok)
-	cs = newCartService(true)
-	_, ok := cs.cr.(*CartRepoDB)
-	s.True(ok)
+	db := configs.Cfg.DBConnection()
+	goodsRepo := goods.NewSkuRepoDB(db)
+	repo := NewCartRepoDB(db)
+	cs := NewCartService(goodsRepo, repo)
+	s.NotNil(cs.cr)
 }
 
 const (
@@ -130,7 +131,7 @@ func (s *CartServiceTestSuite) Test_add_multiple_sku_for_same_cart() {
 
 }
 func (s *CartServiceTestSuite) generateExp(sku_id string, quantity uint, token string) (*goods.SKU, *CartInfoVM) {
-	gd := s.cs.sr.First(sku_id)
+	gd := s.cs.goodsRepo.First(sku_id)
 	expItem := NewCartItemVMBuilder(gd).quantity(quantity).picStr(configs.Cfg.GoodsPicPrefix() + gd.PicStr).build()
 	expIp := NewItemPairVMBuilder().gid(gd.SkuId).volume(quantity).build()
 	expIf := NewCartInfoVMBuilder().token(token).addItem(expItem).addIpair(expIp).build()
@@ -138,7 +139,7 @@ func (s *CartServiceTestSuite) generateExp(sku_id string, quantity uint, token s
 }
 
 func (s *CartServiceTestSuite) generateExpItem(sku_id string, quantity uint, token string) (*goods.SKU, *CartItemVM, *ItemPairVM) {
-	gd := s.cs.sr.First(sku_id)
+	gd := s.cs.goodsRepo.First(sku_id)
 	expItem := NewCartItemVMBuilder(gd).quantity(quantity).picStr(configs.Cfg.GoodsPicPrefix() + gd.PicStr).build()
 	expIp := NewItemPairVMBuilder().gid(gd.SkuId).volume(quantity).build()
 	return gd, expItem, expIp

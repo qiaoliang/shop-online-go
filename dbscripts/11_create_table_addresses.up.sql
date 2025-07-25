@@ -1,13 +1,14 @@
-DROP TABLE IF EXISTS `addresses`;
-CREATE TABLE `addresses` (
-    `id` INTEGER PRIMARY KEY AUTOINCREMENT,
-    `user_id` VARCHAR(100) NOT NULL,
-    `link_man` VARCHAR(100) NOT NULL,
-    `mobile` VARCHAR(100) NOT NULL,
-    `province_str` VARCHAR(100) NOT NULL,
-    `city_str` VARCHAR(100) NOT NULL,
-    `area_str` VARCHAR(100) NOT NULL,
-    `detail_address` VARCHAR(255) NOT NULL,
-    `is_default` INTEGER NOT NULL,
-    FOREIGN KEY (`user_id`) REFERENCES `users`(`Id`)
+DROP TABLE IF EXISTS addresses;
+CREATE TABLE addresses (
+  id INTEGER PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  link_man TEXT NOT NULL,
+  mobile TEXT NOT NULL,
+  province_str TEXT NOT NULL,
+  city_str TEXT NOT NULL,
+  area_str TEXT NOT NULL,
+  detail_address TEXT NOT NULL,
+  is_default INTEGER NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES users(Id)
 );
+-- 省略索引/约束部分，如有需要可补充

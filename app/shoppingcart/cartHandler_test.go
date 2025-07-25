@@ -7,8 +7,12 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/example/project/app/testutils"
-	"github.com/example/project/app/utils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
+	"bookstore/app/utils"
+	"os"
+
+	"bookstore/app/goods"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -22,6 +26,19 @@ type CartJson struct {
 type ShoppingCartHandlerSuite struct {
 	testutils.SupperSuite
 	router *gin.Engine
+	service *CartService
+}
+
+func TestMain(m *testing.M) {
+	fmt.Println("[TestMain] 加载 config-test.yaml ...")
+	configs.GetConfigInstance("../../config-test.yaml")
+	fmt.Println("[TestMain] 调用 DBConnection，准备 migration ...")
+	configs.Cfg.DBConnection()
+	fmt.Println("[TestMain] migration 初始化完成，开始测试 ...")
+	code := m.Run()
+	fmt.Println("[TestMain] 测试结束，删除 test.db ...")
+	os.Remove("./test.db")
+	os.Exit(code)
 }
 
 func TestShoppingCartHandlerSuite(t *testing.T) {
@@ -36,7 +53,13 @@ func (st *ShoppingCartHandlerSuite) SetupTest() {
 }
 func (st *ShoppingCartHandlerSuite) SetupSuite() {
 	st.SupperSuite.SetupSuite()
-	st.router = setupTestRouter()
+	db := configs.Cfg.DBConnection()
+	goodsRepo := goods.NewSkuRepoDB(db) // 假设有 SkuRepoDB
+	repo := NewCartRepoDB(db)
+	service := NewCartService(goodsRepo, repo)
+	handler := NewCartHandler(service)
+	st.router = setupTestRouter(handler)
+	st.service = service
 }
 
 const (
@@ -78,7 +101,7 @@ func (st *ShoppingCartHandlerSuite) Test_add_more_quntity_for_same_goods_in_shop
 	gid := EXISTED_SKU_ONE
 	token := "same_token_add_more" + utils.RandomImpl{}.GenStr()
 	alreadyHave := uint(46)
-	GetCartsService().PutItemsInCart(token, gid, alreadyHave)
+	st.service.PutItemsInCart(token, gid, alreadyHave)
 	log.Println("prepare a existed sku in cart for the token.")
 	extraQuantity := uint(10)
 	data := url.Values{}
@@ -97,7 +120,7 @@ func (st *ShoppingCartHandlerSuite) Test_Modify_number_of_item_in_shoppingcart_f
 	gid := EXISTED_SKU_ONE
 	token := "same_token_" + utils.RandomImpl{}.GenStr()
 	initquantity := uint(10)
-	GetCartsService().PutItemsInCart(token, gid, initquantity)
+	st.service.PutItemsInCart(token, gid, initquantity)
 
 	newQuan := "11"
 	data := url.Values{}
@@ -124,13 +147,12 @@ func (st *ShoppingCartHandlerSuite) Test_get_cart_for_unexisted_token() {
 	st.Equal(exp, string(body))
 }
 
-func setupTestRouter() *gin.Engine {
+func setupTestRouter(handler *CartHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
-
-	v1.GET("/shopping-cart/info", GetShopingCart)
-	v1.POST("/shopping-cart/add", PutIntoCart)
-	v1.POST("/shopping-cart/modifyNumber", ModifyNumberOfGoodsInCart)
+	v1.GET("/shopping-cart/info", handler.GetShopingCart)
+	v1.POST("/shopping-cart/add", handler.PutIntoCart)
+	v1.POST("/shopping-cart/modifyNumber", handler.ModifyNumberOfGoodsInCart)
 	return router
 }

@@ -6,8 +6,9 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/utils"
+	"bookstore/app/utils"
+
+	"gorm.io/gorm"
 )
 
 var lockUR = &sync.Mutex{}
@@ -16,36 +17,15 @@ type UserRepoMem struct {
 	userlist map[string]*User
 }
 
-var userRepo UserRepoIf
-
-func GetUserRepo() UserRepoIf {
-	return newUserRepo(configs.Cfg.Persistence)
+func GetUserRepo() *UserRepoMem {
+	return newUserRepo()
 }
-func newUserRepo(persistence bool) UserRepoIf {
-	lockUR.Lock()
-	defer lockUR.Unlock()
-
-	if userRepo == nil {
-		if persistence {
-			userRepo = GetUserRepoDB(configs.Cfg.DBConnection())
-
-		} else {
-
-			userRepo = &UserRepoMem{make(map[string]*User, 10)}
-			userRepo.CreateAdmin("13900007997", "1234")
-		}
-	}
-	return userRepo
+func newUserRepo() *UserRepoMem {
+	return &UserRepoMem{userlist: make(map[string]*User, 10)}
 }
 
-func GetMemoryUserRepo() UserRepoIf {
-	lockUR.Lock()
-	defer lockUR.Unlock()
-	if userRepo == nil {
-		userRepo = &UserRepoMem{make(map[string]*User, 10)}
-		userRepo.CreateAdmin("13900007997", "1234")
-	}
-	return userRepo
+func GetMemoryUserRepo() *UserRepoMem {
+	return newUserRepo()
 }
 
 func (r *UserRepoMem) TotalUsers() int {
@@ -58,7 +38,7 @@ func (r *UserRepoMem) DeleteByMobile(mobile string) {
 
 func (r *UserRepoMem) findUser(mobile string, pwd string) *User {
 	found := r.retriveUserByMobile(mobile)
-	if found == nil || found.Password != pwd {
+	if found == nil || found.Pwd != pwd {
 		return nil
 	}
 	return found
@@ -82,7 +62,7 @@ func (r *UserRepoMem) CreateUser(mobile string, pwd string, nickname string, aut
 	avatarUrl := utils.RandomMock{}.GenAavatarStr()
 	r.userlist[mobile] = &User{
 		Id:          userId,
-		Password:    pwd,
+		Pwd:    pwd,
 		Mobile:      mobile,
 		Nickname:    nickname,
 		AvatarUrl:   avatarUrl,
@@ -96,5 +76,91 @@ func (r *UserRepoMem) CreateUser(mobile string, pwd string, nickname string, aut
 	return r.userlist[mobile], nil
 }
 func (r *UserRepoMem) CreateAdmin(mobile string, pwd string) {
+	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
+}
+
+// UserRepo 接口
+//go:generate mockgen -source=userRepo.go -destination=mock_userRepo.go -package=user
+// 方便后续 mock
+//
+type UserRepo interface {
+	TotalUsers() int
+	DeleteByMobile(mobile string)
+	findUser(mobile, pwd string) *User
+	retriveUserByMobile(mobile string) *User
+	CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error)
+	CreateAdmin(mobile, pwd string)
+}
+
+// UserRepoDB 实现
+
+// UserRepoDB 用于数据库实现
+//
+type UserRepoDB struct {
+	db *gorm.DB
+}
+
+func NewUserRepoDB(db *gorm.DB) *UserRepoDB {
+	return &UserRepoDB{db: db}
+}
+
+func (r *UserRepoDB) TotalUsers() int {
+	var count int64
+	r.db.Model(&User{}).Count(&count)
+	return int(count)
+}
+
+func (r *UserRepoDB) DeleteByMobile(mobile string) {
+	r.db.Where("mobile = ?", mobile).Delete(&User{})
+}
+
+func (r *UserRepoDB) findUser(mobile, pwd string) *User {
+	var user User
+	if err := r.db.Where("mobile = ? AND pwd = ?", mobile, pwd).First(&user).Error; err != nil {
+		return nil
+	}
+	return &user
+}
+
+func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
+	var user User
+	if err := r.db.Where("mobile = ?", mobile).First(&user).Error; err != nil {
+		return nil
+	}
+	return &user
+}
+
+func (r *UserRepoDB) CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error) {
+	if r.retriveUserByMobile(mobile) != nil {
+		return nil, errors.New("hello,error")
+	}
+	al, _ := strconv.Atoi(autologin)
+	userId := genUId()
+	avatarUrl := "default_avatar.jpeg"
+	if mock, ok := interface{}(utils.RandomMock{}).(interface{ GenAavatarStr() string }); ok {
+		if v := mock.GenAavatarStr(); v != "" {
+			avatarUrl = v
+		}
+	}
+	user := &User{
+		Id:          userId,
+		Pwd:         pwd,
+		Mobile:      mobile,
+		Nickname:    nickname,
+		AvatarUrl:   avatarUrl,
+		Province:    "未知",
+		City:        "未知",
+		AutoLogin:   uint(al),
+		UserInfo:    "FakeUserInfo",
+		UserLevelId: GREENTYPE,
+		UserLevel:   &UserLevel{GREENTYPE, GREENTYPE.String()},
+	}
+	if err := r.db.Create(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (r *UserRepoDB) CreateAdmin(mobile, pwd string) {
 	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
 }

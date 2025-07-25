@@ -3,8 +3,11 @@ package user
 import (
 	"testing"
 
-	"github.com/example/project/app/testutils"
-	"github.com/example/project/app/utils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
+	"bookstore/app/utils"
+
+	"gorm.io/gorm"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -12,6 +15,8 @@ import (
 type UserServiceTestSuite struct {
 	testutils.SupperSuite
 	us *UserService
+	db *gorm.DB
+	repo UserRepo
 }
 
 func TestUserServiceTestSuite(t *testing.T) {
@@ -29,7 +34,10 @@ func (s *UserServiceTestSuite) AfterTest(suiteName, testName string) {}
 // This will run before before the tests in the suite are run
 func (s *UserServiceTestSuite) SetupSuite() {
 	s.SupperSuite.SetupSuite()
-	s.us = newUserService(true)
+	s.db = configs.Cfg.DBConnection()
+	s.repo = NewUserRepoDB(s.db)
+	s.us = NewUserServiceWithRepo(s.repo)
+	// 已有 admin 用户由 migration 脚本插入，无需重复注册
 }
 func (s *UserServiceTestSuite) TeardownSuite() {
 	s.SupperSuite.TeardownSuite()
@@ -50,15 +58,15 @@ func (s *UserServiceTestSuite) Test_admin_login() {
 	user, _ := s.us.login("diviceid", "deviceName", AdminMobile, "1234")
 	s.NotNil(user)
 	s.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
-	s.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
-	s.Equal(AdminMobile, s.us.userOnline[AdminMobile], "should find admin online")
+	s.Equal(AdminPwd, user.Pwd, "Should get Default pwd "+AdminPwd+" for Admin .")
+	s.Equal(AdminMobile, s.us.cache[AdminMobile], "should find admin online")
 }
 func (s *UserServiceTestSuite) Test_findUserByMobile() {
 	s.loginAsAdmin()
 	s.True(s.us.isOnline(AdminMobile))
 	user := s.us.FindUserByToken(AdminMobile)
 	s.Equal(AdminMobile, user.Mobile, "Should found Admin directly.")
-	s.Equal(AdminPwd, user.Password, "Should get Default pwd "+AdminPwd+" for Admin .")
+	s.Equal(AdminPwd, user.Pwd, "Should get Default pwd "+AdminPwd+" for Admin .")
 	offlineuser := s.us.FindUserByToken("offlineUser")
 	s.True(offlineuser == nil)
 }

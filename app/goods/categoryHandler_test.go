@@ -3,8 +3,8 @@ package goods
 import (
 	"testing"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/testutils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -22,7 +22,7 @@ func TestCategoryHandlerSuite(t *testing.T) {
 func (st *CategoryHandlerSuite) SetupSuite() {
 	st.router = st.setupTestRouter()
 	configs.GetConfigInstance(testutils.GetConfigFileForTest())
-	configs.Cfg.Upgrade()
+	configs.Cfg.DBConnection()
 }
 
 func (st *CategoryHandlerSuite) Test_get_category_list() {

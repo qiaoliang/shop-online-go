@@ -1,67 +1,48 @@
 package cart
 
 import (
-	"log"
-
-	"github.com/example/project/app/configs"
-
 	"gorm.io/gorm"
 )
 
-type CartRepoIf interface {
-	SaveUserCartItem(uci UserCartItem) error
-	DeleteUserCartItem(uci UserCartItem) error
-	DeleteUserCartItemsBy(token string) error
-	UpdateUserCartItem(uci *UserCartItem) error
-	GetUserCartItem(uci UserCartItem) *UserCartItem
-	FindUserCartItemsBy(token string) []UserCartItem
-}
-
 type CartRepoDB struct {
-	cartInfos map[string]*CartInfoVM
-	db        *gorm.DB
+	db *gorm.DB
 }
 
-func GetCartsRepoIf() CartRepoIf {
-	if cartRepo == nil {
-		cartRepo = newCartsRepo(configs.Cfg.Persistence)
+func NewCartRepoDB(db *gorm.DB) *CartRepoDB {
+	return &CartRepoDB{db: db}
+}
+
+func (r *CartRepoDB) FindUserCartItemsBy(token string) []UserCartItem {
+	var items []UserCartItem
+	r.db.Where("Token = ?", token).Find(&items)
+	return items
+}
+
+func (r *CartRepoDB) SaveUserCartItem(item UserCartItem) error {
+	existing := r.GetUserCartItem(item)
+	if existing != nil {
+		existing.Quantity += item.Quantity
+		return r.db.Model(&UserCartItem{}).Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).Updates(existing).Error
 	}
-	return cartRepo
+	return r.db.Create(&item).Error
 }
-func newCartsRepo(persistance bool) CartRepoIf {
-	if persistance {
-		return &CartRepoDB{make(map[string]*CartInfoVM, 0), configs.Cfg.DBConnection()}
-	} else {
-		return &CartRepoMem{make(map[string]*UserCart, 0)}
+
+func (r *CartRepoDB) DeleteUserCartItemsBy(token string) error {
+	return r.db.Where("Token = ?", token).Delete(&UserCartItem{}).Error
+}
+
+func (r *CartRepoDB) UpdateUserCartItem(item *UserCartItem) error {
+	return r.db.Model(&UserCartItem{}).Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).Updates(item).Error
+}
+
+func (r *CartRepoDB) DeleteUserCartItem(item UserCartItem) error {
+	return r.db.Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).Delete(&UserCartItem{}).Error
+}
+
+func (r *CartRepoDB) GetUserCartItem(item UserCartItem) *UserCartItem {
+	var result UserCartItem
+	if err := r.db.Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).First(&result).Error; err != nil {
+		return nil
 	}
-}
-
-func (cs *CartRepoDB) SaveUserCartItem(uci UserCartItem) error {
-	ret := cs.db.Create(&uci)
-	return ret.Error
-}
-func (cs *CartRepoDB) DeleteUserCartItem(uci UserCartItem) error {
-	log.Printf("uci token: %v\n", uci.Token)
-	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Delete(uci)
-	return ret.Error
-}
-func (cs *CartRepoDB) DeleteUserCartItemsBy(token string) error {
-	ret := cs.db.Where(map[string]interface{}{"Token": token}).Delete(&UserCartItem{})
-	return ret.Error
-}
-
-func (cs *CartRepoDB) UpdateUserCartItem(uci *UserCartItem) error {
-	ret := cs.db.Where(map[string]interface{}{"Token": uci.Token, "sku_Id": uci.SkuId}).Select("*").Updates(uci)
-	return ret.Error
-}
-func (cs *CartRepoDB) GetUserCartItem(uci UserCartItem) *UserCartItem {
-	found := UserCartItem{Token: uci.Token, SkuId: uci.SkuId}
-	log.Printf("uci token: %v\n", uci.Token)
-	cs.db.Where(&found).First(&found)
-	return &found
-}
-func (cs *CartRepoDB) FindUserCartItemsBy(token string) []UserCartItem {
-	found := []UserCartItem{}
-	cs.db.Where(map[string]interface{}{"Token": token}).Find(&found)
-	return found
+	return &result
 }

@@ -7,16 +7,25 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Login(c *gin.Context) {
-	deviceId := c.PostForm("deviceId")     //"fff"
-	deviceName := c.PostForm("deviceName") //"PC"
-	mobile := c.PostForm("mobile")         //"13911057997"
-	pwd := c.PostForm("pwd")               //"1212121212"
+// 新增类型：UserHandler，持有 UserService
 
-	user, err := GetUserService().login(deviceId, deviceName, mobile, pwd)
+type UserHandler struct {
+	us *UserService
+}
 
+func NewUserHandler(us *UserService) *UserHandler {
+	return &UserHandler{us: us}
+}
+
+func (h *UserHandler) Login(c *gin.Context) {
+	deviceId := c.PostForm("deviceId")
+	deviceName := c.PostForm("deviceName")
+	mobile := c.PostForm("mobile")
+	pwd := c.PostForm("pwd")
+	user, err := h.us.login(deviceId, deviceName, mobile, pwd)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": user, "msg": "User not found"})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "ok"})
 }
@@ -25,54 +34,47 @@ func Logout(c *gin.Context) {
 	GetUserService().logout(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(nil), "msg": "OK"})
 }
-func Register(c *gin.Context) {
-	autoLogin := c.PostForm("autoLogin") //true
-	code := c.PostForm("code")           // "5916"
-	mobile := c.PostForm("mobile")       //  "13911057997"
-	nick := c.PostForm("nick")           //  "熔岩巨兽"
-	pwd := c.PostForm("pwd")             //  "F1ref0x0820"
-
+func (h *UserHandler) Register(c *gin.Context) {
+	autoLogin := c.PostForm("autoLogin")
+	code := c.PostForm("code")
+	mobile := c.PostForm("mobile")
+	nick := c.PostForm("nick")
+	pwd := c.PostForm("pwd")
 	if !checkVerifyCode(code) {
-		//TODO: 若验证码失败，需要返回消息
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "验证码失败，需要返回消息", "msg": "OK"})
 		return
 	}
-	user, error := GetUserService().RegisterNewUser(mobile, pwd, nick, autoLogin)
+	user, error := h.us.RegisterNewUser(mobile, pwd, nick, autoLogin)
 	msg := "OK"
 	if error != nil {
 		msg = error.Error()
 	}
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": msg})
 }
-func UpdateUserInfo(c *gin.Context) {
+func (h *UserHandler) UpdateUserInfo(c *gin.Context) {
 	token, ok := c.GetQuery("token")
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
 		return
 	}
-
 	nick := c.Query("nick")
 	avatarUrl := c.Query("avatarUrl")
 	province := c.Query("province")
 	city := c.Query("city")
 	fmt.Println(token, nick, avatarUrl, province, city)
-	//TODO:
 	user := updateUser(token)
-
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 
-func GetDeliveryAddressList(c *gin.Context) {
-	//TODO: GetDeliveryAddressList
+func (h *UserHandler) GetDeliveryAddressList(c *gin.Context) {
 	token := c.PostForm("token")
-	address := GetUserService().FindUserByToken(token)
+	address := h.us.FindUserByToken(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
 }
 
-func GetDefaultDeliveryAddress(c *gin.Context) {
-	//TODO: Get Default Address
+func (h *UserHandler) GetDefaultDeliveryAddress(c *gin.Context) {
 	token := c.PostForm("token")
-	address := GetUserService().GetDefaultDeliveryAddress(token)
+	address := h.us.GetDefaultDeliveryAddress(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
 }
 
@@ -83,8 +85,7 @@ func AddDeliveryAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
 }
 
-func GetUserAmount(c *gin.Context) {
-	//TODO:
+func (h *UserHandler) GetUserAmount(c *gin.Context) {
 	token, ok := c.GetQuery("token")
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
@@ -105,15 +106,13 @@ func fetchUserAmount(token string) interface{} {
 	return map[string]string{"token": "fetchUserAmount", "amount": "amount 0"}
 
 }
-func GetUserDetail(c *gin.Context) {
-	//TODO:
+func (h *UserHandler) GetUserDetail(c *gin.Context) {
 	token, ok := c.GetQuery("token")
 	if !ok {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
 		return
 	}
-
-	user := GetUserService().FindUserByToken(token)
+	user := h.us.FindUserByToken(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 func checkVerifyCode(code string) bool {

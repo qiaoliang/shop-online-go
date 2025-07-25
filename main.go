@@ -1,18 +1,56 @@
 package main
 
 import (
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/routers"
+	"bookstore/app/configs"
+	"bookstore/app/routers"
+
+	"bookstore/app/addresses"
+	ad "bookstore/app/banner"
+	"bookstore/app/goods"
+	cart "bookstore/app/shoppingcart"
+	"bookstore/app/user"
+
+	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 )
 
-func init() {
-
-}
 func main() {
 	configs.GetConfigInstance("config.yaml")
-	if configs.Cfg.Persistence {
-		configs.Cfg.Upgrade()
-		configs.Cfg.DBConnection()
+	db := configs.Cfg.DBConnection()
+
+	// goods
+	skuRepo := goods.NewSkuRepoDB(db)
+	cateRepo := &goods.CategoryRepo{}
+	goodsService := goods.NewGoodsService(skuRepo, cateRepo)
+	goodsHandler := goods.NewGoodsHandler(goodsService)
+
+	// user
+	userRepo := user.NewUserRepoDB(db)
+	userService := user.NewUserServiceWithRepo(userRepo)
+	userHandler := user.NewUserHandler(userService)
+
+	// cart
+	cartRepo := cart.NewCartRepoDB(db)
+	cartService := cart.NewCartService(skuRepo, cartRepo)
+	cartHandler := cart.NewCartHandler(cartService)
+
+	// banner
+	bannerRepo := ad.NewBannerRepoDB(db)
+	bannerService := ad.NewBannerService(bannerRepo)
+	bannerHandler := ad.NewBannerHandler(bannerService)
+
+	// address
+	addressRepo := addresses.NewAddressRepositoryDB(db)
+	addressService := addresses.NewAddressService(addressRepo, db)
+	addressHandler := addresses.NewAddressHandler(addressService)
+
+	// 依赖注入
+	r := gin.Default()
+	routers.SetupRouter(r, bannerHandler, userHandler, cartHandler, addressHandler, goodsHandler)
+
+	port := viper.Get("PORT")
+	if port == nil {
+		port = 9090
 	}
-	routers.InitRouter()
+	r.Run(":" + viper.GetString("PORT"))
 }

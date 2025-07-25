@@ -1,23 +1,30 @@
 package routers
 
 import (
+	"fmt"
 	"net/http"
-	"strconv"
 
-	banner "github.com/example/project/app/banner"
-	cart "github.com/example/project/app/shoppingcart"
+	banner "bookstore/app/banner"
+	cart "bookstore/app/shoppingcart"
 
-	"github.com/example/project/app/goods"
-	"github.com/example/project/app/order"
-	"github.com/example/project/app/security"
-	"github.com/example/project/app/user"
+	"bookstore/app/addresses"
+
+	"bookstore/app/goods"
+	"bookstore/app/order"
+	"bookstore/app/security"
+	"bookstore/app/user"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"gorm.io/gorm"
 )
+
+// TODO: This DB instance should be passed from main.go or initialized globally
+var DB *gorm.DB
 
 func InitRouter() {
 	port := viper.Get("PORT").(int)
+	fmt.Println("[routers] PORT:", port)
 	r := gin.Default()
 	// This is Demo, and not good on Prod.
 	r.Use(allowCrossDomainAccess())
@@ -37,53 +44,54 @@ func InitRouter() {
 			"message": "pong",
 		})
 	})
-	SetupRouter(r)
+	// InitRouter 需在 main.go 中实例化 handler 后传入
+	// 这里建议直接 panic 或注释掉，测试环境应由 main.go 注入真实 handler
+	panic("InitRouter 仅供 main.go 参考，测试环境请用 main.go 注入 handler")
+	// SetupRouter(r, nil, nil, nil, nil, nil)
 
-	err := r.Run(":" + strconv.Itoa(port))
-	if err != nil {
-		panic("Cannot start service" + err.Error())
-	}
+	// err := r.Run(":" + strconv.Itoa(port))
+	// if err != nil {
+	// 	panic("Cannot start service" + err.Error())
+	// }
 }
 
-func SetupRouter(r *gin.Engine) {
+// 依赖注入说明：所有 handler 需在 main.go 实例化后传入 SetupRouter
+// func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler)
+func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler, goodsHandler *goods.GoodsHandler) {
+	if DB == nil {
+		panic("Database connection not initialized in routers package")
+	}
 	v1 := r.Group("/v1")
-
 	v1.GET("/verification/pic/get", security.GetCapChar)
 	v1.GET("/verification/pic/check", security.VerifyCapChar)
 	v1.GET("/verification/sms/get", security.GetSMSCode)
-
-	// Advertise management
-	v1.GET("/banner/list", banner.FetchBanners)
-
+	// Goods Management
+	v1.GET("/shop/goods/category/all", goodsHandler.FetchCatalogues)
+	v1.GET("/shop/goods/detail", goodsHandler.GetGoodsDetail)
+	v1.POST("/shop/goods/reputation", goodsHandler.FetchItemReputation)
+	v1.POST("/goods/list", goodsHandler.FetchGoodsList)
+	// Shopping Cart Management
+	v1.GET("/shopping-cart/info", cartHandler.GetShopingCart)
+	v1.POST("/shopping-cart/add", cartHandler.PutIntoCart)
+	v1.POST("/shopping-cart/modifyNumber", cartHandler.ModifyNumberOfGoodsInCart)
 	// User Management
-	v1.POST("/user/m/register", user.Register)
-	v1.POST("/user/m/login", user.Login)
-	v1.GET("/user/detail", user.GetUserDetail)
-	v1.GET("/user/modify", user.UpdateUserInfo)
-	v1.GET("/user/amount", user.GetUserAmount)
-	v1.GET("/user/logout", user.GetUserDetail)
-
+	v1.POST("/user/m/register", userHandler.Register)
+	v1.POST("/user/m/login", userHandler.Login)
+	v1.GET("/user/detail", userHandler.GetUserDetail)
+	v1.GET("/user/modify", userHandler.UpdateUserInfo)
+	v1.GET("/user/amount", userHandler.GetUserAmount)
+	v1.GET("/user/logout", userHandler.GetUserDetail)
 	//User ShippingAddress Management
-	v1.POST("/user/shipping-address/list", user.GetDeliveryAddressList)
-	v1.GET("/user/shipping-address/default", user.GetDefaultDeliveryAddress)
-	v1.POST("/user/shipping-address/add", user.AddDeliveryAddress)
-
+	v1.POST("/user/shipping-address/list", userHandler.GetDeliveryAddressList)
+	v1.GET("/user/shipping-address/default", userHandler.GetDefaultDeliveryAddress)
+	v1.POST("/user/shipping-address/add", addressHandler.AddAddress)
+	// Advertise management
+	v1.GET("/banner/list", bannerHandler.FetchBanners)
 	// Order management
 	v1.GET("/order/statistics", order.GetOrderStatistics)
 	v1.GET("/discounts/statistics", order.DiscountStatistics)
 	v1.GET("/discounts/coupons", order.Coupons)
-
-	//Goods Management
-	v1.GET("/shop/goods/category/all", goods.FetchCatalogues)
-	v1.GET("/shop/goods/detail", goods.GetGoodsDetail)
-	v1.POST("/shop/goods/reputation", goods.FetchItemReputation)
-	v1.POST("/goods/list", goods.FetchGoodsList)
-
-	// Shopping Cart Management
-	v1.GET("/shopping-cart/info", cart.GetShopingCart)
-	v1.POST("/shopping-cart/add", cart.PutIntoCart)
-	v1.POST("/shopping-cart/modifyNumber", cart.ModifyNumberOfGoodsInCart)
-
+	//books 相关路由保持不变
 	r.GET("/books", goods.FindBooks)
 	r.POST("/books", goods.CreateBook)
 	r.GET("/books/:id", goods.FindBook)

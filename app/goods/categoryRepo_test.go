@@ -23,12 +23,14 @@ func (st *CategoryRepoTestSuite) BeforeTest(suiteName, testName string) {
 
 func (st *CategoryRepoTestSuite) AfterTest(suiteName, testName string) {}
 
-func (st *CategoryRepoTestSuite) SetupSuite() {
+func (suite *CategoryRepoTestSuite) SetupSuite() {
+	repo := NewCategoryRepo()
+	suite.NotNil(repo)
 }
 
 func (st *CategoryRepoTestSuite) SetupTest() {
 	cateRepo = nil
-	cateRepo = NewCategoryRepo(false)
+	cateRepo = NewCategoryRepo()
 }
 
 func (st *CategoryRepoTestSuite) Test_goods_load_from_() {

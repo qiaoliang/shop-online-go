@@ -4,50 +4,42 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/example/project/app/configs"
+	"bookstore/app/configs"
+	"strings"
 )
 
 var lockGS sync.Mutex
-var goodsService *GoodsService
+var goodsService *GoodsService = newGoodsService()
 
 func GetGoodsService() *GoodsService {
 	lockGS.Lock()
 	defer lockGS.Unlock()
 	if goodsService == nil {
-		goodsService = newGoodsService(configs.Cfg.Persistence)
+		goodsService = newGoodsService()
 	}
 	return goodsService
 }
 
-func newGoodsService(persistance bool) *GoodsService {
-
-	return &GoodsService{make([]GoodsItem, 0), NewSkuRepo(persistance), NewCategoryRepo(persistance)}
-
+func NewGoodsService(repo *SkuRepoDB, cateRepo *CategoryRepo) *GoodsService {
+	return &GoodsService{repo: repo, cateRepo: cateRepo}
 }
+
+func newGoodsService() *GoodsService {
+	return &GoodsService{repo: &SkuRepoDB{}, cateRepo: &CategoryRepo{}}
+}
+
+// 删除原有的 NewGoodsService（含 &SkuRepoMem{}）实现和 gs.items 相关代码，只保留数据库 repo 版本。
 
 type GoodsItems []GoodsItem
 
 type GoodsService struct {
-	items    GoodsItems
-	repo     SkuRepoIf
-	cateRepo CategoryRepoIf
+	repo     *SkuRepoDB
+	cateRepo *CategoryRepo
 }
 
-func (gs *GoodsService) GetCategory(cId uint) GoodsItems {
-	result := make(GoodsItems, 0)
-	for _, v := range gs.items {
-		if v.blongsTo(cId) {
-			result = append(result, v)
-		}
-	}
-	return result
-}
-
+// 移除所有 gs.items 相关方法和字段
+// 只保留数据库 repo 相关方法
 func (gs *GoodsService) GetItemDetail(gid string) *GoodsDetail {
-	ret := gs.getFromCache(gid)
-	if ret != nil {
-		return ret
-	}
 	sku := gs.repo.FindWithCarouselPics(gid)
 	item := gs.skuToGoodsItem(*sku)
 	return &item.GoodsDetail
@@ -60,18 +52,9 @@ func (gs *GoodsService) LoadGoods() GoodsItems {
 		i := gs.skuToGoodsItem(sku)
 		items = append(items, *i)
 	}
-	gs.items = items
 	return items
 }
 
-func (gs *GoodsService) getFromCache(gid string) *GoodsDetail {
-	for _, v := range gs.items {
-		if v.sameAs(gid) {
-			return &v.GoodsDetail
-		}
-	}
-	return nil
-}
 func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 	gd := GoodsDetail{
 		sku.SkuId,     //"gId"
@@ -110,9 +93,11 @@ func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem {
 }
 
 func (*GoodsService) picToPicVM(v SkuCarouPicture) CarouselPicVM {
-	pic := CarouselPicVM{
-		v.picId(),
-		configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr,
+	// id = skuId + "-01"，如 g7225946-01
+	picId := v.SkuId + strings.TrimSuffix(v.PicStr, ".jpeg")
+	picUrl := configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr
+	return CarouselPicVM{
+		picId,
+		picUrl,
 	}
-	return pic
 }

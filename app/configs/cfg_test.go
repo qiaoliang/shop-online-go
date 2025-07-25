@@ -1,8 +1,6 @@
 package configs
 
 import (
-	"os"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -20,17 +18,13 @@ func (s *ConfigTestSuite) Test_StaicPicPath() {
 	s.EqualValues("http://localhost:9090/pic", s.cfg.StaticPic)
 }
 
-func (s *ConfigTestSuite) Test_MigretionPath() {
-	s.Equal("file://", s.cfg.DBMigrateProto)
-	r := s.cfg.getMigretionPath()
-	s.True(strings.Contains(r, "file://"), "should contains migration protocol 'file://'")
+func (s *ConfigTestSuite) Test_Config_Load() {
+	s.NotNil(s.cfg)
+	// 只测试 SQLite 相关配置
+	s.NotEmpty(s.cfg.SQLiteDBFile)
+	s.NotEmpty(s.cfg.SQLiteDBMemory)
 }
 
-func (s *ConfigTestSuite) Test_DB_Migration_Scripts_exists() {
-	_, err := os.Stat(s.cfg.cfgDir + s.cfg.DBMigrateDir)
-	s.Nil(err, s.cfg.cfgDir+"/")
-
-}
 func (s *ConfigTestSuite) Test_BannerPath() {
 	s.EqualValues("http://localhost:9090/pic/banners/", s.cfg.BannerPicPrefix())
 }
@@ -40,6 +34,12 @@ func (s *ConfigTestSuite) Test_AvatarPath() {
 }
 func (s *ConfigTestSuite) Test_GoodsPath() {
 	s.EqualValues("http://localhost:9090/pic/goods/", s.cfg.GoodsPicPrefix())
+}
+
+func (s *ConfigTestSuite) Test_DBMigration() {
+	s.NotPanics(func() {
+		s.cfg.runMigrations()
+	})
 }
 
 // We need this function to kick off the test suite, otherwise

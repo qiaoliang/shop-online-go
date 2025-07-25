@@ -3,8 +3,9 @@ package goods
 import (
 	"testing"
 
-	"github.com/example/project/app/testutils"
-	"github.com/example/project/app/utils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
+	"bookstore/app/utils"
 
 	"github.com/stretchr/testify/suite"
 )
@@ -24,8 +25,9 @@ func (r *SkuRepoDBTestSuite) AfterTest(suiteName, testName string) {}
 
 func (r *SkuRepoDBTestSuite) SetupSuite() {
 	r.SupperSuite.SetupSuite()
-	skuRepo = nil
-	r.repo = NewSkuRepo(true)
+	configs.GetConfigInstance("../../config-test.yaml")
+	db := configs.Cfg.DBConnection()
+	r.repo = NewSkuRepoDB(db)
 }
 func (r *SkuRepoDBTestSuite) TeardownSuite() {
 	r.SupperSuite.TeardownSuite()
@@ -40,11 +42,29 @@ func (r *SkuRepoDBTestSuite) Test_Find() {
 	r.EqualValues(&exp, result)
 }
 func (r *SkuRepoDBTestSuite) Test_Find_with_association() {
-	exp := r.cd10WithPics()
+	exp := SKU{
+		SkuId:           "g7225946",
+		Name:            "持续交付1.0",
+		CategoryId:      0,
+		RecommendStatus: "1",
+		PicStr:          "g7225946.jpeg",
+		Unit:            "本",
+		Stock:           10,
+		MinPrice:        "66.0",
+		OriginalPrice:   "99.0",
+		Logistics:       "1",
+		Content:         "这是第一本 DevOps 的书",
+		Status:          SalingStatus(ONSAIL),
+		Aftersale:       AfterSaleType(BOTH),
+		SkuCarouPictures: []SkuCarouPicture{
+			{Id: 1, SkuId: "g7225946", PicStr: "-01.jpeg"},
+			{Id: 2, SkuId: "g7225946", PicStr: "-02.jpeg"},
+		},
+	}
 
 	result := r.repo.FindWithCarouselPics(exp.SkuId)
 	r.NotNil(result)
-	r.Equal(&exp, result)
+	r.Equal(exp, *result)
 }
 
 func (r *SkuRepoDBTestSuite) Test_Delete() {
@@ -75,14 +95,13 @@ func (r *SkuRepoDBTestSuite) Test_Update() {
 func (r *SkuRepoDBTestSuite) Test_FindAll() {
 	exp := r.repo.FindAll()
 	r.NotNil(exp)
-	r.Equal(8, len(exp))
+	r.Equal(2, len(exp))
 	r.Equal(2, len(exp[0].SkuCarouPictures))
 	r.Equal(2, len(exp[1].SkuCarouPictures))
-	r.Equal(2, len(exp[4].SkuCarouPictures))
-	r.Equal(2, len(exp[7].SkuCarouPictures))
-	r.Equal("-01.jpeg", exp[7].SkuCarouPictures[0].PicStr)
-	r.Equal("-02.jpeg", exp[7].SkuCarouPictures[1].PicStr)
-
+	r.Equal("-01.jpeg", exp[0].SkuCarouPictures[0].PicStr)
+	r.Equal("-02.jpeg", exp[0].SkuCarouPictures[1].PicStr)
+	r.Equal(10, int(exp[0].Stock))
+	r.Equal("这是第一本 DevOps 的书", exp[0].Content)
 }
 
 func (r *SkuRepoDBTestSuite) Test_create_without_association() {
@@ -126,12 +145,12 @@ func (r *SkuRepoDBTestSuite) cd10() SKU {
 		CategoryId:      0,
 		RecommendStatus: "1",
 		PicStr:          "g7225946.jpeg",
-		Unit:            "册",
-		Stock:           110,
+		Unit:            "本",
+		Stock:           10,
 		MinPrice:        "66.0",
 		OriginalPrice:   "99.0",
 		Logistics:       "1",
-		Content:         "DevOps 的第一本书",
+		Content:         "这是第一本 DevOps 的书",
 		Status:          SalingStatus(ONSAIL),
 		Aftersale:       AfterSaleType(BOTH),
 	}
@@ -174,12 +193,12 @@ func prepareSku_Cd10_With_Pics() SKU {
 		CategoryId:       0,
 		RecommendStatus:  "1",
 		PicStr:           "g7225946.jpeg",
-		Unit:             "册",
-		Stock:            110,
+		Unit:             "本",
+		Stock:            10,
 		MinPrice:         "66.0",
 		OriginalPrice:    "99.0",
 		Logistics:        "1",
-		Content:          "DevOps 的第一本书",
+		Content:          "这是第一本 DevOps 的书",
 		Status:           SalingStatus(ONSAIL),
 		Aftersale:        AfterSaleType(BOTH),
 		SkuCarouPictures: pics,

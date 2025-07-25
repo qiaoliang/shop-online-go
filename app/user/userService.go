@@ -4,8 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/example/project/app/addresses"
-	"github.com/example/project/app/configs"
+	"bookstore/app/addresses"
 )
 
 var lockUS = &sync.Mutex{}
@@ -15,22 +14,26 @@ func GetUserService() *UserService {
 	lockUS.Lock()
 	defer lockUS.Unlock()
 	if userService == nil {
-		userService = newUserService(configs.Cfg.Persistence)
+		userService = newUserService(false)
 	}
 	return userService
 }
 
 type UserService struct {
-	userOnline map[string]string
-	ur         UserRepoIf
+	cache map[string]string
+	ur    UserRepo
+}
+
+func NewUserServiceWithRepo(repo UserRepo) *UserService {
+	return &UserService{make(map[string]string, 0), repo}
 }
 
 func newUserService(persistance bool) *UserService {
-	return &UserService{make(map[string]string, 0), newUserRepo(persistance)}
+	return &UserService{make(map[string]string, 0), newUserRepo()}
 }
 func (s *UserService) logout(token string) {
-	if _, ok := s.userOnline[token]; !ok {
-		delete(s.userOnline, token)
+	if _, ok := s.cache[token]; !ok {
+		delete(s.cache, token)
 	}
 }
 func (s *UserService) login(deviceId string, deviceName string, mobile string, pwd string) (*User, error) {
@@ -40,15 +43,15 @@ func (s *UserService) login(deviceId string, deviceName string, mobile string, p
 		return nil, errors.New("can not find user, which have mobile:" + mobile + "  pwd:" + pwd)
 	}
 	user.inflate()
-	s.userOnline[mobile] = mobile //take moble as a token
+	s.cache[mobile] = mobile //take moble as a token
 	return user, nil
 }
 func (s *UserService) isOnline(token string) bool {
-	_, ok := s.userOnline[token]
+	_, ok := s.cache[token]
 	return ok
 }
 func (s *UserService) FindUserByToken(token string) *User {
-	mobileNumber := s.userOnline[token]
+	mobileNumber := s.cache[token]
 	if mobileNumber == "" {
 		return nil
 	}
@@ -68,7 +71,7 @@ func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string
 	if err != nil {
 		return nil, errors.New("注册失败，内部错误。请重新尝试。")
 	}
-	s.userOnline[mobile] = mobile
+	s.cache[mobile] = mobile
 	return newUser, nil
 }
 func (s *UserService) GetDeliveryAddressesFor(token string) []addresses.Address {

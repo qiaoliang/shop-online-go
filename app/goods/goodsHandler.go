@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/example/project/app/testutils"
+	"bookstore/app/testutils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,27 +18,31 @@ type ResultData struct {
 	Result   []GoodsItem `json:"result"`
 }
 
-func FetchItemReputation(c *gin.Context) {
-	//TODO have not implemented,please fix it.
+type GoodsHandler struct {
+	service *GoodsService
+}
+
+func NewGoodsHandler(service *GoodsService) *GoodsHandler {
+	return &GoodsHandler{service: service}
+}
+
+func (h *GoodsHandler) GetGoodsDetail(c *gin.Context) {
+	gid, _ := c.GetQuery("id")
+	result := h.service.GetItemDetail(gid)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
-		"data": "",
+		"data": &result,
 		"msg":  "OK",
 	})
 }
 
-func FetchGoodsList(c *gin.Context) {
-	// params
+func (h *GoodsHandler) FetchGoodsList(c *gin.Context) {
 	page := c.PostForm("page")
 	pageSize := c.DefaultPostForm("pageSize", "10")
 	categoryId := c.PostForm("categoryId")
 	catalogueId, _ := strconv.Atoi(categoryId)
 	cateId := uint(catalogueId)
-
-	// logic
-	result := getGoods(page, pageSize, cateId)
-
-	// response
+	result := h.getGoods(page, pageSize, cateId)
 	c.JSON(http.StatusOK, gin.H{
 		"code": 0,
 		"data": gin.H{
@@ -49,28 +53,24 @@ func FetchGoodsList(c *gin.Context) {
 	})
 }
 
-func GetGoodsDetail(c *gin.Context) {
-
-	// params
-	gid, _ := c.GetQuery("id")
-	result := getItemDetail(gid)
-
-	// response
-	c.JSON(http.StatusOK, gin.H{
-		"code": 0,
-		"data": &result,
-		"msg":  "OK",
-	})
+func (h *GoodsHandler) FetchCatalogues(c *gin.Context) {
+	// TODO: 实现分类查询逻辑
+	c.JSON(200, gin.H{"code": 0, "data": []string{}, "msg": "OK"})
 }
 
-func getItemDetail(gid string) *GoodsDetail {
-	gs := GetGoodsService()
-	gs.LoadGoods()
-	return gs.GetItemDetail(gid)
+func (h *GoodsHandler) FetchItemReputation(c *gin.Context) {
+	// TODO: 实现商品评价查询逻辑
+	c.JSON(200, gin.H{"code": 0, "data": []string{}, "msg": "OK"})
 }
 
-func getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {
-	gs := GetGoodsService()
-	gs.LoadGoods()
-	return gs.GetCategory(catalogueId)
+func (h *GoodsHandler) getGoods(page string, pageSize string, catalogueId uint) []GoodsItem {
+	skus := h.service.repo.FindAll()
+	items := make([]GoodsItem, 0)
+	for _, sku := range skus {
+		if sku.CategoryId == catalogueId {
+			i := h.service.skuToGoodsItem(sku)
+			items = append(items, *i)
+		}
+	}
+	return items
 }

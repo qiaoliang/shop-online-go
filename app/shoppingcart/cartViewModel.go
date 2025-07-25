@@ -1,8 +1,8 @@
 package cart
 
 import (
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/goods"
+	"bookstore/app/configs"
+	"bookstore/app/goods"
 )
 
 type CartInfoVM struct {

@@ -1,5 +1,0 @@
-DROP TABLE IF EXISTS `categories`;
-CREATE TABLE IF NOT EXISTS `categories` (
-	id INTEGER PRIMARY KEY,
-	name VARCHAR(100) NOT NULL
-);

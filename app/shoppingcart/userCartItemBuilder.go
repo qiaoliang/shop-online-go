@@ -6,6 +6,7 @@ type UserCartItemBuilder struct {
 
 func NewUCIBuilder() UserCartItemBuilder {
 	return UserCartItemBuilder{UserCartItem{
+		0, // ID
 		"token-13900007997", //Token
 		"g7225946",          //Gid
 		"g7225946.jpeg",     //Pic

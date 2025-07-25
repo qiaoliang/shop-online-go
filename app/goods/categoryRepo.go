@@ -2,31 +2,20 @@ package goods
 
 import (
 	"sync"
-
-	"github.com/example/project/app/configs"
 )
 
 var lockCR = &sync.Mutex{}
-var cateRepo CategoryRepoIf
+var cateRepo *CategoryRepo
 
 type CategoryRepo struct {
 	cates []Category
 }
 
-func GetCategoryRepo() CategoryRepoIf {
-	return NewCategoryRepo(configs.Cfg.Persistence)
+func GetCategoryRepo() *CategoryRepo {
+	return NewCategoryRepo()
 }
-func NewCategoryRepo(persistence bool) CategoryRepoIf {
-	lockCR.Lock()
-	defer lockCR.Unlock()
-	if cateRepo == nil {
-		if persistence {
-			cateRepo = GetCategoryRepoDB(configs.Cfg.DBConnection())
-		} else {
-			cateRepo = &CategoryRepo{}
-		}
-	}
-	return cateRepo
+func NewCategoryRepo() *CategoryRepo {
+	return &CategoryRepo{}
 }
 func (cr *CategoryRepo) LoadCategory() []Category {
 	cate1 := &Category{0, "DevOps"}

@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"net/http"
 
-	"github.com/example/project/app/configs"
+	"bookstore/app/configs"
 
 	"github.com/afocus/captcha"
 	"github.com/gin-gonic/gin"

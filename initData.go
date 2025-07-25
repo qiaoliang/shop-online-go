@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/example/project/app/goods"
+	"bookstore/app/goods"
 )
 
 func initCategories(str []byte) ([]goods.Category, error) {

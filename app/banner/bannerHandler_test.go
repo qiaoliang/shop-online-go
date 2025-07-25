@@ -3,7 +3,9 @@ package ad
 import (
 	"testing"
 
-	"github.com/example/project/app/testutils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -14,21 +16,31 @@ type BannerHandlerSuite struct {
 	router *gin.Engine
 }
 
+func TestMain(m *testing.M) {
+	configs.GetConfigInstance("../../config-test.yaml")
+	code := m.Run()
+	os.Remove("./test.db")
+	os.Exit(code)
+}
+
 func TestBannerHandlerSuite(t *testing.T) {
 	suite.Run(t, new(BannerHandlerSuite))
 }
 
 func (st *BannerHandlerSuite) SetupSuite() {
 	st.SupperSuite.SetupSuite()
-	st.router = setupTestRouter()
+	db := configs.Cfg.DBConnection()
+	repo := NewBannerRepoDB(db)
+	service := NewBannerService(repo)
+	handler := NewBannerHandler(service)
+	st.router = setupTestRouter(handler)
 }
 
-func setupTestRouter() *gin.Engine {
+func setupTestRouter(handler *BannerHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
-
-	v1.GET("/banner/list", FetchBanners)
+	v1.GET("/banner/list", handler.FetchBanners)
 	return router
 }
 func (s *BannerHandlerSuite) Test_should_get_default_list_when_no_param_existed() {

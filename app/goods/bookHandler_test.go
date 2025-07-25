@@ -5,8 +5,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/testutils"
+	"bookstore/app/configs"
+	"bookstore/app/testutils"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -21,13 +22,20 @@ func TestBookHandlerSuiteSuite(t *testing.T) {
 	suite.Run(t, new(BookHandlerSuite))
 }
 
+func TestMain(m *testing.M) {
+	configs.GetConfigInstance("../../config-test.yaml")
+	code := m.Run()
+	os.Remove("./test.db")
+	os.Exit(code)
+}
+
 func (st *BookHandlerSuite) SetupSuite() {
 	st.router = st.setupTestRouter()
 	configs.GetConfigInstance(testutils.GetConfigFileForTest())
-	configs.Cfg.Upgrade()
+	configs.Cfg.DBConnection()
 }
 func (st *BookHandlerSuite) TeardownSuite() {
-	configs.Cfg.Downgrade()
+	// no-op
 }
 
 func (st *BookHandlerSuite) Test_Get_error_when_Update_unexisted_Book() {

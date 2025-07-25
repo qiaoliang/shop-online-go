@@ -1,0 +1,5 @@
+DROP TABLE IF EXISTS categories;
+CREATE TABLE categories (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL
+);

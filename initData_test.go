@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	"github.com/example/project/app/goods"
+	"bookstore/app/goods"
 
 	"github.com/stretchr/testify/suite"
 )

@@ -8,7 +8,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func PutIntoCart(c *gin.Context) {
+type CartHandler struct {
+	service *CartService
+}
+
+func NewCartHandler(service *CartService) *CartHandler {
+	return &CartHandler{service: service}
+}
+
+func (h *CartHandler) PutIntoCart(c *gin.Context) {
 	token := c.PostForm("token")
 	gid := c.PostForm("goodsId")
 	number := c.PostForm("number")
@@ -18,30 +26,26 @@ func PutIntoCart(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
 		return
 	}
-	result := GetCartsService().PutItemsInCart(token, gid, uint(vlm64))
+	result := h.service.PutItemsInCart(token, gid, uint(vlm64))
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
-func ModifyNumberOfGoodsInCart(c *gin.Context) {
-
+func (h *CartHandler) ModifyNumberOfGoodsInCart(c *gin.Context) {
 	token := c.PostForm("token")
-	gid := c.PostForm("key") //只有这里用了Key，其它都用了gid，或 goodsId
+	gid := c.PostForm("key")
 	numStr := c.PostForm("number")
-
 	number, _ := strconv.Atoi(numStr)
-
-	GetCartsService().ModifyQuantityOfGoodsInCate(token, gid, uint(number))
-	result := GetCartsService().GetCartByToken(token)
-
+	h.service.ModifyQuantityOfGoodsInCate(token, gid, uint(number))
+	result := h.service.GetCartByToken(token)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
-func GetShopingCart(c *gin.Context) {
 
+func (h *CartHandler) GetShopingCart(c *gin.Context) {
 	token, err := c.GetQuery("token")
 	if !err {
 		fmt.Println("can not Parse token。")
 	}
-	cart := GetCartsService().GetCartByToken(token)
+	cart := h.service.GetCartByToken(token)
 	var result interface{}
 	if cart == nil {
 		fmt.Println("没有找到 token 为 " + token + " 的购物车")

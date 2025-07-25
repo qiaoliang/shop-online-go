@@ -4,41 +4,22 @@ import (
 	"log"
 	"strings"
 
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/goods"
+	"bookstore/app/goods"
 )
 
 var cartService *CartService
 
 type CartService struct {
-	cached CachedCart
-	sr     goods.SkuRepoIf
-	cr     CartRepoIf
+	goodsRepo goods.SkuRepoIf
+	cr     *CartRepoDB
 }
 
-type CachedCart map[string]*CartInfoVM
-
-func (c CachedCart) get(token string) *CartInfoVM {
-	if _, ok := c[token]; !ok {
-		return nil
-	}
-	return c[token]
-}
-func (c CachedCart) update(token string, cart *CartInfoVM) {
-	c[token] = cart
-}
-func GetCartsService() *CartService {
-	if cartService == nil {
-		cartService = newCartService(configs.Cfg.Persistence)
-	}
-	return cartService
-}
-func newCartService(persistance bool) *CartService {
-	return &CartService{make(map[string]*CartInfoVM, 0), goods.NewSkuRepo(persistance), newCartsRepo(persistance)}
+func NewCartService(goodsRepo goods.SkuRepoIf, cr *CartRepoDB) *CartService {
+	return &CartService{goodsRepo, cr}
 }
 
 func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint) *CartInfoVM {
-	sku := cs.sr.First(skuId)
+	sku := cs.goodsRepo.First(skuId)
 	if sku == nil {
 		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
 		return nil
@@ -58,20 +39,16 @@ func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint)
 	cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
 
 	ci.caculateRedDot()
-	cs.cached.update(token, ci)
 	return ci
 }
 
 func (cs *CartService) findCartInfoFor(token string) *CartInfoVM {
-	ci := cs.cached.get(token)
-	if ci == nil {
-		ci = cs.fetchCartItems(token)
-	}
+	ci := cs.fetchCartItems(token)
 	return ci
 }
 func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM {
 
-	gd := cs.sr.First(gid)
+	gd := cs.goodsRepo.First(gid)
 	if gd == nil {
 		log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", gid)
 		return nil
@@ -87,10 +64,7 @@ func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, qua
 }
 
 func (cs *CartService) GetCartByToken(token string) *CartInfoVM {
-	ret := cs.cached.get(token)
-	if ret == nil {
-		return cs.fetchCartItems(token)
-	}
+	ret := cs.fetchCartItems(token)
 	return ret
 }
 func (cs *CartService) fetchCartItems(token string) *CartInfoVM {
@@ -99,7 +73,6 @@ func (cs *CartService) fetchCartItems(token string) *CartInfoVM {
 		return nil
 	}
 	ci := cs.fromUCIlistToVM(token, found)
-	cs.cached.update(token, ci)
 	return ci
 }
 
@@ -134,21 +107,23 @@ func (cs *CartService) fromUCIToVM(uci UserCartItem) (CartItemVM, ItemPairVM) {
 }
 func (cs *CartService) fromVMToUCI(token string, ci *CartItemVM) *UserCartItem {
 	return &UserCartItem{
-		token,
-		ci.Gid,
-		ci.RetrivePicStr(),
-		ci.Status,
-		ci.Name,
-		strings.Join(ci.Sku, ","),
-		ci.Price,
-		ci.Quantity,
-		ci.Selected,
-		ci.OptionValueName,
+		ID: 0,
+		Token: token,
+		SkuId: ci.Gid,
+		Pic: ci.RetrivePicStr(),
+		Status: ci.Status,
+		Name: ci.Name,
+		SkuStrs: strings.Join(ci.Sku, ","),
+		Price: ci.Price,
+		Quantity: ci.Quantity,
+		Selected: ci.Selected,
+		OptionValueName: ci.OptionValueName,
 	}
 }
 
 func (cs *CartService) CreateCartItemFor(token string, sku *goods.SKU, quantity uint) *CartInfoVM {
 	uci := UserCartItem{
+		ID: 0,
 		Token:           token,
 		SkuId:           sku.SkuId,
 		Pic:             sku.PicStr,
@@ -165,14 +140,6 @@ func (cs *CartService) CreateCartItemFor(token string, sku *goods.SKU, quantity 
 		log.Fatalf("%v \n save db has error:\n%v\n", uci, err)
 		return nil
 	}
-	ci := cs.cached.get(token)
-	if ci == nil {
-		ci = &CartInfoVM{token, 0, []CartItemVM{}, []ItemPairVM{}}
-		cs.cached.update(token, ci)
-	}
-	item, ip := cs.fromUCIToVM(uci)
-	ci.Items = append(ci.Items, item)
-	ci.Pairs = append(ci.Pairs, ip)
-	ci.RedDot = uint(len(ci.Items))
-	return ci
+	// 关键：插入/更新后，直接重新从数据库加载购物车项，避免 items/goods 重复
+	return cs.findCartInfoFor(token)
 }

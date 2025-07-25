@@ -8,7 +8,15 @@ import (
 
 type Banners []BannerVM
 
-func FetchBanners(c *gin.Context) {
+type BannerHandler struct {
+	service *BannerService
+}
+
+func NewBannerHandler(service *BannerService) *BannerHandler {
+	return &BannerHandler{service: service}
+}
+
+func (h *BannerHandler) FetchBanners(c *gin.Context) {
 	bt, err := c.GetQuery("type")
 	if !err || bt == "" {
 		bt = "indexBanner"
@@ -17,7 +25,6 @@ func FetchBanners(c *gin.Context) {
 	if !err || t == "" {
 		t = "NoToken"
 	}
-
-	result := GetBannerService().FetchBanners(bt, t)
+	result := h.service.FetchBanners(bt, t)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }

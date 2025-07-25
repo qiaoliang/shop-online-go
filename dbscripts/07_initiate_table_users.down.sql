@@ -1,2 +1,0 @@
-DELETE FROM `goods`;
-DROP TABLE IF EXISTS `goods`;

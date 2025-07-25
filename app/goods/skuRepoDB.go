@@ -1,11 +1,8 @@
 package goods
 
 import (
-	"fmt"
 	"log"
 	"sync"
-
-	"github.com/example/project/app/configs"
 
 	"gorm.io/gorm"
 )
@@ -14,23 +11,23 @@ type GoodsRepoIf interface {
 }
 
 var lockSku = &sync.Mutex{}
-var skuRepo SkuRepoIf
+var skuRepo SkuRepoIf = NewSkuRepo()
 
 func GetSkuRepo() SkuRepoIf {
 	lockSku.Lock()
 	defer lockSku.Unlock()
 	if skuRepo == nil {
-		skuRepo = NewSkuRepo(configs.Cfg.Persistence)
+		skuRepo = NewSkuRepo()
 	}
 	return skuRepo
 }
 
-func NewSkuRepo(isPersistence bool) SkuRepoIf {
-	if isPersistence {
-		return SkuRepoDB{configs.Cfg.DBConnection()}
-	} else {
-		return &SkuRepoMem{map[string]SKU{}}
-	}
+func NewSkuRepo() SkuRepoIf {
+	return &SkuRepoDB{}
+}
+
+func NewSkuRepoDB(db *gorm.DB) *SkuRepoDB {
+	return &SkuRepoDB{db: db}
 }
 
 type SkuRepoIf interface {
@@ -78,22 +75,12 @@ func (s SkuRepoDB) First(skuid string) *SKU {
 	return &sku
 }
 func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU {
-	sku := SKU{SkuId: skuid}
-	err := s.db.Model(&sku).Association("SkuCarouPictures").Error
-
-	if err != nil {
-		fmt.Println(err)
-		return nil
-	}
-	ret := s.db.Preload("SkuCarouPictures").First(&sku)
-	log.Printf("sku is %v\n", sku)
-	if ret == nil {
-		log.Println("Can not find Pics for " + sku.SkuId)
-		return nil
-	}
+	var sku SKU
+	ret := s.db.Preload("SkuCarouPictures").Where("sku_id = ?", skuid).First(&sku)
 	if ret.Error != nil {
 		log.Println(ret.Error)
 		return nil
 	}
+	log.Printf("sku is %v\n", sku)
 	return &sku
 }

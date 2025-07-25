@@ -1,8 +1,8 @@
 package cart
 
 import (
-	"github.com/example/project/app/configs"
-	"github.com/example/project/app/goods"
+	"bookstore/app/configs"
+	"bookstore/app/goods"
 )
 
 type UserCart struct {
@@ -11,16 +11,17 @@ type UserCart struct {
 }
 
 type UserCartItem struct {
-	Token           string
-	SkuId           string `grom:"column:sku_id"`
-	Pic             string
-	Status          uint // === 1 【失效】
-	Name            string
-	SkuStrs         string `grom:"column:sku_strs"`
-	Price           string ``
-	Quantity        uint
-	Selected        string
-	OptionValueName string `grom:"column:Option_value_name"`
+	ID              int    `gorm:"primaryKey;autoIncrement" json:"id"`
+	Token           string `gorm:"column:token"`
+	SkuId           string `gorm:"column:sku_id"`
+	Pic             string `gorm:"column:pic"`
+	Status          uint   `gorm:"column:status"`
+	Name            string `gorm:"column:name"`
+	SkuStrs         string `gorm:"column:sku_strs"`
+	Price           string `gorm:"column:price"`
+	Quantity        uint   `gorm:"column:quantity"`
+	Selected        string `gorm:"column:selected"`
+	OptionValueName string `gorm:"column:option_value_name"`
 }
 
 func (ci UserCartItem) FullPicStr() string {
@@ -30,7 +31,7 @@ func (ci UserCartItem) FullPicStr() string {
 func (ci *UserCart) NewUserCartItem(token string, sku goods.SKU, quantity uint) UserCartItem {
 
 	skuStr := "sku1, sku3"
-	item := UserCartItem{token, sku.SkuId, configs.Cfg.GoodsPicPrefix() + sku.PicStr, 0, sku.Name, skuStr, sku.MinPrice, quantity, "1", "optionValueName"}
+	item := UserCartItem{0, token, sku.SkuId, configs.Cfg.GoodsPicPrefix() + sku.PicStr, 0, sku.Name, skuStr, sku.MinPrice, quantity, "1", "optionValueName"}
 	return item
 }
 func (ci *UserCart) findUserCartItem(skuid string) (*UserCartItem, int) {

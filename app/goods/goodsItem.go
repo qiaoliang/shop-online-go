@@ -3,7 +3,7 @@ package goods
 import (
 	"fmt"
 
-	"github.com/example/project/app/configs"
+	"bookstore/app/configs"
 )
 
 type GoodsItem struct {

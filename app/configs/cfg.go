@@ -1,41 +1,27 @@
 package configs
 
 import (
-	"database/sql"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/golang-migrate/migrate/v4"
-	mysql "github.com/golang-migrate/migrate/v4/database/mysql"
-	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/spf13/viper"
 
-	gormMysql "gorm.io/driver/mysql"
 	sqlite "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"bookstore/app/migrations"
 )
 
 type Config struct {
-	Persistence bool
 	cfgDir      string
 	dbConn      *gorm.DB
 	Host        string
 	Port        int
 
-	DBUser          string
-	DBPasswd        string
-	DBAddr          string
-	DBPort          int
-	DBName          string
-	DBMigrationPath string
-	DBMigrateProto  string
-	DBMigrateDir    string
-	m               *migrate.Migrate
-
 	SQLiteDBFile   string
 	SQLiteDBMemory string
+	MigrationDir   string
 
 	StaticPic  string
 	BannerPath string
@@ -65,25 +51,20 @@ func GetConfigInstance(cfgfile string) *Config {
 	}
 	viper.SetConfigFile(cfgfile)
 	viper.ReadInConfig()
+	migrationDir := viper.GetString("MIGRATION_DIR")
+	if migrationDir == "" {
+		migrationDir = "dbscripts" // 默认值
+	}
 	Cfg = Config{
-		Persistence:    viper.GetBool("PERSISTANCE"),
 		Host:           viper.Get("HOST").(string),
 		Port:           viper.Get("PORT").(int),
-		DBUser:         viper.Get("MYSQL.DB_USERNAME").(string),
-		DBPasswd:       viper.Get("MYSQL.DB_PASSWORD").(string),
-		DBAddr:         viper.Get("MYSQL.BASE_URL").(string),
-		DBPort:         viper.Get("MYSQL.DB_PORT").(int),
-		DBName:         viper.Get("MYSQL.DB_NAME").(string),
-		DBMigrateProto: viper.Get("MYSQL.DB_MIG_PROTO").(string),
-		DBMigrateDir:   viper.Get("MYSQL.DB_MIG_DIR").(string),
-
 		SQLiteDBFile:   viper.GetString("SQLITE.DB_FILE"),
 		SQLiteDBMemory: viper.GetString("SQLITE.DB_MEMORY"),
-
-		StaticPic:  viper.Get("RESOURCES.STATIC_PIC_URI").(string),
-		GoodsPath:  viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
-		BannerPath: viper.Get("RESOURCES.BANNERS_RELETIVE_PATH").(string),
-		AvatarPath: viper.Get("RESOURCES.AVARAE_RELETIVE_PATH").(string),
+		MigrationDir:   migrationDir,
+		StaticPic:      viper.Get("RESOURCES.STATIC_PIC_URI").(string),
+		GoodsPath:      viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
+		BannerPath:     viper.Get("RESOURCES.BANNERS_RELETIVE_PATH").(string),
+		AvatarPath:     viper.Get("RESOURCES.AVARAE_RELETIVE_PATH").(string),
 	}
 	Cfg.getAbsDir(cfgfile)
 	return &Cfg
@@ -96,45 +77,6 @@ func (cfg *Config) getAbsDir(filename string) string {
 	dp, _ := filepath.Split(fp)
 	cfg.cfgDir = dp
 	return cfg.cfgDir
-}
-func (cfg *Config) getMigretionPath() string {
-	return fmt.Sprintf("%s/%s/%s", cfg.DBMigrateProto, cfg.cfgDir, cfg.DBMigrateDir)
-}
-func (cfg *Config) prepareMigration() {
-	dsn := cfg.getDbURI() + "?multiStatements=true"
-
-	db, _ := sql.Open("mysql", dsn)
-	driver, _ := mysql.WithInstance(db, &mysql.Config{})
-	m, err := migrate.NewWithDatabaseInstance(
-		cfg.getMigretionPath(),
-		"mysql",
-		driver,
-	)
-
-	if err != nil {
-		// **I get error here!!**
-		panic(err)
-	}
-	cfg.m = m
-}
-func (cfg *Config) Downgrade() {
-	if cfg.m == nil {
-		cfg.prepareMigration()
-	}
-
-	if err := cfg.m.Down(); err != nil && err != migrate.ErrNoChange {
-		fmt.Printf(" downgrade error:\n %v\n", err)
-	}
-
-}
-func (cfg *Config) Upgrade() {
-	if cfg.m == nil {
-		cfg.prepareMigration()
-	}
-
-	if err := cfg.m.Up(); err != nil && err != migrate.ErrNoChange {
-		panic(err)
-	}
 }
 
 var Cfg Config
@@ -153,25 +95,20 @@ func (cfg *Config) AvatarPicPrefix() string {
 
 }
 
-func (cfg *Config) getDbURI() string {
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
-		cfg.DBUser, cfg.DBPasswd, cfg.DBAddr, cfg.DBPort, cfg.DBName)
-	return dsn
+func (cfg *Config) runMigrations() {
+	err := migrations.MigrateUp(cfg.SQLiteDBMemory, cfg.MigrationDir)
+	if err != nil {
+		panic("Database migration failed: " + err.Error())
+	}
 }
+
 func (cfg *Config) DBConnection() *gorm.DB {
 	if cfg.dbConn == nil {
-		if cfg.Persistence {
-			dsn := cfg.getDbURI() + "?charset=utf8mb4&parseTime=True&loc=Local"
-			cfg.dbConn, err = gorm.Open(gormMysql.Open(dsn), &gorm.Config{})
-		} else {
-			// Use SQLite in-memory database
-			cfg.dbConn, err = gorm.Open(sqlite.Open(cfg.SQLiteDBMemory), &gorm.Config{})
-		}
-
+		cfg.dbConn, err = gorm.Open(sqlite.Open(cfg.SQLiteDBMemory), &gorm.Config{})
 		if err != nil {
 			panic("Failed to connect database: " + err.Error())
 		}
+		cfg.runMigrations()
 	}
 	return cfg.dbConn
 }
