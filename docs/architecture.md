@@ -619,7 +619,7 @@ shop-online-go/
 
 ### Language-Specific Guidelines
 
-##### Go Specifics
+#### Go Specifics
 
 -   **接口：** 倾向于接受接口而不是结构体，以提高灵活性和可测试性。
 -   **指针：** 仅在需要修改接收者或避免复制大结构体时使用指针。
@@ -636,7 +636,7 @@ shop-online-go/
 
 ### Test Types and Organization
 
-##### Unit Tests
+#### Unit Tests
 
 -   **Framework:** Go 的内置 `testing` 包。
 -   **File Convention:** `_test.go` 文件，与被测试的源文件在同一包下。
