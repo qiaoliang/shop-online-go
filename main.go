@@ -18,7 +18,7 @@ func main() {
 	configs.GetConfigInstance("config.yaml")
 	db := configs.Cfg.DBConnection()
 	skuRepo := goods.NewSkuRepoDB(db)
-	cateRepo := &goods.CategoryRepo{}
+	cateRepo := goods.NewCategoryRepoDB(db)
 	goodsService := goods.NewGoodsService(skuRepo, cateRepo)
 	goodsHandler := goods.NewGoodsHandler(goodsService)
 
