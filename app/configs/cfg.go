@@ -45,11 +45,18 @@ func IsPathExist(path string) bool {
 }
 
 func GetConfigInstance(cfgfile string) *Config {
+	configToUse := cfgfile
 	if !IsPathExist(cfgfile) {
-		fmt.Println("config file " + cfgfile + " is NOT existed")
-		panic(cfgfile + "is NOT existed.")
+		fmt.Println("配置文件 " + cfgfile + " 不存在，尝试使用当前目录下的config.yaml")
+		if IsPathExist("config.yaml") {
+			configToUse = "config.yaml"
+			fmt.Println("使用当前目录下的config.yaml作为配置文件")
+		} else {
+			fmt.Println("当前目录下的config.yaml也不存在")
+			panic("无法找到有效的配置文件")
+		}
 	}
-	viper.SetConfigFile(cfgfile)
+	viper.SetConfigFile(configToUse)
 	viper.ReadInConfig()
 	migrationDir := viper.GetString("MIGRATION_DIR")
 	if migrationDir == "" {

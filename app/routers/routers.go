@@ -35,7 +35,7 @@ func InitRouter() {
 		context.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"data": nil,
-			"msg": "商城后台已经正常启动。",
+			"msg": "服务已启动",
 		})
 	})
 
@@ -61,6 +61,23 @@ func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler
 	if DB == nil {
 		panic("Database connection not initialized in routers package")
 	}
+
+	// 添加根路径处理函数，访问 http://localhost:9090 时返回
+	r.GET("/", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"data": nil,
+			"msg": "服务已启动",
+		})
+	})
+
+	// 添加ping路径处理函数
+	r.GET("/ping", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
+
 	v1 := r.Group("/v1")
 	v1.GET("/verification/pic/get", security.GetCapChar)
 	v1.GET("/verification/pic/check", security.VerifyCapChar)
