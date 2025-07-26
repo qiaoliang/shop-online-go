@@ -51,6 +51,6 @@ func (s *BannerHandlerSuite) Test_should_get_default_list_when_no_param_existed(
 	noParam["token"] = ""
 	body := testutils.HttpGet("/v1/banner/list", noParam, s.router)
 
-	exp := `{"code":0,"data":[{"businessId":0,"dateAdd":"2022-05-05 11:26:09","id":222083,"linkUrl":"https://gitee.com/sagittatius","paixu":0,"picUrl":"http://localhost:9090/pic/banners/b0001.jpeg","remark":"跳转gitee sagittatius","status":0,"statusStr":"any","title":"any","type":"any","userId":1605},{"businessId":1,"dateAdd":"2022-05-05 11:26:09","id":222084,"linkUrl":"https://gitee.com/sagittatius","paixu":0,"picUrl":"http://localhost:9090/pic/banners/b0002.jpeg","remark":"跳转gitee sagittatius","status":0,"statusStr":"any","title":"any","type":"any","userId":1606}],"msg":"OK"}`
+	exp := `{"code":0,"data":[{"businessId":0,"dateAdd":"2022-05-05 11:26:09","id":222083,"linkUrl":"https://baidu.com","paixu":0,"picUrl":"http://localhost:9090/pic/banners/b0001.jpeg","remark":"跳转gitee sagittatius","status":0,"statusStr":"any","title":"any","type":"any","userId":1605},{"businessId":1,"dateAdd":"2022-05-05 11:26:09","id":222084,"linkUrl":"https://baidu.com","paixu":0,"picUrl":"http://localhost:9090/pic/banners/b0002.jpeg","remark":"跳转gitee sagittatius","status":0,"statusStr":"any","title":"any","type":"any","userId":1606}],"msg":"OK"}`
 	s.Equal(exp, string(body), "should same.")
 }

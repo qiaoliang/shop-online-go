@@ -14,7 +14,7 @@ func NewBannerBuilder() BannerVMBuilder {
 			BusinessId: 0,
 			DateAdd:    "2022-05-05 11:26:09",
 			Id:         222083,
-			LinkUrl:    "https://gitee.com/sagittatius",
+			LinkUrl:    "https://baidu.com",
 			Paixu:      0,
 			PicUrl:     pic_prefix + "b0000.jpeg",
 			Remark:     "跳转 gitee sagittatius",
