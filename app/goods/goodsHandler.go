@@ -54,8 +54,9 @@ func (h *GoodsHandler) FetchGoodsList(c *gin.Context) {
 }
 
 func (h *GoodsHandler) FetchCatalogues(c *gin.Context) {
-	// TODO: 实现分类查询逻辑
-	c.JSON(200, gin.H{"code": 0, "data": []string{}, "msg": "OK"})
+	// 使用 service 中的 cateRepo 获取分类数据
+	result := h.service.cateRepo.GetList()
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
 func (h *GoodsHandler) FetchItemReputation(c *gin.Context) {

@@ -30,7 +30,7 @@ fi
 # 3. 清理编译中间产物和最终产物
 echo "🧹 清理编译中间产物和最终产物..."
 rm -f bookstore
-go clean -cache -testcache
+go clean
 echo "✅ 编译产物清理完成"
 
 # 4. 构建项目
