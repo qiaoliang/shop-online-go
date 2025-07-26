@@ -13,6 +13,12 @@ func userToVM(user *User) *UserVM {
 		return nil
 	}
 	user.AvatarUrl = configs.Cfg.AvatarPicPrefix() + user.AvatarUrl
+
+	// 确保 UserLevel 不为 nil
+	if user.UserLevel == nil {
+		user.inflate() // 调用 inflate 方法初始化 UserLevel
+	}
+
 	return &UserVM{
 		user.Mobile,
 		*user,
