@@ -20,9 +20,11 @@ func TestCategoryHandlerSuite(t *testing.T) {
 }
 
 func (st *CategoryHandlerSuite) SetupSuite() {
-	st.router = st.setupTestRouter()
 	configs.GetConfigInstance(testutils.GetConfigFileForTest())
-	configs.Cfg.DBConnection()
+	db := configs.Cfg.DBConnection()
+	cateRepo := NewCategoryRepoDB(db)
+	categoryHandler := NewCategoryHandler(cateRepo)
+	st.router = st.setupTestRouter(categoryHandler)
 }
 
 func (st *CategoryHandlerSuite) Test_get_category_list() {
@@ -36,11 +38,11 @@ func (st *CategoryHandlerSuite) Test_get_category_list() {
 	st.Equal(exp, string(body), "should same.")
 }
 
-func (st *CategoryHandlerSuite) setupTestRouter() *gin.Engine {
+func (st *CategoryHandlerSuite) setupTestRouter(handler *CategoryHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
 
-	v1.GET("/shop/goods/category/all", FetchCatalogues)
+	v1.GET("/shop/goods/category/all", handler.FetchCatalogues)
 	return router
 }

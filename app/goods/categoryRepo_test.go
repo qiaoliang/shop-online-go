@@ -10,7 +10,7 @@ import (
 
 type CategoryRepoTestSuite struct {
 	suite.Suite
-	repo CategoryRepoInterface
+	repo *CategoryRepoDB
 }
 
 func TestCategoryRepoTestSuite(t *testing.T) {
@@ -43,8 +43,7 @@ func (st *CategoryRepoTestSuite) TeardownSuite() {
 
 // SetupTest 在每个测试前设置
 func (st *CategoryRepoTestSuite) SetupTest() {
-	cateRepo = nil
-	cateRepo = st.repo
+	// 不再设置全局变量 cateRepo，直接使用 st.repo 进行测试
 }
 
 // Test_goods_load_from_db 测试从数据库加载分类
@@ -59,7 +58,7 @@ func (st *CategoryRepoTestSuite) Test_goods_load_from_db() {
 }
 
 // Test_goods_get_list 测试获取分类列表
-func (st *CategoryRepoTestSuite) Test_get_category_list() {
+func (st *CategoryRepoTestSuite) Test_goods_get_list() {
 	// 执行测试
 	categories := st.repo.GetList()
 

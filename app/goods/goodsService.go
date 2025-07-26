@@ -20,12 +20,12 @@ func GetGoodsService() *GoodsService {
 	return goodsService
 }
 
-func NewGoodsService(repo *SkuRepoDB, cateRepo *CategoryRepo) *GoodsService {
+func NewGoodsService(repo *SkuRepoDB, cateRepo *CategoryRepoDB) *GoodsService {
 	return &GoodsService{repo: repo, cateRepo: cateRepo}
 }
 
 func newGoodsService() *GoodsService {
-	return &GoodsService{repo: &SkuRepoDB{}, cateRepo: &CategoryRepo{}}
+	return &GoodsService{repo: &SkuRepoDB{}, cateRepo: &CategoryRepoDB{}}
 }
 
 // 删除原有的 NewGoodsService（含 &SkuRepoMem{}）实现和 gs.items 相关代码，只保留数据库 repo 版本。
@@ -34,10 +34,9 @@ type GoodsItems []GoodsItem
 
 type GoodsService struct {
 	repo     *SkuRepoDB
-	cateRepo *CategoryRepo
+	cateRepo *CategoryRepoDB
 }
 
-// 移除所有 gs.items 相关方法和字段
 // 只保留数据库 repo 相关方法
 func (gs *GoodsService) GetItemDetail(gid string) *GoodsDetail {
 	sku := gs.repo.FindWithCarouselPics(gid)

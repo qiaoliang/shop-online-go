@@ -29,7 +29,7 @@ func (st *GoodsHandlerSuite) SetupSuite() {
 	configs.GetConfigInstance(testutils.GetConfigFileForTest())
 	db := configs.Cfg.DBConnection()
 	skuRepo := NewSkuRepoDB(db)
-	cateRepo := &CategoryRepo{}
+	cateRepo := NewCategoryRepoDB(db)
 	goodsService := NewGoodsService(skuRepo, cateRepo)
 	goodsHandler := NewGoodsHandler(goodsService)
 	st.router = st.setupTestRouter(goodsHandler)

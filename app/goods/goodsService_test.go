@@ -27,7 +27,7 @@ func (s *GoodsServiceTestSuite) SetupSuite() {
 	s.SupperSuite.SetupSuite()
 	db := configs.Cfg.DBConnection()
 	skuRepo := NewSkuRepoDB(db)
-	cateRepo := &CategoryRepo{}
+	cateRepo := NewCategoryRepoDB(db)
 	s.serv = NewGoodsService(skuRepo, cateRepo)
 }
 func (s *GoodsServiceTestSuite) TeardownSuite() {
