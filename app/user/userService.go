@@ -84,3 +84,31 @@ func (s *UserService) GetDefaultDeliveryAddress(token string) []addresses.Addres
 	//TODO: Not implemented yet.
 	return nil
 }
+
+func (s *UserService) UpdateUserByToken(token string, data User) *User {
+	// 通过token找到用户
+	user := s.FindUserByToken(token)
+	if user == nil {
+		return nil
+	}
+
+	// 更新用户信息
+	if data.Nickname != "" {
+		user.Nickname = data.Nickname
+	}
+	if data.AvatarUrl != "" {
+		user.AvatarUrl = data.AvatarUrl
+	}
+	if data.Province != "" {
+		user.Province = data.Province
+	}
+	if data.City != "" {
+		user.City = data.City
+	}
+
+	// 保存更新后的用户信息
+	s.ur.updateUser(user)
+
+	return user
+}
+

@@ -62,7 +62,17 @@ func (h *UserHandler) UpdateUserInfo(c *gin.Context) {
 	province := c.Query("province")
 	city := c.Query("city")
 	fmt.Println(token, nick, avatarUrl, province, city)
-	user := updateUser(token)
+
+	// 创建用户数据对象
+	userData := User{
+		Nickname:  nick,
+		AvatarUrl: avatarUrl,
+		Province:  province,
+		City:      city,
+	}
+
+	// 使用新添加的UpdateUserByToken方法更新用户信息
+	user := h.us.UpdateUserByToken(token, userData)
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})
 }
 
@@ -95,11 +105,6 @@ func (h *UserHandler) GetUserAmount(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
 }
 
-func updateUser(token string) *User {
-	//TODO:
-	return nil
-
-}
 
 func fetchUserAmount(token string) interface{} {
 	//TODO:

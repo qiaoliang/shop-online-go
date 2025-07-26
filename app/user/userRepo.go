@@ -79,6 +79,14 @@ func (r *UserRepoMem) CreateAdmin(mobile string, pwd string) {
 	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
 }
 
+func (r *UserRepoMem) updateUser(user *User) {
+	if user == nil || user.Mobile == "" {
+		return
+	}
+	// 在内存实现中，直接更新map中的用户信息
+	r.userlist[user.Mobile] = user
+}
+
 // UserRepo 接口
 //go:generate mockgen -source=userRepo.go -destination=mock_userRepo.go -package=user
 // 方便后续 mock
@@ -90,6 +98,7 @@ type UserRepo interface {
 	retriveUserByMobile(mobile string) *User
 	CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error)
 	CreateAdmin(mobile, pwd string)
+	updateUser(user *User) // 添加更新用户信息的方法
 }
 
 // UserRepoDB 实现
@@ -164,3 +173,12 @@ func (r *UserRepoDB) CreateUser(mobile, pwd, nickname, autologin string, genUser
 func (r *UserRepoDB) CreateAdmin(mobile, pwd string) {
 	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
 }
+
+func (r *UserRepoDB) updateUser(user *User) {
+	if user == nil || user.Mobile == "" {
+		return
+	}
+	// 在数据库实现中，使用GORM更新用户信息
+	r.db.Save(user)
+}
+
