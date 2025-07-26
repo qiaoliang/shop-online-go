@@ -22,6 +22,9 @@ func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler
 	// 添加跨域访问中间件
 	r.Use(allowCrossDomainAccess())
 
+	// 配置静态文件路由
+	r.StaticFS("/pic", http.Dir("./static"))
+
 	// 添加根路径处理函数，访问 http://localhost:9090 时返回
 	r.GET("/", func(context *gin.Context) {
 		context.JSON(http.StatusOK, gin.H{
