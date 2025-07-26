@@ -27,7 +27,13 @@ else
     echo "✅ test.db 不存在，无需删除"
 fi
 
-# 3. 构建项目
+# 3. 清理编译中间产物和最终产物
+echo "🧹 清理编译中间产物和最终产物..."
+rm -f bookstore
+go clean -cache -testcache
+echo "✅ 编译产物清理完成"
+
+# 4. 构建项目
 echo "🔨 开始构建项目..."
 go build -o bookstore
 echo "✅ 构建完成，生成 bookstore 可执行文件"

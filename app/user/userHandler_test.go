@@ -98,9 +98,7 @@ func (st *UserHandlerSuite) Test_Register_User() {
 }
 
 func (st *UserHandlerSuite) Test_GetUserDetail() {
-	// 确保路由已设置
-	// 在setupTestRouter中已添加GetUserDetail路由
-
+	// 确保已在setupTestRouter中已添加GetUserDetail路由
 	// 发送请求，token为13900007997
 	params := map[string]string{"token": "13900007997"}
 	body := testutils.HttpGet("/v1/user/detail", params, st.router)
