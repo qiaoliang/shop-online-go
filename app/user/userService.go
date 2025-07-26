@@ -51,7 +51,8 @@ func (s *UserService) isOnline(token string) bool {
 	return ok
 }
 func (s *UserService) FindUserByToken(token string) *User {
-	mobileNumber := s.cache[token]
+	//TODO: 现在的token 就是用户的手机号码。这里应该使用更好的TOKEN加密机制
+	mobileNumber := token
 	if mobileNumber == "" {
 		return nil
 	}
@@ -65,7 +66,7 @@ func (s *UserService) findUser(mobile string, pwd string) *User {
 func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string, autologin string) (*User, error) {
 	//TODO: not check device info yet.
 	if s.ur.findUser(mobile, pwd) != nil {
-		return nil, errors.New("该手机号码已被占用！")
+		return nil, errors.New("该用户已注册！")
 	}
 	newUser, err := s.ur.CreateUser(mobile, pwd, nickname, autologin, genUId)
 	if err != nil {
