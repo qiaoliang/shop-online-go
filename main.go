@@ -44,7 +44,6 @@ func main() {
 
 	// 依赖注入
 	r := gin.Default()
-	routers.DB = db // 设置routers包中的DB变量
 	routers.SetupRouter(r, bannerHandler, userHandler, cartHandler, addressHandler, goodsHandler)
 
 	port := viper.Get("PORT")

@@ -1,7 +1,6 @@
 package routers
 
 import (
-	"fmt"
 	"net/http"
 
 	banner "bookstore/app/banner"
@@ -15,52 +14,13 @@ import (
 	"bookstore/app/user"
 
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
-	"gorm.io/gorm"
 )
 
-// TODO: This DB instance should be passed from main.go or initialized globally
-var DB *gorm.DB
-
-func InitRouter() {
-	port := viper.Get("PORT").(int)
-	fmt.Println("[routers] PORT:", port)
-	r := gin.Default()
-	// This is Demo, and not good on Prod.
-	r.Use(allowCrossDomainAccess())
-
-	r.StaticFS("/pic", http.Dir("./static"))
-
-	r.GET("/", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"data": nil,
-			"msg": "服务已启动",
-		})
-	})
-
-	r.GET("/ping", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
-	// InitRouter 需在 main.go 中实例化 handler 后传入
-	// 这里建议直接 panic 或注释掉，测试环境应由 main.go 注入真实 handler
-	panic("InitRouter 仅供 main.go 参考，测试环境请用 main.go 注入 handler")
-	// SetupRouter(r, nil, nil, nil, nil, nil)
-
-	// err := r.Run(":" + strconv.Itoa(port))
-	// if err != nil {
-	// 	panic("Cannot start service" + err.Error())
-	// }
-}
-
 // 依赖注入说明：所有 handler 需在 main.go 实例化后传入 SetupRouter
-// func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler)
 func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler, goodsHandler *goods.GoodsHandler) {
-	if DB == nil {
-		panic("Database connection not initialized in routers package")
-	}
+
+	// 添加跨域访问中间件
+	r.Use(allowCrossDomainAccess())
 
 	// 添加根路径处理函数，访问 http://localhost:9090 时返回
 	r.GET("/", func(context *gin.Context) {

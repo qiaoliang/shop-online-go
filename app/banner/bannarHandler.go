@@ -1,4 +1,4 @@
-package ad
+package banner
 
 import (
 	"net/http"
@@ -6,7 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Banners []BannerVM
+// Banners 是 BannerVM 的切片类型
+type Banners = []BannerVM
 
 type BannerHandler struct {
 	service *BannerService
@@ -26,5 +27,5 @@ func (h *BannerHandler) FetchBanners(c *gin.Context) {
 		t = "NoToken"
 	}
 	result := h.service.FetchBanners(bt, t)
-	c.JSON(http.StatusOK, gin.H{"code": 0, "data": &result, "msg": "OK"})
+	c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
 }

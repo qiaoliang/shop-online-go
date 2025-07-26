@@ -1,4 +1,4 @@
-package ad
+package banner
 
 import (
 	"testing"
@@ -43,6 +43,8 @@ func setupTestRouter(handler *BannerHandler) *gin.Engine {
 	v1.GET("/banner/list", handler.FetchBanners)
 	return router
 }
+
+
 func (s *BannerHandlerSuite) Test_should_get_default_list_when_no_param_existed() {
 	noParam := make(map[string]string, 0)
 	noParam["type"] = ""

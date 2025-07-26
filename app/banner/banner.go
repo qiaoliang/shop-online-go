@@ -1,4 +1,4 @@
-package ad
+package banner
 
 type BannerVM struct {
 	BusinessId uint   `json:"businessId"`

@@ -1,4 +1,4 @@
-package ad
+package banner
 
 import (
 	"gorm.io/gorm"
