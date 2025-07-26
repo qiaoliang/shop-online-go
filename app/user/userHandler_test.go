@@ -96,11 +96,27 @@ func (st *UserHandlerSuite) Test_Register_User() {
 	st.Containsf(string(body), exp2, "should contain pwd :%v, mobile:%v, nick:  %v\n", pwd, mobile, nick)
 	st.Contains(string(body), exp3, "should contain autologin:%v", autologin)
 }
+
+func (st *UserHandlerSuite) Test_GetUserDetail() {
+	// 确保路由已设置
+	// 在setupTestRouter中已添加GetUserDetail路由
+
+	// 发送请求，token为13900007997
+	params := map[string]string{"token": "13900007997"}
+	body := testutils.HttpGet("/v1/user/detail", params, st.router)
+
+	// 验证响应
+	st.Contains(body, `"code":0`, "应返回成功状态码")
+	st.Contains(body, `"nick":"admin"`, "当token为13900007997时，用户名应为admin")
+	st.Contains(body, `"mobile":"13900007997"`, "应返回正确的手机号")
+}
+
 func setupTestRouter(userHandler *UserHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
 	v1.POST("/user/m/login", userHandler.Login)
 	v1.POST("/user/m/register", userHandler.Register)
+	v1.GET("/user/detail", userHandler.GetUserDetail) // 添加GetUserDetail路由
 	return router
 }
