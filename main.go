@@ -3,6 +3,7 @@ package main
 import (
 	"bookstore/app/configs"
 	"bookstore/app/routers"
+	"bookstore/app/security"
 
 	"bookstore/app/addresses"
 	ad "bookstore/app/banner"
@@ -17,13 +18,22 @@ import (
 func main() {
 	configs.GetConfigInstance("config.yaml")
 	db := configs.Cfg.DBConnection()
+
+	// 创建用户仓库
+	userRepo := user.NewUserRepoDB(db)
+
+	// 创建token提取器
+	tokenExtractor := security.NewUserTokenExtractor(userRepo)
+
+	// 创建认证中间件
+	authMiddleware := security.NewAuthMiddleware(tokenExtractor)
+
 	skuRepo := goods.NewSkuRepoDB(db)
 	cateRepo := goods.NewCategoryRepoDB(db)
 	goodsService := goods.NewGoodsService(skuRepo, cateRepo)
 	goodsHandler := goods.NewGoodsHandler(goodsService)
 
 	// user
-	userRepo := user.NewUserRepoDB(db)
 	userService := user.NewUserServiceWithRepo(userRepo)
 	userHandler := user.NewUserHandler(userService)
 
@@ -44,7 +54,7 @@ func main() {
 
 	// 依赖注入
 	r := gin.Default()
-	routers.SetupRouter(r, bannerHandler, userHandler, cartHandler, addressHandler, goodsHandler)
+	routers.SetupRouter(r, bannerHandler, userHandler, cartHandler, addressHandler, goodsHandler, authMiddleware)
 
 	port := viper.Get("PORT")
 	if port == nil {

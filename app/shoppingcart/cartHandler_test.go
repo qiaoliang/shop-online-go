@@ -28,7 +28,24 @@ type ShoppingCartHandlerSuite struct {
 	service *CartService
 }
 
+// 测试专用的认证中间件
+func testAuthMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// 从query参数或form参数中获取token
+		token := c.Query("token")
+		if token == "" {
+			token = c.PostForm("token")
+		}
 
+		if token != "" {
+			// 将token作为mobile设置到上下文中
+			c.Set("userID", token)
+			c.Set("mobile", token)
+		}
+
+		c.Next()
+	}
+}
 
 func TestShoppingCartHandlerSuite(t *testing.T) {
 	suite.Run(t, new(ShoppingCartHandlerSuite))
@@ -139,6 +156,10 @@ func (st *ShoppingCartHandlerSuite) Test_get_cart_for_unexisted_token() {
 func setupTestRouter(handler *CartHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
+
+	// 添加测试专用的认证中间件
+	router.Use(testAuthMiddleware())
+
 	v1 := router.Group("/v1")
 	v1.GET("/shopping-cart/info", handler.GetShopingCart)
 	v1.POST("/shopping-cart/add", handler.PutIntoCart)

@@ -3,7 +3,8 @@ package addresses
 import (
 	"net/http"
 
-	"bookstore/app/common/models" // Assuming common models are here
+	"bookstore/app/common/models"
+	"bookstore/app/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -42,7 +43,8 @@ func (h *AddressHandler) AddAddress(c *gin.Context) {
 		return
 	}
 
-	userID := c.GetString("userID") // Assuming userID is set in context by auth middleware
+	// 从认证中间件获取用户ID
+	userID := utils.GetUserIDFromContext(c)
 	if userID == "" {
 		c.JSON(http.StatusUnauthorized, models.JsonResult{
 			Code: "401",
@@ -63,6 +65,6 @@ func (h *AddressHandler) AddAddress(c *gin.Context) {
 
 	c.JSON(http.StatusOK, models.JsonResult{
 		Code: "200",
-		Msg:  "OK",
+		Msg:  "Address added successfully",
 	})
 }

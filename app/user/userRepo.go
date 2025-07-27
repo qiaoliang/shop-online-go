@@ -37,13 +37,13 @@ func (r *UserRepoMem) DeleteByMobile(mobile string) {
 }
 
 func (r *UserRepoMem) findUser(mobile string, pwd string) *User {
-	found := r.retriveUserByMobile(mobile)
+	found := r.RetriveUserByMobile(mobile)
 	if found == nil || found.Pwd != pwd {
 		return nil
 	}
 	return found
 }
-func (r *UserRepoMem) retriveUserByMobile(mobile string) *User {
+func (r *UserRepoMem) RetriveUserByMobile(mobile string) *User {
 	return r.userlist[mobile]
 }
 
@@ -95,7 +95,7 @@ type UserRepo interface {
 	TotalUsers() int
 	DeleteByMobile(mobile string)
 	findUser(mobile, pwd string) *User
-	retriveUserByMobile(mobile string) *User
+	RetriveUserByMobile(mobile string) *User
 	CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error)
 	CreateAdmin(mobile, pwd string)
 	updateUser(user *User) // 添加更新用户信息的方法
@@ -131,7 +131,7 @@ func (r *UserRepoDB) findUser(mobile, pwd string) *User {
 	return &user
 }
 
-func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
+func (r *UserRepoDB) RetriveUserByMobile(mobile string) *User {
 	var user User
 	if err := r.db.Where("mobile = ?", mobile).First(&user).Error; err != nil {
 		return nil
@@ -140,7 +140,7 @@ func (r *UserRepoDB) retriveUserByMobile(mobile string) *User {
 }
 
 func (r *UserRepoDB) CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error) {
-	if r.retriveUserByMobile(mobile) != nil {
+	if r.RetriveUserByMobile(mobile) != nil {
 		return nil, errors.New("hello,error")
 	}
 	al, _ := strconv.Atoi(autologin)

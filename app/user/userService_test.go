@@ -103,8 +103,8 @@ func (s *UserServiceTestSuite) loginAsAdmin() {
 
 // 测试UpdateUserByToken功能
 func (s *UserServiceTestSuite) Test_UpdateUserByToken() {
-	// 注册一个测试用户
-	mobile := "13900001234"
+	// 注册一个测试用户，使用随机手机号避免冲突
+	mobile := "13900001234" + utils.RandomImpl{}.GenStr()
 	pwd := "password123"
 	nickname := "测试用户"
 	autoLogin := "1"

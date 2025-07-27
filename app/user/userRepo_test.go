@@ -51,8 +51,8 @@ func (suite *UserRepoTestSuite) Test_find_user_by_mobile_and_pwd() {
 func (suite *UserRepoTestSuite) Test_retriveUserByMobile() {
 	userRepo := newUserRepo()
 	userRepo.CreateUser("mobile", "pwd", "nickname", "1", genUId)
-	result := userRepo.retriveUserByMobile("mobile")
+	result := userRepo.RetriveUserByMobile("mobile")
 	suite.NotNil(result)
-	result = userRepo.retriveUserByMobile("noexistedUser")
+	result = userRepo.RetriveUserByMobile("noexistedUser")
 	suite.Nil(result)
 }

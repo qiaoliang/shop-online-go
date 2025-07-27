@@ -75,7 +75,7 @@ func (suite *AddressHandlerSuite) TestSuccessfulAddition() {
 	suite.Equal(http.StatusOK, w.Code)
 	var resp models.JsonResult
 	json.Unmarshal(w.Body.Bytes(), &resp)
-	suite.Equal("OK", resp.Msg)
+	suite.Equal("Address added successfully", resp.Msg)
 
 	// Verify data in repo
 	addresses, err := suite.repo.ListByUserID("test_user_id_1")

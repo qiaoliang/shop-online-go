@@ -56,7 +56,7 @@ func (s *UserService) FindUserByToken(token string) *User {
 	if mobileNumber == "" {
 		return nil
 	}
-	return s.ur.retriveUserByMobile(mobileNumber)
+	return s.ur.RetriveUserByMobile(mobileNumber)
 }
 
 func (s *UserService) findUser(mobile string, pwd string) *User {

@@ -17,7 +17,7 @@ import (
 )
 
 // 依赖注入说明：所有 handler 需在 main.go 实例化后传入 SetupRouter
-func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler, goodsHandler *goods.GoodsHandler) {
+func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler, goodsHandler *goods.GoodsHandler, authMiddleware *security.AuthMiddleware) {
 
 	// 添加跨域访问中间件
 	r.Use(allowCrossDomainAccess())
@@ -42,35 +42,50 @@ func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler
 	})
 
 	v1 := r.Group("/v1")
+
+	// 公开接口 - 不需要认证
 	v1.GET("/verification/pic/get", security.GetCapChar)
 	v1.GET("/verification/pic/check", security.VerifyCapChar)
 	v1.GET("/verification/sms/get", security.GetSMSCode)
-	// Goods Management
+
+	// 用户认证相关接口
+	v1.POST("/user/m/register", userHandler.Register)
+	v1.POST("/user/m/login", userHandler.Login)
+
+	// 商品相关接口 - 公开
 	v1.GET("/shop/goods/category/all", goodsHandler.FetchCatalogues)
 	v1.GET("/shop/goods/detail", goodsHandler.GetGoodsDetail)
 	v1.POST("/shop/goods/reputation", goodsHandler.FetchItemReputation)
 	v1.POST("/goods/list", goodsHandler.FetchGoodsList)
-	// Shopping Cart Management
-	v1.GET("/shopping-cart/info", cartHandler.GetShopingCart)
-	v1.POST("/shopping-cart/add", cartHandler.PutIntoCart)
-	v1.POST("/shopping-cart/modifyNumber", cartHandler.ModifyNumberOfGoodsInCart)
-	// User Management
-	v1.POST("/user/m/register", userHandler.Register)
-	v1.POST("/user/m/login", userHandler.Login)
-	v1.GET("/user/detail", userHandler.GetUserDetail)
-	v1.GET("/user/modify", userHandler.UpdateUserInfo)
-	v1.GET("/user/amount", userHandler.GetUserAmount)
-	v1.GET("/user/logout", userHandler.GetUserDetail)
-	//User ShippingAddress Management
-	v1.POST("/user/shipping-address/list", userHandler.GetDeliveryAddressList)
-	v1.GET("/user/shipping-address/default", userHandler.GetDefaultDeliveryAddress)
-	v1.POST("/user/shipping-address/add", addressHandler.AddAddress)
-	// Advertise management
+
+	// 广告相关接口 - 公开
 	v1.GET("/banner/list", bannerHandler.FetchBanners)
-	// Order management
-	v1.GET("/order/statistics", order.GetOrderStatistics)
-	v1.GET("/discounts/statistics", order.DiscountStatistics)
-	v1.GET("/discounts/coupons", order.Coupons)
+
+	// 需要认证的接口组
+	authenticated := v1.Group("")
+	authenticated.Use(authMiddleware.Authenticate()) // 使用可选认证中间件
+
+	// 用户相关接口 - 需要认证
+	authenticated.GET("/user/detail", userHandler.GetUserDetail)
+	authenticated.GET("/user/modify", userHandler.UpdateUserInfo)
+	authenticated.GET("/user/amount", userHandler.GetUserAmount)
+	authenticated.GET("/user/logout", userHandler.GetUserDetail)
+
+	// 购物车相关接口 - 需要认证
+	authenticated.GET("/shopping-cart/info", cartHandler.GetShopingCart)
+	authenticated.POST("/shopping-cart/add", cartHandler.PutIntoCart)
+	authenticated.POST("/shopping-cart/modifyNumber", cartHandler.ModifyNumberOfGoodsInCart)
+
+	// 收货地址相关接口 - 需要认证
+	authenticated.POST("/user/shipping-address/list", userHandler.GetDeliveryAddressList)
+	authenticated.GET("/user/shipping-address/default", userHandler.GetDefaultDeliveryAddress)
+	authenticated.POST("/user/shipping-address/add", addressHandler.AddAddress)
+
+	// 订单相关接口 - 需要认证
+	authenticated.GET("/order/statistics", order.GetOrderStatistics)
+	authenticated.GET("/discounts/statistics", order.DiscountStatistics)
+	authenticated.GET("/discounts/coupons", order.Coupons)
+
 	//books 相关路由保持不变
 	r.GET("/books", goods.FindBooks)
 	r.POST("/books", goods.CreateBook)
