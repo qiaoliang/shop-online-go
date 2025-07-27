@@ -24,7 +24,6 @@ func (s *ConfigTestSuite) Test_Config_Load() {
 	s.NotNil(s.cfg)
 	// 只测试 SQLite 相关配置
 	s.NotEmpty(s.cfg.SQLiteDBFile)
-	s.NotEmpty(s.cfg.SQLiteDBMemory)
 }
 
 func (s *ConfigTestSuite) Test_BannerPath() {

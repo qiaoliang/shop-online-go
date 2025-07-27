@@ -2,6 +2,7 @@ package security
 
 import (
 	"bookstore/app/user"
+	"log"
 )
 
 // UserTokenExtractor 实现TokenExtractor接口
@@ -18,19 +19,27 @@ func NewUserTokenExtractor(userRepo user.UserRepo) *UserTokenExtractor {
 
 // ExtractUserFromToken 从token中提取用户信息
 func (ute *UserTokenExtractor) ExtractUserFromToken(token string) *AuthContext {
+	log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 开始提取用户信息 - token: %s", token)
+
 	if token == "" {
+		log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: token为空")
 		return nil
 	}
 
 	// 当前实现：token就是手机号
 	// TODO: 未来可以升级为JWT或其他token机制
 	mobileNumber := token
+	log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 使用手机号查找用户 - mobile: %s", mobileNumber)
 
 	// 通过手机号查找用户
 	user := ute.userRepo.RetriveUserByMobile(mobileNumber)
 	if user == nil {
+		log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 未找到用户 - mobile: %s", mobileNumber)
 		return nil
 	}
+
+	log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 找到用户 - UserID: %s, Mobile: %s, Nickname: %s",
+		user.Id, user.Mobile, user.Nickname)
 
 	return &AuthContext{
 		UserID:  user.Id,

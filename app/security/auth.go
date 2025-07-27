@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strings"
 
@@ -37,19 +38,25 @@ func NewAuthMiddleware(extractor TokenExtractor) *AuthMiddleware {
 // Authenticate 认证中间件函数
 func (am *AuthMiddleware) Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		log.Printf("[DEBUG] AuthMiddleware.Authenticate: 开始处理认证请求 - 路径: %s", c.Request.URL.Path)
+
 		// 从请求中提取token
 		token := extractTokenFromRequest(c)
 
 		if token == "" {
+			log.Printf("[DEBUG] AuthMiddleware.Authenticate: 未找到token，跳过认证")
 			// 对于不需要认证的接口，继续处理
 			c.Next()
 			return
 		}
 
+		log.Printf("[DEBUG] AuthMiddleware.Authenticate: 提取到token: %s", token)
+
 		// 使用token提取器获取用户信息
 		authContext := am.tokenExtractor.ExtractUserFromToken(token)
 
 		if authContext == nil || !authContext.IsValid {
+			log.Printf("[DEBUG] AuthMiddleware.Authenticate: token验证失败 - token: %s", token)
 			c.JSON(http.StatusUnauthorized, gin.H{
 				"code": 401,
 				"msg":  "无效的认证token",
@@ -58,10 +65,15 @@ func (am *AuthMiddleware) Authenticate() gin.HandlerFunc {
 			return
 		}
 
+		log.Printf("[DEBUG] AuthMiddleware.Authenticate: token验证成功 - UserID: %s, Mobile: %s",
+			authContext.UserID, authContext.Mobile)
+
 		// 将用户信息注入到gin上下文中
 		c.Set("userID", authContext.UserID)
 		c.Set("mobile", authContext.Mobile)
 		c.Set("authContext", authContext)
+
+		log.Printf("[DEBUG] AuthMiddleware.Authenticate: 用户信息已注入到上下文")
 
 		c.Next()
 	}

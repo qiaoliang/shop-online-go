@@ -27,10 +27,12 @@ func NewUserServiceWithRepo(repo UserRepo) *UserService {
 }
 
 func newUserService(persistance bool) *UserService {
-	return &UserService{make(map[string]string, 0), newUserRepo()}
+	// 由于不再支持内存实现，这里需要传入数据库连接
+	// 在实际使用中，应该通过依赖注入的方式传入UserRepo
+	return &UserService{make(map[string]string, 0), nil}
 }
 func (s *UserService) logout(token string) {
-	if _, ok := s.cache[token]; !ok {
+	if _, ok := s.cache[token]; ok {
 		delete(s.cache, token)
 	}
 }
@@ -63,7 +65,12 @@ func (s *UserService) findUser(mobile string, pwd string) *User {
 }
 func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string, autologin string) (*User, error) {
 	//TODO: not check device info yet.
-	if s.ur.findUser(mobile, pwd) != nil {
+	// 验证手机号不能为空
+	if mobile == "" {
+		return nil, errors.New("手机号不能为空")
+	}
+
+	if s.ur.RetriveUserByMobile(mobile) != nil {
 		return nil, errors.New("该用户已注册！")
 	}
 	newUser, err := s.ur.CreateUser(mobile, pwd, nickname, autologin, genUId)

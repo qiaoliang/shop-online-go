@@ -1,6 +1,7 @@
 package user
 
 import (
+	"log"
 	"net/http"
 
 	"bookstore/app/common/models"
@@ -11,14 +12,13 @@ import (
 
 // AddShippingAddressRequest defines the request body for adding a shipping address.
 type AddShippingAddressRequest struct {
-	Token         string `json:"token" binding:"required"`         // 用户认证token（必需）
-	LinkMan       string `json:"linkMan" binding:"required"`
-	Mobile        string `json:"mobile" binding:"required"`
-	ProvinceStr   string `json:"provinceStr" binding:"required"`
-	CityStr       string `json:"cityStr" binding:"required"`
-	AreaStr       string `json:"areaStr" binding:"required"`
-	DetailAddress string `json:"detailAddress" binding:"required"`
-	IsDefault     int    `json:"isDefault"`
+	LinkMan     string `json:"linkMan" binding:"required"`     // 联系人姓名
+	Mobile      string `json:"mobile" binding:"required"`      // 手机号
+	Address     string `json:"address" binding:"required"`     // 详细地址
+	IsDefault   bool   `json:"isDefault"`                      // 是否默认地址
+	ProvinceId  string `json:"provinceId" binding:"required"`  // 省份ID
+	CityId      string `json:"cityId" binding:"required"`      // 城市ID
+	DistrictId  string `json:"districtId" binding:"required"`  // 区县ID
 }
 
 // AddressHandler handles address related HTTP requests.
@@ -35,8 +35,11 @@ func NewAddressHandler(service AddressService) *AddressHandler {
 
 // AddAddress handles the POST /v1/user/shipping-address/add API.
 func (h *AddressHandler) AddAddress(c *gin.Context) {
+	log.Printf("[DEBUG] AddAddress: 开始处理添加收货地址请求")
+
 	var req AddShippingAddressRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
+		log.Printf("[DEBUG] AddAddress: 请求参数绑定失败 - %v", err)
 		c.JSON(http.StatusBadRequest, models.JsonResult{
 			Code: "400",
 			Msg:  "Invalid request parameters",
@@ -44,18 +47,25 @@ func (h *AddressHandler) AddAddress(c *gin.Context) {
 		return
 	}
 
-	// 使用请求体中的token作为用户ID
-	userID := req.Token
+	log.Printf("[DEBUG] AddAddress: 请求参数绑定成功 - LinkMan: %s, Mobile: %s, ProvinceId: %s, CityId: %s, DistrictId: %s, Address: %s, IsDefault: %t",
+		req.LinkMan, req.Mobile, req.ProvinceId, req.CityId, req.DistrictId, req.Address, req.IsDefault)
+
+	// 从认证中间件获取用户ID
+	userID := utils.GetUserIDFromContext(c)
 	if userID == "" {
+		log.Printf("[DEBUG] AddAddress: 用户未认证，无法获取用户ID")
 		c.JSON(http.StatusUnauthorized, models.JsonResult{
 			Code: "401",
-			Msg:  "User token is required",
+			Msg:  "User not authenticated",
 		})
 		return
 	}
 
+	log.Printf("[DEBUG] AddAddress: 用户认证成功，用户ID: %s", userID)
+
 	err := h.addressService.AddAddress(userID, req)
 	if err != nil {
+		log.Printf("[DEBUG] AddAddress: 服务层处理失败 - %v", err)
 		// TODO: Handle specific error types from service layer (Subtask 2.5)
 		c.JSON(http.StatusInternalServerError, models.JsonResult{
 			Code: "500",
@@ -63,6 +73,8 @@ func (h *AddressHandler) AddAddress(c *gin.Context) {
 		})
 		return
 	}
+
+	log.Printf("[DEBUG] AddAddress: 地址添加成功，用户ID: %s", userID)
 
 	c.JSON(http.StatusOK, models.JsonResult{
 		Code: "200",

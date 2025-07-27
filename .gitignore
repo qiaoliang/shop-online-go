@@ -1,6 +1,7 @@
 *.log
 bookstore
-
+# 数据文件
+data/*
 # 测试数据库文件
 test.db
 */test.db

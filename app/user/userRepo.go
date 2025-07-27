@@ -4,88 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
-	"sync"
 
 	"bookstore/app/utils"
 
 	"gorm.io/gorm"
 )
-
-var lockUR = &sync.Mutex{}
-
-type UserRepoMem struct {
-	userlist map[string]*User
-}
-
-func GetUserRepo() *UserRepoMem {
-	return newUserRepo()
-}
-func newUserRepo() *UserRepoMem {
-	return &UserRepoMem{userlist: make(map[string]*User, 10)}
-}
-
-func GetMemoryUserRepo() *UserRepoMem {
-	return newUserRepo()
-}
-
-func (r *UserRepoMem) TotalUsers() int {
-	return len(r.userlist)
-}
-
-func (r *UserRepoMem) DeleteByMobile(mobile string) {
-	//TODO: 未实现
-}
-
-func (r *UserRepoMem) findUser(mobile string, pwd string) *User {
-	found := r.RetriveUserByMobile(mobile)
-	if found == nil || found.Pwd != pwd {
-		return nil
-	}
-	return found
-}
-func (r *UserRepoMem) RetriveUserByMobile(mobile string) *User {
-	return r.userlist[mobile]
-}
-
-type UserIdGen func() string
-
-func genUId() string {
-	return fmt.Sprintf("userId%v", utils.RandomImpl{}.GenStr())
-}
-
-func (r *UserRepoMem) CreateUser(mobile string, pwd string, nickname string, autologin string, genUserId UserIdGen) (user *User, err error) {
-	if r.findUser(mobile, pwd) != nil {
-		return nil, errors.New("hello,error")
-	}
-	al, _ := strconv.Atoi(autologin)
-	userId := genUserId()
-	avatarUrl := utils.RandomMock{}.GenAavatarStr()
-	r.userlist[mobile] = &User{
-		Id:          userId,
-		Pwd:    pwd,
-		Mobile:      mobile,
-		Nickname:    nickname,
-		AvatarUrl:   avatarUrl,
-		Province:    "未知",
-		City:        "未知",
-		AutoLogin:   uint(al),
-		UserInfo:    "FakeUserInfo",
-		UserLevelId: GREENTYPE,
-		UserLevel:   &UserLevel{GREENTYPE, GREENTYPE.String()},
-	}
-	return r.userlist[mobile], nil
-}
-func (r *UserRepoMem) CreateAdmin(mobile string, pwd string) {
-	r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
-}
-
-func (r *UserRepoMem) updateUser(user *User) {
-	if user == nil || user.Mobile == "" {
-		return
-	}
-	// 在内存实现中，直接更新map中的用户信息
-	r.userlist[user.Mobile] = user
-}
 
 // UserRepo 接口
 //go:generate mockgen -source=userRepo.go -destination=mock_userRepo.go -package=user
@@ -96,9 +19,16 @@ type UserRepo interface {
 	DeleteByMobile(mobile string)
 	findUser(mobile, pwd string) *User
 	RetriveUserByMobile(mobile string) *User
+	RetriveUserByID(userID string) *User
 	CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error)
 	CreateAdmin(mobile, pwd string)
 	updateUser(user *User) // 添加更新用户信息的方法
+}
+
+type UserIdGen func() string
+
+func genUId() string {
+	return fmt.Sprintf("userId%v", utils.RandomImpl{}.GenStr())
 }
 
 // UserRepoDB 实现
@@ -139,7 +69,20 @@ func (r *UserRepoDB) RetriveUserByMobile(mobile string) *User {
 	return &user
 }
 
+func (r *UserRepoDB) RetriveUserByID(userID string) *User {
+	var user User
+	if err := r.db.Where("id = ?", userID).First(&user).Error; err != nil {
+		return nil
+	}
+	return &user
+}
+
 func (r *UserRepoDB) CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error) {
+	// 验证手机号不能为空
+	if mobile == "" {
+		return nil, errors.New("手机号不能为空")
+	}
+
 	if r.RetriveUserByMobile(mobile) != nil {
 		return nil, errors.New("hello,error")
 	}

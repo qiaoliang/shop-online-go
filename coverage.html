@@ -1,0 +1,3277 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>banner: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">bookstore/app/banner/BannerRepoDB.go (0.0%)</option>
+				
+				<option value="file1">bookstore/app/banner/BannerService.go (0.0%)</option>
+				
+				<option value="file2">bookstore/app/banner/bannarHandler.go (0.0%)</option>
+				
+				<option value="file3">bookstore/app/banner/bannerVMBuilder.go (0.0%)</option>
+				
+				<option value="file4">bookstore/app/configs/cfg.go (0.0%)</option>
+				
+				<option value="file5">bookstore/app/goods/bookHandler.go (0.0%)</option>
+				
+				<option value="file6">bookstore/app/goods/categoryRepo.go (0.0%)</option>
+				
+				<option value="file7">bookstore/app/goods/goodsHandler.go (0.0%)</option>
+				
+				<option value="file8">bookstore/app/goods/goodsItem.go (0.0%)</option>
+				
+				<option value="file9">bookstore/app/goods/goodsService.go (3.8%)</option>
+				
+				<option value="file10">bookstore/app/goods/sku.go (0.0%)</option>
+				
+				<option value="file11">bookstore/app/goods/skuRepoDB.go (3.0%)</option>
+				
+				<option value="file12">bookstore/app/migrations/migrations.go (0.0%)</option>
+				
+				<option value="file13">bookstore/app/order/orderHandler.go (0.0%)</option>
+				
+				<option value="file14">bookstore/app/routers/routers.go (0.0%)</option>
+				
+				<option value="file15">bookstore/app/security/auth.go (0.0%)</option>
+				
+				<option value="file16">bookstore/app/security/security.go (0.0%)</option>
+				
+				<option value="file17">bookstore/app/security/token_extractor.go (0.0%)</option>
+				
+				<option value="file18">bookstore/app/shoppingcart/cartHandler.go (0.0%)</option>
+				
+				<option value="file19">bookstore/app/shoppingcart/cartModel.go (0.0%)</option>
+				
+				<option value="file20">bookstore/app/shoppingcart/cartRepoDB.go (0.0%)</option>
+				
+				<option value="file21">bookstore/app/shoppingcart/cartService.go (0.0%)</option>
+				
+				<option value="file22">bookstore/app/shoppingcart/cartViewModel.go (0.0%)</option>
+				
+				<option value="file23">bookstore/app/shoppingcart/userCartItemBuilder.go (0.0%)</option>
+				
+				<option value="file24">bookstore/app/testutils/testSuite.go (0.0%)</option>
+				
+				<option value="file25">bookstore/app/testutils/utilsForTest.go (0.0%)</option>
+				
+				<option value="file26">bookstore/app/user/address.go (43.3%)</option>
+				
+				<option value="file27">bookstore/app/user/addressHandler.go (90.5%)</option>
+				
+				<option value="file28">bookstore/app/user/addressService.go (70.4%)</option>
+				
+				<option value="file29">bookstore/app/user/user.go (33.3%)</option>
+				
+				<option value="file30">bookstore/app/user/userHandler.go (0.0%)</option>
+				
+				<option value="file31">bookstore/app/user/userRepo.go (32.8%)</option>
+				
+				<option value="file32">bookstore/app/user/userService.go (0.0%)</option>
+				
+				<option value="file33">bookstore/app/user/userVM.go (0.0%)</option>
+				
+				<option value="file34">bookstore/app/utils/context.go (0.0%)</option>
+				
+				<option value="file35">bookstore/app/utils/generator.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package banner
+
+import (
+        "gorm.io/gorm"
+)
+
+type BannerRepoDB struct {
+        db *gorm.DB
+}
+
+type Banner struct {
+        BusinessId uint   `gorm:"column:businessId" json:"businessId"`
+        DateAdd    string `gorm:"column:dateAdd" json:"dateAdd"`
+        Id         uint   `gorm:"column:id;primaryKey" json:"id"`
+        LinkUrl    string `gorm:"column:linkUrl" json:"linkUrl"`
+        Paixu      uint   `gorm:"column:paixu" json:"paixu"`
+        PicUrl     string `gorm:"column:picUrl" json:"picUrl"`
+        Remark     string `gorm:"column:remark" json:"remark"`
+        Status     uint   `gorm:"column:status" json:"status"`
+        StatusStr  string `gorm:"column:statusStr" json:"statusStr"`
+        Title      string `gorm:"column:title" json:"title"`
+        Type       string `gorm:"column:type" json:"type"`
+        UserId     uint   `gorm:"column:userId" json:"userId"`
+}
+
+func NewBannerRepoDB(db *gorm.DB) *BannerRepoDB <span class="cov0" title="0">{
+        return &amp;BannerRepoDB{db: db}
+}</span>
+
+func (r *BannerRepoDB) FindAllBanners() []Banner <span class="cov0" title="0">{
+        var banners []Banner
+        r.db.Find(&amp;banners)
+        return banners
+}</pre>
+		
+		<pre class="file" id="file1" style="display: none">package banner
+
+type BannerService struct {
+        repo *BannerRepoDB
+}
+
+func NewBannerService(repo *BannerRepoDB) *BannerService <span class="cov0" title="0">{
+        return &amp;BannerService{repo: repo}
+}</span>
+
+func (s *BannerService) FetchBanners(btype string, token string) []BannerVM <span class="cov0" title="0">{
+        banners := s.repo.FindAllBanners()
+        result := make([]BannerVM, len(banners))
+
+        for i, b := range banners </span><span class="cov0" title="0">{
+                result[i] = BannerVM{
+                        BusinessId: b.BusinessId,
+                        DateAdd:    b.DateAdd,
+                        Id:         b.Id,
+                        LinkUrl:    b.LinkUrl,
+                        Paixu:      b.Paixu,
+                        PicUrl:     b.PicUrl,
+                        Remark:     b.Remark,
+                        Status:     b.Status,
+                        StatusStr:  b.StatusStr,
+                        Title:      b.Title,
+                        Catelogue:  b.Type,
+                        UserId:     b.UserId,
+                }
+        }</span>
+
+        <span class="cov0" title="0">return result</span>
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package banner
+
+import (
+        "net/http"
+
+        "github.com/gin-gonic/gin"
+)
+
+// Banners 是 BannerVM 的切片类型
+type Banners = []BannerVM
+
+type BannerHandler struct {
+        service *BannerService
+}
+
+func NewBannerHandler(service *BannerService) *BannerHandler <span class="cov0" title="0">{
+        return &amp;BannerHandler{service: service}
+}</span>
+
+func (h *BannerHandler) FetchBanners(c *gin.Context) <span class="cov0" title="0">{
+        bt, err := c.GetQuery("type")
+        if !err || bt == "" </span><span class="cov0" title="0">{
+                bt = "indexBanner"
+        }</span>
+        <span class="cov0" title="0">t, err := c.GetQuery("token")
+        if !err || t == "" </span><span class="cov0" title="0">{
+                t = "NoToken"
+        }</span>
+        <span class="cov0" title="0">result := h.service.FetchBanners(bt, t)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package banner
+
+import "bookstore/app/configs"
+
+type BannerVMBuilder struct {
+        b BannerVM
+}
+
+var pic_prefix = configs.Cfg.BannerPicPrefix()
+
+func NewBannerBuilder() BannerVMBuilder <span class="cov0" title="0">{
+        return BannerVMBuilder{
+                b: BannerVM{
+                        BusinessId: 0,
+                        DateAdd:    "2022-05-05 11:26:09",
+                        Id:         222083,
+                        LinkUrl:    "https://baidu.com",
+                        Paixu:      0,
+                        PicUrl:     pic_prefix + "b0000.jpeg",
+                        Remark:     "跳转 gitee sagittatius",
+                        Status:     0,
+                        StatusStr:  "any",
+                        Title:      "any",
+                        Catelogue:  "any",
+                        UserId:     1605,
+                },
+        }
+}</span>
+
+func (s BannerVMBuilder) bizId(bizId uint) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.BusinessId = bizId
+        return s
+}</span>
+func (s BannerVMBuilder) DateAdd(date string) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.DateAdd = date
+        return s
+}</span>
+func (s BannerVMBuilder) Id(Id uint) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.Id = Id
+        return s
+}</span>
+func (s BannerVMBuilder) LinkUrl(url string) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.LinkUrl = url
+        return s
+}</span>
+func (s BannerVMBuilder) Paixu(paixu uint) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.Paixu = paixu
+        return s
+}</span>
+
+func (s BannerVMBuilder) PicUrl(picUrl string) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.PicUrl = pic_prefix + picUrl
+        return s
+}</span>
+
+func (s BannerVMBuilder) Status(status uint) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.Status = status
+        return s
+}</span>
+
+func (s BannerVMBuilder) Title(t string) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.Title = t
+        return s
+}</span>
+func (s BannerVMBuilder) Catelogue(c string) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.Catelogue = c
+        return s
+}</span>
+func (s BannerVMBuilder) UserId(uid uint) BannerVMBuilder <span class="cov0" title="0">{
+        s.b.UserId = uid
+        return s
+}</span>
+func (s BannerVMBuilder) build() BannerVM <span class="cov0" title="0">{
+        return s.b
+}</span>
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package configs
+
+import (
+        "fmt"
+        "os"
+        "path/filepath"
+
+        "github.com/spf13/viper"
+
+        sqlite "gorm.io/driver/sqlite"
+        "gorm.io/gorm"
+
+        "bookstore/app/migrations"
+)
+
+type Config struct {
+        cfgDir      string
+        dbConn      *gorm.DB
+        Host        string
+        Port        int
+
+        SQLiteDBFile string
+        MigrationDir string
+
+        StaticPic  string
+        BannerPath string
+        GoodsPath  string
+        AvatarPath string
+}
+
+func IsPathExist(path string) bool <span class="cov0" title="0">{
+        _, err := os.Stat(path)
+
+        if err != nil </span><span class="cov0" title="0">{
+                if os.IsExist(err) </span><span class="cov0" title="0">{
+                        return true
+                }</span>
+                <span class="cov0" title="0">if os.IsNotExist(err) </span><span class="cov0" title="0">{
+                        return false
+                }</span>
+                <span class="cov0" title="0">return false</span>
+        }
+        <span class="cov0" title="0">return true</span>
+}
+
+func GetConfigInstance(cfgfile string) *Config <span class="cov0" title="0">{
+        configToUse := cfgfile
+        if !IsPathExist(cfgfile) </span><span class="cov0" title="0">{
+                fmt.Println("配置文件 " + cfgfile + " 不存在，尝试使用当前目录下的config.yaml")
+                if IsPathExist("config.yaml") </span><span class="cov0" title="0">{
+                        configToUse = "config.yaml"
+                        fmt.Println("使用当前目录下的config.yaml作为配置文件")
+                }</span> else<span class="cov0" title="0"> {
+                        fmt.Println("当前目录下的config.yaml也不存在")
+                        panic("无法找到有效的配置文件")</span>
+                }
+        }
+        <span class="cov0" title="0">viper.SetConfigFile(configToUse)
+        viper.ReadInConfig()
+        migrationDir := viper.GetString("MIGRATION_DIR")
+        if migrationDir == "" </span><span class="cov0" title="0">{
+                migrationDir = "dbscripts" // 默认值
+        }</span>
+        <span class="cov0" title="0">Cfg = Config{
+                Host:           viper.Get("HOST").(string),
+                Port:           viper.Get("PORT").(int),
+                SQLiteDBFile:   viper.GetString("SQLITE.DB_FILE"),
+                MigrationDir:   migrationDir,
+                StaticPic:      viper.Get("RESOURCES.STATIC_PIC_URI").(string),
+                GoodsPath:      viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
+                BannerPath:     viper.Get("RESOURCES.BANNERS_RELETIVE_PATH").(string),
+                AvatarPath:     viper.Get("RESOURCES.AVARAE_RELETIVE_PATH").(string),
+        }
+        Cfg.getAbsDir(cfgfile)
+        return &amp;Cfg</span>
+}
+
+var err error
+
+func (cfg *Config) getAbsDir(filename string) string <span class="cov0" title="0">{
+        fp, _ := filepath.Abs(filename)
+        dp, _ := filepath.Split(fp)
+        cfg.cfgDir = dp
+        return cfg.cfgDir
+}</span>
+
+var Cfg Config
+
+func (cfg *Config) StaticPicPrefix() string <span class="cov0" title="0">{
+        return cfg.StaticPic
+}</span>
+func (cfg *Config) BannerPicPrefix() string <span class="cov0" title="0">{
+        return fmt.Sprintf("%s/%s", cfg.StaticPicPrefix(), cfg.BannerPath)
+}</span>
+func (cfg *Config) GoodsPicPrefix() string <span class="cov0" title="0">{
+        return fmt.Sprintf("%s/%s", cfg.StaticPicPrefix(), cfg.GoodsPath)
+}</span>
+func (cfg *Config) AvatarPicPrefix() string <span class="cov0" title="0">{
+        return fmt.Sprintf("%s/%s", cfg.StaticPicPrefix(), cfg.AvatarPath)
+
+}</span>
+
+func (cfg *Config) runMigrations() <span class="cov0" title="0">{
+        err := migrations.MigrateUp(cfg.SQLiteDBFile, cfg.MigrationDir)
+        if err != nil </span><span class="cov0" title="0">{
+                panic("Database migration failed: " + err.Error())</span>
+        }
+}
+
+func (cfg *Config) DBConnection() *gorm.DB <span class="cov0" title="0">{
+        if cfg.dbConn == nil </span><span class="cov0" title="0">{
+                // 确保数据库文件目录存在
+                dbDir := filepath.Dir(cfg.SQLiteDBFile)
+                if err := os.MkdirAll(dbDir, 0755); err != nil </span><span class="cov0" title="0">{
+                        panic("Failed to create database directory: " + err.Error())</span>
+                }
+
+                <span class="cov0" title="0">cfg.dbConn, err = gorm.Open(sqlite.Open(cfg.SQLiteDBFile), &amp;gorm.Config{})
+                if err != nil </span><span class="cov0" title="0">{
+                        panic("Failed to connect database: " + err.Error())</span>
+                }
+                <span class="cov0" title="0">cfg.runMigrations()</span>
+        }
+        <span class="cov0" title="0">return cfg.dbConn</span>
+}
+func (cfg *Config) DBDisconnect() <span class="cov0" title="0">{
+        if cfg.dbConn != nil </span><span class="cov0" title="0">{
+                cfg.dbConn = nil
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file5" style="display: none">package goods
+
+import (
+        "encoding/json"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+
+        "bookstore/app/configs"
+
+        "github.com/gin-gonic/gin"
+)
+
+type CreateBookInput struct {
+        Title  string `json:"title" binding:"required"`
+        Author string `json:"author" binding:"required"`
+}
+
+type UpdateBookInput struct {
+        Title  string `json:"title"`
+        Author string `json:"author"`
+}
+
+func FindBooks(c *gin.Context) <span class="cov0" title="0">{
+
+        var books []Book
+        configs.Cfg.DBConnection().Find(&amp;books)
+        c.JSON(http.StatusOK, gin.H{"data": &amp;books})
+}</span>
+
+func CreateBook(c *gin.Context) <span class="cov0" title="0">{
+        //Validate Input
+
+        title := c.PostForm("title")
+        author := c.PostForm("author")
+
+        //Create Book
+        book := Book{Title: title, Author: author}
+        configs.Cfg.DBConnection().Create(&amp;book)
+        c.JSON(http.StatusOK, gin.H{"data": book})
+}</span>
+
+func FindBook(c *gin.Context) <span class="cov0" title="0">{
+        var book Book
+        result := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&amp;book)
+
+        if result.Error != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
+                return
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"data": book})</span>
+}
+
+func UpdateBook(c *gin.Context) <span class="cov0" title="0">{
+        var book Book
+        //Validate Data
+        if err := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&amp;book).Error; err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "Record Not Found"})
+                return
+        }</span>
+        //Validate Input
+        <span class="cov0" title="0">defer c.Request.Body.Close()
+        body, _ := ioutil.ReadAll(c.Request.Body)
+        var result map[string]interface{}
+
+        // Unmarshal or Decode the JSON to the interface.
+        json.Unmarshal([]byte(body), &amp;result)
+
+        configs.Cfg.DBConnection().Model(&amp;book).Updates(result)
+        c.JSON(http.StatusOK, gin.H{"data": book})</span>
+}
+
+func DeleteBook(c *gin.Context) <span class="cov0" title="0">{
+        var book Book
+        fmt.Printf("Delete id =%s\n", c.Param("id"))
+        result := configs.Cfg.DBConnection().Where("id = ?", c.Param("id")).First(&amp;book)
+        if result.Error != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "Record not found"})
+                return
+        }</span>
+        <span class="cov0" title="0">result = configs.Cfg.DBConnection().Delete(book)
+        if result.Error != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusBadRequest, gin.H{"error": "Can Not Delete"})
+                return
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"data": true})</span>
+}
+</pre>
+		
+		<pre class="file" id="file6" style="display: none">package goods
+
+import (
+        "gorm.io/gorm"
+)
+
+
+func NewCategoryRepoDB(db *gorm.DB) *CategoryRepoDB <span class="cov0" title="0">{
+        return &amp;CategoryRepoDB{db: db}
+}</span>
+
+// CategoryRepoDB 数据库实现
+type CategoryRepoDB struct {
+        db *gorm.DB
+}
+
+// LoadCategory 加载分类（数据库实现）
+func (cr *CategoryRepoDB) LoadCategory() []Category <span class="cov0" title="0">{
+        var categories []Category
+        cr.db.Find(&amp;categories)
+        return categories
+}</span>
+
+// GetList 获取分类列表（数据库实现）
+func (cr *CategoryRepoDB) GetList() []Category <span class="cov0" title="0">{
+        var categories []Category
+        cr.db.Find(&amp;categories)
+        return categories
+}</span>
+</pre>
+		
+		<pre class="file" id="file7" style="display: none">package goods
+
+import (
+        "net/http"
+        "strconv"
+
+        "bookstore/app/testutils"
+
+        "github.com/gin-gonic/gin"
+)
+
+type GoodsListJson struct {
+        testutils.JsonResult
+        Data *ResultData `json:"data"`
+}
+type ResultData struct {
+        TotalRow int         `json:"totalRow"`
+        Result   []GoodsItem `json:"result"`
+}
+
+type GoodsHandler struct {
+        service *GoodsService
+}
+
+func NewGoodsHandler(service *GoodsService) *GoodsHandler <span class="cov0" title="0">{
+        return &amp;GoodsHandler{service: service}
+}</span>
+
+func (h *GoodsHandler) GetGoodsDetail(c *gin.Context) <span class="cov0" title="0">{
+        gid, _ := c.GetQuery("id")
+        result := h.service.GetItemDetail(gid)
+        c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "data": &amp;result,
+                "msg":  "OK",
+        })
+}</span>
+
+func (h *GoodsHandler) FetchGoodsList(c *gin.Context) <span class="cov0" title="0">{
+        page := c.PostForm("page")
+        pageSize := c.DefaultPostForm("pageSize", "10")
+        categoryId := c.PostForm("categoryId")
+        catalogueId, _ := strconv.Atoi(categoryId)
+        cateId := uint(catalogueId)
+        result := h.getGoods(page, pageSize, cateId)
+        c.JSON(http.StatusOK, gin.H{
+                "code": 0,
+                "data": gin.H{
+                        "totalRow": len(result),
+                        "result":   &amp;result,
+                },
+                "msg": "OK",
+        })
+}</span>
+
+func (h *GoodsHandler) FetchCatalogues(c *gin.Context) <span class="cov0" title="0">{
+        // 使用 service 中的 cateRepo 获取分类数据
+        result := h.service.cateRepo.GetList()
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})
+}</span>
+
+func (h *GoodsHandler) FetchItemReputation(c *gin.Context) <span class="cov0" title="0">{
+        // TODO: 实现商品评价查询逻辑
+        c.JSON(200, gin.H{"code": 0, "data": []string{}, "msg": "OK"})
+}</span>
+
+func (h *GoodsHandler) getGoods(page string, pageSize string, catalogueId uint) []GoodsItem <span class="cov0" title="0">{
+        skus := h.service.repo.FindAll()
+        items := make([]GoodsItem, 0)
+        for _, sku := range skus </span><span class="cov0" title="0">{
+                if sku.CategoryId == catalogueId </span><span class="cov0" title="0">{
+                        i := h.service.skuToGoodsItem(sku)
+                        items = append(items, *i)
+                }</span>
+        }
+        <span class="cov0" title="0">return items</span>
+}
+</pre>
+		
+		<pre class="file" id="file8" style="display: none">package goods
+
+import (
+        "fmt"
+
+        "bookstore/app/configs"
+)
+
+type GoodsItem struct {
+        Gid             string      `json:"id"` //商品序号Id
+        Name            string      `json:"name"`
+        CategoryId      uint        `json:"catalogueId"`
+        RecommendStatus string      `json:"recommendStatus"`
+        PicUrl          string      `json:"pic"`
+        MinPrice        string      `json:"minPrice"`
+        OriginalPrice   string      `json:"originalPrice"`
+        GoodsDetail     GoodsDetail `json:"goodsDetail"`
+}
+
+func (gi *GoodsItem) blongsTo(cateId uint) bool <span class="cov0" title="0">{
+        return (cateId == gi.CategoryId)
+}</span>
+
+func (gi *GoodsItem) sameAs(gId string) bool <span class="cov0" title="0">{
+        return (gId == gi.Gid)
+}</span>
+
+type GoodsDetail struct {
+        Gid           string          `json:"id"`            // 商品Id
+        Name          string          `json:"name"`          // 商品名
+        Pics          []CarouselPicVM `json:"pics"`          // 商品组图
+        ItemId        uint            `json:"goodsId"`       // 商品Id
+        Stock         uint            `json:"stores"`        // 库存 0: 无货，该商品已售罄
+        Unit          string          `json:"unit"`          // 数量单位
+        Logistics     string          `json:"logistics"`     // 是否免运费
+        Content       string          `json:"content"`       // 商品介绍
+        Status        uint            `json:"status"`        //
+        StatusStr     string          `json:"statusStr"`     //
+        PicUrl        string          `json:"pic"`           // 商品大图
+        MinPrice      string          `json:"minPrice"`      // 最低价格
+        OriginalPrice string          `json:"originalPrice"` // 商品原价
+        AfterSale     string          `json:"afterSale"`     // 售后服务支持 1:支持退款且退货，0:支持退款, 2:支持退货
+}
+
+type CarouselPicVM struct {
+        Id  string `json:"id"`
+        Pic string `json:"pic"`
+}
+
+type State uint
+
+const (
+        Pending State = iota
+        Stopped
+        Saling
+)
+
+func (s State) StateStr() string <span class="cov0" title="0">{
+        switch s </span>{
+        case Pending:<span class="cov0" title="0">
+                return "停售"</span>
+        case Stopped:<span class="cov0" title="0">
+                return "下架"</span>
+        case Saling:<span class="cov0" title="0">
+                return "在售"</span>
+        default:<span class="cov0" title="0">
+                return "Unknown"</span>
+        }
+}
+func (gd *GoodsDetail) PicUrlSubstr() string <span class="cov0" title="0">{
+        return gd.PicUrl[len(configs.Cfg.GoodsPicPrefix()):]
+}</span>
+func (gd *GoodsDetail) setMultiPics(picNum int) <span class="cov0" title="0">{
+
+        gd.Pics = make([]CarouselPicVM, 0)
+        for i := 1; i &lt;= picNum; i++ </span><span class="cov0" title="0">{
+                id := gd.Gid + "-0" + fmt.Sprintf("%d", i)
+                pic := CarouselPicVM{id, configs.Cfg.GoodsPicPrefix() + id + ".jpeg"}
+                gd.Pics = append(gd.Pics, pic)
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file9" style="display: none">package goods
+
+import (
+        "strconv"
+        "sync"
+
+        "bookstore/app/configs"
+        "strings"
+)
+
+var lockGS sync.Mutex
+var goodsService *GoodsService = newGoodsService()
+
+func GetGoodsService() *GoodsService <span class="cov0" title="0">{
+        lockGS.Lock()
+        defer lockGS.Unlock()
+        if goodsService == nil </span><span class="cov0" title="0">{
+                goodsService = newGoodsService()
+        }</span>
+        <span class="cov0" title="0">return goodsService</span>
+}
+
+func NewGoodsService(repo *SkuRepoDB, cateRepo *CategoryRepoDB) *GoodsService <span class="cov0" title="0">{
+        return &amp;GoodsService{repo: repo, cateRepo: cateRepo}
+}</span>
+
+func newGoodsService() *GoodsService <span class="cov8" title="1">{
+        return &amp;GoodsService{repo: &amp;SkuRepoDB{}, cateRepo: &amp;CategoryRepoDB{}}
+}</span>
+
+// 删除原有的 NewGoodsService（含 &amp;SkuRepoMem{}）实现和 gs.items 相关代码，只保留数据库 repo 版本。
+
+type GoodsItems []GoodsItem
+
+type GoodsService struct {
+        repo     *SkuRepoDB
+        cateRepo *CategoryRepoDB
+}
+
+// 只保留数据库 repo 相关方法
+func (gs *GoodsService) GetItemDetail(gid string) *GoodsDetail <span class="cov0" title="0">{
+        sku := gs.repo.FindWithCarouselPics(gid)
+        item := gs.skuToGoodsItem(*sku)
+        return &amp;item.GoodsDetail
+}</span>
+
+func (gs *GoodsService) LoadGoods() GoodsItems <span class="cov0" title="0">{
+        skus := gs.repo.FindAll()
+        items := make(GoodsItems, 0)
+        for _, sku := range skus </span><span class="cov0" title="0">{
+                i := gs.skuToGoodsItem(sku)
+                items = append(items, *i)
+        }</span>
+        <span class="cov0" title="0">return items</span>
+}
+
+func (gs *GoodsService) skuToGoodsItem(sku SKU) *GoodsItem <span class="cov0" title="0">{
+        gd := GoodsDetail{
+                sku.SkuId,     //"gId"
+                sku.Name,      //name
+                nil,           //"Pics"
+                0,             //"ItemId":
+                sku.Stock,     //"Stock":
+                sku.Unit,      //Unit
+                sku.Logistics, //"Logistics":
+                sku.Content,   //"Content":
+                uint(sku.Status),
+                sku.Status.String(),
+                configs.Cfg.GoodsPicPrefix() + sku.SkuId + ".jpeg", //picURL
+                sku.MinPrice,                     //MinPrice
+                sku.OriginalPrice,                //OriginalPrice
+                strconv.Itoa(int(sku.Aftersale)), //AfterSale
+        }
+        gd.Pics = make([]CarouselPicVM, 0)
+        for _, v := range sku.SkuCarouPictures </span><span class="cov0" title="0">{
+                pic := gs.picToPicVM(v)
+                gd.Pics = append(gd.Pics, pic)
+        }</span>
+
+        <span class="cov0" title="0">items := &amp;GoodsItem{
+                sku.SkuId,           //id
+                sku.Name,            //name
+                sku.CategoryId,      //catalogueId
+                sku.RecommendStatus, //recommandStatus
+                configs.Cfg.GoodsPicPrefix() + sku.PicStr, //picURL
+                sku.MinPrice,      //MinPrice
+                sku.OriginalPrice, //originalPrice
+                gd,
+        }
+
+        return items</span>
+}
+
+func (*GoodsService) picToPicVM(v SkuCarouPicture) CarouselPicVM <span class="cov0" title="0">{
+        // id = skuId + "-01"，如 g7225946-01
+        picId := v.SkuId + strings.TrimSuffix(v.PicStr, ".jpeg")
+        picUrl := configs.Cfg.GoodsPicPrefix() + v.SkuId + v.PicStr
+        return CarouselPicVM{
+                picId,
+                picUrl,
+        }
+}</span>
+</pre>
+		
+		<pre class="file" id="file10" style="display: none">package goods
+
+import "strings"
+
+type SKU struct {
+        SkuId            string            `json:"gid" gorm:"column:sku_id;primary_key;"`          //商品Id
+        Name             string            `json:"name"`                                           // 商品名
+        CategoryId       uint              `json:"catalogueId" gorm:"column:category_id"`          // 商品类别
+        RecommendStatus  string            `json:"recommendStatus" gorm:"column:recommend_status"` // 商品推荐状态
+        PicStr           string            `json:"pic" gorm:"column:pic_str"`                      //商品题图
+        Unit             string            `json:"unit"`                                           // 数量单位
+        Stock            uint              `json:"stores"`                                         // 库存 0: 无货，该商品已售罄
+        MinPrice         string            `json:"minPrice" gorm:"column:min_price"`               //最低价格
+        OriginalPrice    string            `json:"originalPrice" gorm:"column:original_price"`     //原价格
+        Logistics        string            `json:"logistics"`                                      // 是否包邮 1:包邮,   0:不包邮, 空:无需配送
+        Content          string            `json:"content"`                                        // 商品介绍
+        Status           SalingStatus      `json:"status"`                                         // SKU状态 1: 商品已下架
+        Aftersale        AfterSaleType     `json:"afterSale" gorm:"column:aftersale"`                     // 售后服务支持 1:支持退款且退货，0:支持退款, 2:支持退货
+        SkuCarouPictures []SkuCarouPicture `gorm:"foreignKey:SkuId;references:SkuId"`
+}
+
+type SkuCarouPicture struct {
+        Id     int64  `json:"id" gorm:"primaryKey;autoIncrement"`
+        SkuId  string `json:"gid" gorm:"column:sku_id"`
+        PicStr string `json:"pic" gorm:"column:pic_str"`
+}
+
+type Tabler interface {
+        TableName() string
+}
+
+func (s SkuCarouPicture) picId() string <span class="cov0" title="0">{
+        vid := s.PicStr[0:strings.Index(s.PicStr, ".jpeg")]
+        return s.SkuId + vid
+}</span>
+func (SkuCarouPicture) TableName() string <span class="cov0" title="0">{
+        return "SkuCarouselPics"
+}</span>
+
+type SalingStatus int32
+
+const (
+        ONSAIL SalingStatus = iota
+        OFFSAIL
+)
+
+func (c SalingStatus) String() string <span class="cov0" title="0">{
+        switch c </span>{
+        case ONSAIL:<span class="cov0" title="0">
+                return "在售"</span>
+        case OFFSAIL:<span class="cov0" title="0">
+                return "已下架"</span>
+        }
+        <span class="cov0" title="0">return "N/A"</span>
+}
+
+type AfterSaleType uint
+
+const (
+        REFUND AfterSaleType = iota
+        BOTH
+        RETURNED
+)
+
+func (c AfterSaleType) String() string <span class="cov0" title="0">{
+        switch c </span>{
+        case REFUND:<span class="cov0" title="0">
+                return "支持退款"</span>
+        case BOTH:<span class="cov0" title="0">
+                return "支持退款且退货"</span>
+        case RETURNED:<span class="cov0" title="0">
+                return "支持退货"</span>
+        }
+        <span class="cov0" title="0">return "N/A"</span>
+}
+</pre>
+		
+		<pre class="file" id="file11" style="display: none">package goods
+
+import (
+        "log"
+        "sync"
+
+        "gorm.io/gorm"
+)
+
+type GoodsRepoIf interface {
+}
+
+var lockSku = &amp;sync.Mutex{}
+var skuRepo SkuRepoIf = NewSkuRepo()
+
+func GetSkuRepo() SkuRepoIf <span class="cov0" title="0">{
+        lockSku.Lock()
+        defer lockSku.Unlock()
+        if skuRepo == nil </span><span class="cov0" title="0">{
+                skuRepo = NewSkuRepo()
+        }</span>
+        <span class="cov0" title="0">return skuRepo</span>
+}
+
+func NewSkuRepo() SkuRepoIf <span class="cov8" title="1">{
+        return &amp;SkuRepoDB{}
+}</span>
+
+func NewSkuRepoDB(db *gorm.DB) *SkuRepoDB <span class="cov0" title="0">{
+        return &amp;SkuRepoDB{db: db}
+}</span>
+
+type SkuRepoIf interface {
+        FindAll() []SKU
+        First(skuid string) *SKU
+        FindWithCarouselPics(skuid string) *SKU
+        Create(sku SKU) error
+        Delete(sku SKU) error
+        Update(skuid string, sku *SKU) error
+}
+type SkuRepoDB struct {
+        db *gorm.DB
+}
+
+func (s SkuRepoDB) Update(skuid string, sku *SKU) error <span class="cov0" title="0">{
+        oSku := SKU{SkuId: skuid}
+        ret := s.db.Model(&amp;oSku).Updates(sku)
+        return ret.Error
+}</span>
+func (s SkuRepoDB) FindAll() []SKU <span class="cov0" title="0">{
+        var skus []SKU
+        ret := s.db.Preload("SkuCarouPictures").Find(&amp;skus)
+        if ret.Error != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return skus</span>
+}
+func (s SkuRepoDB) Create(sku SKU) error <span class="cov0" title="0">{
+        err := s.db.Create(&amp;sku).Error
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">return s.db.Save(&amp;sku).Error</span>
+}
+func (s SkuRepoDB) Delete(sku SKU) error <span class="cov0" title="0">{
+        r := s.db.Model(&amp;sku).Delete(sku)
+        return r.Error
+}</span>
+func (s SkuRepoDB) First(skuid string) *SKU <span class="cov0" title="0">{
+        var sku SKU
+        result := s.db.Where("sku_id = ?", skuid).First(&amp;sku)
+        if result.Error != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return &amp;sku</span>
+}
+func (s SkuRepoDB) FindWithCarouselPics(skuid string) *SKU <span class="cov0" title="0">{
+        var sku SKU
+        ret := s.db.Preload("SkuCarouPictures").Where("sku_id = ?", skuid).First(&amp;sku)
+        if ret.Error != nil </span><span class="cov0" title="0">{
+                log.Println(ret.Error)
+                return nil
+        }</span>
+        <span class="cov0" title="0">log.Printf("sku is %v\n", sku)
+        return &amp;sku</span>
+}
+</pre>
+		
+		<pre class="file" id="file12" style="display: none">package migrations
+
+import (
+        "log"
+        "os"
+        "path/filepath"
+
+        "github.com/golang-migrate/migrate/v4"
+        _ "github.com/golang-migrate/migrate/v4/database/sqlite3" // Driver for SQLite3
+        _ "github.com/golang-migrate/migrate/v4/source/file"    // Source for file system migrations
+)
+
+// MigrateUp performs database migrations to the latest version.
+// dsn: The database connection string (e.g., "file:test.db?cache=shared").
+// migrationsDir: The directory containing migration files (e.g., "./dbscripts").
+func MigrateUp(dsn string, migrationsDir string) error <span class="cov0" title="0">{
+        // Check if the migrations directory exists
+        if _, err := os.Stat(migrationsDir); os.IsNotExist(err) </span><span class="cov0" title="0">{
+                log.Printf("Migration directory does not exist: %s", migrationsDir)
+                return err
+        }</span>
+
+        // Construct the migration source URL
+        // Use absolute path for robustness
+        <span class="cov0" title="0">absMigrationsDir, err := filepath.Abs(migrationsDir)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov0" title="0">migrateSource := "file://" + absMigrationsDir
+
+        // Construct the database URL
+        dbURL := "sqlite3://" + dsn
+
+        // Create a new migrate instance
+        m, err := migrate.New(migrateSource, dbURL)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Perform the migration
+        <span class="cov0" title="0">err = m.Up()
+        if err != nil &amp;&amp; err != migrate.ErrNoChange </span><span class="cov0" title="0">{
+                // Handle dirty database state
+                if err.Error() == "Dirty database version 1. Fix and force version." </span><span class="cov0" title="0">{
+                        log.Printf("Attempting to force version 0 for dirty database.")
+                        // Force version 0 to clean up dirty state, then retry Up
+                        if forceErr := m.Force(0); forceErr != nil </span><span class="cov0" title="0">{
+                                log.Printf("Failed to force version 0: %v", forceErr)
+                                return forceErr
+                        }</span>
+                        <span class="cov0" title="0">log.Printf("Retrying migration after force version 0.")
+                        err = m.Up()
+                        if err != nil &amp;&amp; err != migrate.ErrNoChange </span><span class="cov0" title="0">{
+                                return err
+                        }</span>
+                }
+                <span class="cov0" title="0">return err</span>
+        }
+
+        <span class="cov0" title="0">if err == migrate.ErrNoChange </span><span class="cov0" title="0">{
+                log.Println("Database migration: no change")
+        }</span> else<span class="cov0" title="0"> if err == nil </span><span class="cov0" title="0">{
+                version, dirty, _ := m.Version()
+                log.Printf("Database migration successful, current version: %d (dirty: %t)", version, dirty)
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file13" style="display: none">package order
+
+import (
+        "net/http"
+
+        "github.com/gin-gonic/gin"
+)
+
+func GetOrderStatistics(c *gin.Context) <span class="cov0" title="0">{
+
+        token, ok := c.GetQuery("token")
+        if !ok </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "noToken", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">result := fetchOrderStatistics(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+
+func DiscountStatistics(c *gin.Context) <span class="cov0" title="0">{
+
+        token, ok := c.GetQuery("token")
+        if !ok </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "noToken", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">result := fetchDiscount(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+
+func Coupons(c *gin.Context) <span class="cov0" title="0">{
+        token, ok := c.GetQuery("token")
+        if !ok </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "noToken", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">result := fetchDiscount(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+
+func fetchOrderStatistics(token string) interface{} <span class="cov0" title="0">{
+        return map[string]string{"token": token, "orderStatistics": "0"}
+}</span>
+
+func fetchDiscount(token string) interface{} <span class="cov0" title="0">{
+        return map[string]string{"token": token, "discount": "0"}
+}</span>
+</pre>
+		
+		<pre class="file" id="file14" style="display: none">package routers
+
+import (
+        "log"
+        "net/http"
+
+        banner "bookstore/app/banner"
+        cart "bookstore/app/shoppingcart"
+
+        "bookstore/app/goods"
+        "bookstore/app/order"
+        "bookstore/app/security"
+        "bookstore/app/user"
+
+        "github.com/gin-gonic/gin"
+)
+
+// 依赖注入说明：所有 handler 需在 main.go 实例化后传入 SetupRouter
+func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *user.AddressHandler, goodsHandler *goods.GoodsHandler, authMiddleware *security.AuthMiddleware) <span class="cov0" title="0">{
+
+        // 添加跨域访问中间件
+        r.Use(allowCrossDomainAccess())
+
+        // 配置静态文件路由
+        r.StaticFS("/pic", http.Dir("./static"))
+
+        // 添加根路径处理函数，访问 http://localhost:9090 时返回
+        r.GET("/", func(context *gin.Context) </span><span class="cov0" title="0">{
+                context.JSON(http.StatusOK, gin.H{
+                        "code": 0,
+                        "data": nil,
+                        "msg": "服务已启动",
+                })
+        }</span>)
+
+        // 添加ping路径处理函数
+        <span class="cov0" title="0">r.GET("/ping", func(context *gin.Context) </span><span class="cov0" title="0">{
+                context.JSON(http.StatusOK, gin.H{
+                        "message": "pong",
+                })
+        }</span>)
+
+        <span class="cov0" title="0">v1 := r.Group("/v1")
+
+        // 公开接口 - 不需要认证
+        v1.GET("/verification/pic/get", security.GetCapChar)
+        v1.GET("/verification/pic/check", security.VerifyCapChar)
+        v1.GET("/verification/sms/get", security.GetSMSCode)
+
+        // 用户认证相关接口
+        v1.POST("/user/m/register", userHandler.Register)
+        v1.POST("/user/m/login", userHandler.Login)
+
+        // 商品相关接口 - 公开
+        v1.GET("/shop/goods/category/all", goodsHandler.FetchCatalogues)
+        v1.GET("/shop/goods/detail", goodsHandler.GetGoodsDetail)
+        v1.POST("/shop/goods/reputation", goodsHandler.FetchItemReputation)
+        v1.POST("/goods/list", goodsHandler.FetchGoodsList)
+
+        // 广告相关接口 - 公开
+        v1.GET("/banner/list", bannerHandler.FetchBanners)
+
+        // 需要认证的接口组
+        authenticated := v1.Group("")
+        authenticated.Use(authMiddleware.Authenticate()) // 使用可选认证中间件
+
+        // 用户相关接口 - 需要认证
+        authenticated.GET("/user/detail", userHandler.GetUserDetail)
+        authenticated.GET("/user/modify", userHandler.UpdateUserInfo)
+        authenticated.GET("/user/amount", userHandler.GetUserAmount)
+        authenticated.GET("/user/logout", userHandler.GetUserDetail)
+
+        // 购物车相关接口 - 需要认证
+        authenticated.GET("/shopping-cart/info", cartHandler.GetShopingCart)
+        authenticated.POST("/shopping-cart/add", cartHandler.PutIntoCart)
+        authenticated.POST("/shopping-cart/modifyNumber", cartHandler.ModifyNumberOfGoodsInCart)
+
+        // 收货地址相关接口 - 需要认证
+        authenticated.GET("/user/shipping-address/list", func(c *gin.Context) </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] Router: 路由到获取地址列表 - 路径: %s, 方法: %s, 用户ID: %s",
+                        c.Request.URL.Path, c.Request.Method, c.GetString("userID"))
+                addressHandler.GetAddressList(c)
+        }</span>)
+        <span class="cov0" title="0">authenticated.GET("/user/shipping-address/default", func(c *gin.Context) </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] Router: 路由到获取默认地址 - 路径: %s, 方法: %s, 用户ID: %s",
+                        c.Request.URL.Path, c.Request.Method, c.GetString("userID"))
+                addressHandler.GetDefaultAddress(c)
+        }</span>)
+        <span class="cov0" title="0">authenticated.POST("/user/shipping-address/add", func(c *gin.Context) </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] Router: 路由到添加地址 - 路径: %s, 方法: %s, 用户ID: %s",
+                        c.Request.URL.Path, c.Request.Method, c.GetString("userID"))
+                addressHandler.AddAddress(c)
+        }</span>)
+
+        // 订单相关接口 - 需要认证
+        <span class="cov0" title="0">authenticated.GET("/order/statistics", order.GetOrderStatistics)
+        authenticated.GET("/discounts/statistics", order.DiscountStatistics)
+        authenticated.GET("/discounts/coupons", order.Coupons)
+
+        //books 相关路由保持不变
+        r.GET("/books", goods.FindBooks)
+        r.POST("/books", goods.CreateBook)
+        r.GET("/books/:id", goods.FindBook)
+        r.PATCH("/books/:id", goods.UpdateBook)
+        r.DELETE("/books/:id", goods.DeleteBook)</span>
+}
+
+func allowCrossDomainAccess() gin.HandlerFunc <span class="cov0" title="0">{
+        return func(c *gin.Context) </span><span class="cov0" title="0">{
+                method := c.Request.Method
+                origin := c.Request.Header.Get("Origin") //请求头部
+                if origin != "" </span><span class="cov0" title="0">{
+                        //接收客户端发送的origin （重要！）
+                        c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
+                        //服务器支持的所有跨域请求的方法
+                        c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
+                        //允许跨域设置可以返回其他子段，可以自定义字段
+                        c.Header("Access-Control-Allow-Headers", "Authorization, Content-Length, X-CSRF-Token, Token, session, Content-Type")
+                        // 允许浏览器（客户端）可以解析的头部 （重要）
+                        c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers")
+                        //设置缓存时间
+                        c.Header("Access-Control-Max-Age", "172800")
+                        //允许客户端传递校验信息比如 cookie (重要)
+                        c.Header("Access-Control-Allow-Credentials", "true")
+                }</span>
+
+                //允许类型校验
+                <span class="cov0" title="0">if method == "OPTIONS" </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusOK, "ok!")
+                        c.Abort() // 阻止继续执行后续中间件
+                        return
+                }</span>
+
+                <span class="cov0" title="0">defer func() </span><span class="cov0" title="0">{
+                        if err := recover(); err != nil </span><span class="cov0" title="0">{
+                                panic(err)</span>
+                        }
+                }()
+
+                <span class="cov0" title="0">c.Next()</span>
+        }
+}
+</pre>
+		
+		<pre class="file" id="file15" style="display: none">package security
+
+import (
+        "bytes"
+        "encoding/json"
+        "io"
+        "log"
+        "net/http"
+        "strings"
+
+        "github.com/gin-gonic/gin"
+)
+
+// AuthContext 定义认证上下文中的用户信息
+type AuthContext struct {
+        UserID   string `json:"user_id"`
+        Mobile   string `json:"mobile"`
+        IsValid  bool   `json:"is_valid"`
+}
+
+// TokenExtractor 定义token提取接口，避免直接依赖UserService
+type TokenExtractor interface {
+        ExtractUserFromToken(token string) *AuthContext
+}
+
+// AuthMiddleware 认证中间件
+type AuthMiddleware struct {
+        tokenExtractor TokenExtractor
+}
+
+// NewAuthMiddleware 创建新的认证中间件
+func NewAuthMiddleware(extractor TokenExtractor) *AuthMiddleware <span class="cov0" title="0">{
+        return &amp;AuthMiddleware{
+                tokenExtractor: extractor,
+        }
+}</span>
+
+// Authenticate 认证中间件函数
+func (am *AuthMiddleware) Authenticate() gin.HandlerFunc <span class="cov0" title="0">{
+        return func(c *gin.Context) </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] AuthMiddleware.Authenticate: 开始处理认证请求 - 路径: %s", c.Request.URL.Path)
+
+                // 从请求中提取token
+                token := extractTokenFromRequest(c)
+
+                if token == "" </span><span class="cov0" title="0">{
+                        log.Printf("[DEBUG] AuthMiddleware.Authenticate: 未找到token，跳过认证")
+                        // 对于不需要认证的接口，继续处理
+                        c.Next()
+                        return
+                }</span>
+
+                <span class="cov0" title="0">log.Printf("[DEBUG] AuthMiddleware.Authenticate: 提取到token: %s", token)
+
+                // 使用token提取器获取用户信息
+                authContext := am.tokenExtractor.ExtractUserFromToken(token)
+
+                if authContext == nil || !authContext.IsValid </span><span class="cov0" title="0">{
+                        log.Printf("[DEBUG] AuthMiddleware.Authenticate: token验证失败 - token: %s", token)
+                        c.JSON(http.StatusUnauthorized, gin.H{
+                                "code": 401,
+                                "msg":  "无效的认证token",
+                        })
+                        c.Abort()
+                        return
+                }</span>
+
+                <span class="cov0" title="0">log.Printf("[DEBUG] AuthMiddleware.Authenticate: token验证成功 - UserID: %s, Mobile: %s",
+                        authContext.UserID, authContext.Mobile)
+
+                // 将用户信息注入到gin上下文中
+                c.Set("userID", authContext.UserID)
+                c.Set("mobile", authContext.Mobile)
+                c.Set("authContext", authContext)
+
+                log.Printf("[DEBUG] AuthMiddleware.Authenticate: 用户信息已注入到上下文")
+
+                c.Next()</span>
+        }
+}
+
+// RequireAuth 要求认证的中间件
+func (am *AuthMiddleware) RequireAuth() gin.HandlerFunc <span class="cov0" title="0">{
+        return func(c *gin.Context) </span><span class="cov0" title="0">{
+                // 从请求中提取token
+                token := extractTokenFromRequest(c)
+
+                if token == "" </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusUnauthorized, gin.H{
+                                "code": 401,
+                                "msg":  "缺少认证token",
+                        })
+                        c.Abort()
+                        return
+                }</span>
+
+                // 使用token提取器获取用户信息
+                <span class="cov0" title="0">authContext := am.tokenExtractor.ExtractUserFromToken(token)
+
+                if authContext == nil || !authContext.IsValid </span><span class="cov0" title="0">{
+                        c.JSON(http.StatusUnauthorized, gin.H{
+                                "code": 401,
+                                "msg":  "无效的认证token",
+                        })
+                        c.Abort()
+                        return
+                }</span>
+
+                // 将用户信息注入到gin上下文中
+                <span class="cov0" title="0">c.Set("userID", authContext.UserID)
+                c.Set("mobile", authContext.Mobile)
+                c.Set("authContext", authContext)
+
+                c.Next()</span>
+        }
+}
+
+// extractTokenFromRequest 从请求中提取token
+func extractTokenFromRequest(c *gin.Context) string <span class="cov0" title="0">{
+        // 1. 从Authorization header中提取Bearer token
+        authHeader := c.GetHeader("Authorization")
+        if authHeader != "" </span><span class="cov0" title="0">{
+                parts := strings.Split(authHeader, " ")
+                if len(parts) == 2 &amp;&amp; parts[0] == "Bearer" </span><span class="cov0" title="0">{
+                        return parts[1]
+                }</span>
+        }
+
+        // 2. 从query参数中提取token
+        <span class="cov0" title="0">if token := c.Query("token"); token != "" </span><span class="cov0" title="0">{
+                return token
+        }</span>
+
+        // 3. 从form参数中提取token
+        <span class="cov0" title="0">if token := c.PostForm("token"); token != "" </span><span class="cov0" title="0">{
+                return token
+        }</span>
+
+        // 4. 从JSON body中提取token（如果Content-Type是application/json）
+        <span class="cov0" title="0">if c.ContentType() == "application/json" </span><span class="cov0" title="0">{
+                // 读取请求体但不消耗它
+                bodyBytes, err := c.GetRawData()
+                if err == nil &amp;&amp; len(bodyBytes) &gt; 0 </span><span class="cov0" title="0">{
+                        var body map[string]interface{}
+                        if err := json.Unmarshal(bodyBytes, &amp;body); err == nil </span><span class="cov0" title="0">{
+                                if token, ok := body["token"].(string); ok &amp;&amp; token != "" </span><span class="cov0" title="0">{
+                                        // 重新设置请求体，以便后续handler可以读取
+                                        c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+                                        return token
+                                }</span>
+                        }
+                        // 重新设置请求体
+                        <span class="cov0" title="0">c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))</span>
+                }
+        }
+
+        <span class="cov0" title="0">return ""</span>
+}</pre>
+		
+		<pre class="file" id="file16" style="display: none">package security
+
+import (
+        "fmt"
+        "image/color"
+        "net/http"
+
+        "bookstore/app/configs"
+
+        "github.com/afocus/captcha"
+        "github.com/gin-gonic/gin"
+)
+
+func GetSMSCode(c *gin.Context) <span class="cov0" title="0">{
+
+        mobile, _ := c.GetQuery("mobile")
+        key, _ := c.GetQuery("key")
+        picCode, _ := c.GetQuery("picCode")
+        token, _ := c.GetQuery("token")
+
+        fmt.Printf("mobile = %v, key = %v, picCode = %v, token = '%v'\n", mobile, key, picCode, token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": 1, "msg": "OK"})
+}</span>
+func VerifyCapChar(c *gin.Context) <span class="cov0" title="0">{
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": 1, "msg": "OK"})
+}</span>
+func GetCapChar(c *gin.Context) <span class="cov0" title="0">{
+        //key := c.DefaultQuery("key", "noKey") // key is a timestump from client
+        pic := configs.Cfg.StaticPicPrefix() + "/captcha.jpeg"
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": pic, "msg": "OK"})
+}</span>
+
+func GenerateCapTCha() <span class="cov0" title="0">{
+        cap := captcha.New()
+        // 可以设置多个字体 或使用cap.AddFont("xx.ttf")追加更多
+        cap.SetFont("resources/comic.ttf")
+        // 设置验证码大小
+        cap.SetSize(128, 64)
+        // 设置干扰强度
+        cap.SetDisturbance(captcha.MEDIUM)
+        // 设置前景色 可以多个 随机替换文字颜色 默认黑色
+        cap.SetFrontColor(color.RGBA{255, 255, 255, 255})
+        // 设置背景色 可以多个 随机替换背景色 默认白色
+        cap.SetBkgColor(color.RGBA{255, 0, 0, 255}, color.RGBA{0, 0, 255, 255}, color.RGBA{0, 153, 0, 255})
+        //img, str := cap.Create(4, captcha.NUM)
+        //img1, str1 := cap.Create(6, captcha.ALL)
+        //png.Encode(w, img)
+}</span>
+</pre>
+		
+		<pre class="file" id="file17" style="display: none">package security
+
+import (
+        "bookstore/app/user"
+        "log"
+)
+
+// UserTokenExtractor 实现TokenExtractor接口
+type UserTokenExtractor struct {
+        userRepo user.UserRepo
+}
+
+// NewUserTokenExtractor 创建新的用户token提取器
+func NewUserTokenExtractor(userRepo user.UserRepo) *UserTokenExtractor <span class="cov0" title="0">{
+        return &amp;UserTokenExtractor{
+                userRepo: userRepo,
+        }
+}</span>
+
+// ExtractUserFromToken 从token中提取用户信息
+func (ute *UserTokenExtractor) ExtractUserFromToken(token string) *AuthContext <span class="cov0" title="0">{
+        log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 开始提取用户信息 - token: %s", token)
+
+        if token == "" </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: token为空")
+                return nil
+        }</span>
+
+        // 当前实现：token就是手机号
+        // TODO: 未来可以升级为JWT或其他token机制
+        <span class="cov0" title="0">mobileNumber := token
+        log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 使用手机号查找用户 - mobile: %s", mobileNumber)
+
+        // 通过手机号查找用户
+        user := ute.userRepo.RetriveUserByMobile(mobileNumber)
+        if user == nil </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 未找到用户 - mobile: %s", mobileNumber)
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">log.Printf("[DEBUG] UserTokenExtractor.ExtractUserFromToken: 找到用户 - UserID: %s, Mobile: %s, Nickname: %s",
+                user.Id, user.Mobile, user.Nickname)
+
+        return &amp;AuthContext{
+                UserID:  user.Id,
+                Mobile:  user.Mobile,
+                IsValid: true,
+        }</span>
+}
+
+// SimpleTokenExtractor 简单的token提取器，用于测试或临时使用
+type SimpleTokenExtractor struct {
+        validTokens map[string]string // token -&gt; mobile 映射
+}
+
+// NewSimpleTokenExtractor 创建简单的token提取器
+func NewSimpleTokenExtractor() *SimpleTokenExtractor <span class="cov0" title="0">{
+        return &amp;SimpleTokenExtractor{
+                validTokens: make(map[string]string),
+        }
+}</span>
+
+// AddValidToken 添加有效的token
+func (ste *SimpleTokenExtractor) AddValidToken(token, mobile string) <span class="cov0" title="0">{
+        ste.validTokens[token] = mobile
+}</span>
+
+// ExtractUserFromToken 从token中提取用户信息（简单实现）
+func (ste *SimpleTokenExtractor) ExtractUserFromToken(token string) *AuthContext <span class="cov0" title="0">{
+        if token == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">mobile, exists := ste.validTokens[token]
+        if !exists </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">return &amp;AuthContext{
+                UserID:  mobile, // 简单实现中，用户ID就是手机号
+                Mobile:  mobile,
+                IsValid: true,
+        }</span>
+}</pre>
+		
+		<pre class="file" id="file18" style="display: none">package cart
+
+import (
+        "fmt"
+        "net/http"
+        "strconv"
+
+        "bookstore/app/utils"
+
+        "github.com/gin-gonic/gin"
+)
+
+type CartHandler struct {
+        service *CartService
+}
+
+func NewCartHandler(service *CartService) *CartHandler <span class="cov0" title="0">{
+        return &amp;CartHandler{service: service}
+}</span>
+
+func (h *CartHandler) PutIntoCart(c *gin.Context) <span class="cov0" title="0">{
+        // 从认证中间件获取用户信息
+        mobile := utils.GetMobileFromContext(c)
+        if mobile == "" </span><span class="cov0" title="0">{
+                c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "User not authenticated"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">gid := c.PostForm("goodsId")
+        number := c.PostForm("number")
+        vlm64, err2 := strconv.ParseUint(number, 10, 32)
+        if gid == "" || number == "" || err2 != nil </span><span class="cov0" title="0">{
+                result := fmt.Sprintf("gid = %v, number = %v\n ", gid, number)
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": result, "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">result := h.service.PutItemsInCart(mobile, gid, uint(vlm64))
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+
+func (h *CartHandler) ModifyNumberOfGoodsInCart(c *gin.Context) <span class="cov0" title="0">{
+        // 从认证中间件获取用户信息
+        mobile := utils.GetMobileFromContext(c)
+        if mobile == "" </span><span class="cov0" title="0">{
+                c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "User not authenticated"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">gid := c.PostForm("key")
+        numStr := c.PostForm("number")
+        number, _ := strconv.Atoi(numStr)
+        h.service.ModifyQuantityOfGoodsInCate(mobile, gid, uint(number))
+        result := h.service.GetCartByToken(mobile)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+
+func (h *CartHandler) GetShopingCart(c *gin.Context) <span class="cov0" title="0">{
+        // 从认证中间件获取用户信息
+        mobile := utils.GetMobileFromContext(c)
+        if mobile == "" </span><span class="cov0" title="0">{
+                c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "User not authenticated"})
+                return
+        }</span>
+
+        <span class="cov0" title="0">cart := h.service.GetCartByToken(mobile)
+        var result interface{}
+        if cart == nil </span><span class="cov0" title="0">{
+                fmt.Println("没有找到 token 为 " + mobile + " 的购物车")
+                result = ""
+        }</span> else<span class="cov0" title="0"> {
+                result = cart
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+</pre>
+		
+		<pre class="file" id="file19" style="display: none">package cart
+
+import (
+        "bookstore/app/configs"
+        "bookstore/app/goods"
+)
+
+type UserCart struct {
+        Token string
+        Items []UserCartItem
+}
+
+type UserCartItem struct {
+        ID              int    `gorm:"primaryKey;autoIncrement" json:"id"`
+        Token           string `gorm:"column:token"`
+        SkuId           string `gorm:"column:sku_id"`
+        Pic             string `gorm:"column:pic"`
+        Status          uint   `gorm:"column:status"`
+        Name            string `gorm:"column:name"`
+        SkuStrs         string `gorm:"column:sku_strs"`
+        Price           string `gorm:"column:price"`
+        Quantity        uint   `gorm:"column:quantity"`
+        Selected        string `gorm:"column:selected"`
+        OptionValueName string `gorm:"column:option_value_name"`
+}
+
+func (ci UserCartItem) FullPicStr() string <span class="cov0" title="0">{
+        return configs.Cfg.GoodsPicPrefix() + ci.Pic
+}</span>
+
+func (ci *UserCart) NewUserCartItem(token string, sku goods.SKU, quantity uint) UserCartItem <span class="cov0" title="0">{
+
+        skuStr := "sku1, sku3"
+        item := UserCartItem{0, token, sku.SkuId, configs.Cfg.GoodsPicPrefix() + sku.PicStr, 0, sku.Name, skuStr, sku.MinPrice, quantity, "1", "optionValueName"}
+        return item
+}</span>
+func (ci *UserCart) findUserCartItem(skuid string) (*UserCartItem, int) <span class="cov0" title="0">{
+        items := ci.Items
+        for i := 0; i &lt; len(items); i++ </span><span class="cov0" title="0">{
+                if items[i].SkuId == skuid </span><span class="cov0" title="0">{
+                        return &amp;items[i], i
+                }</span>
+        }
+        <span class="cov0" title="0">return nil, -1</span>
+}
+</pre>
+		
+		<pre class="file" id="file20" style="display: none">package cart
+
+import (
+        "gorm.io/gorm"
+)
+
+type CartRepoDB struct {
+        db *gorm.DB
+}
+
+func NewCartRepoDB(db *gorm.DB) *CartRepoDB <span class="cov0" title="0">{
+        return &amp;CartRepoDB{db: db}
+}</span>
+
+func (r *CartRepoDB) FindUserCartItemsBy(token string) []UserCartItem <span class="cov0" title="0">{
+        var items []UserCartItem
+        r.db.Where("Token = ?", token).Find(&amp;items)
+        return items
+}</span>
+
+func (r *CartRepoDB) SaveUserCartItem(item UserCartItem) error <span class="cov0" title="0">{
+        existing := r.GetUserCartItem(item)
+        if existing != nil </span><span class="cov0" title="0">{
+                existing.Quantity += item.Quantity
+                return r.db.Model(&amp;UserCartItem{}).Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).Updates(existing).Error
+        }</span>
+        <span class="cov0" title="0">return r.db.Create(&amp;item).Error</span>
+}
+
+func (r *CartRepoDB) DeleteUserCartItemsBy(token string) error <span class="cov0" title="0">{
+        return r.db.Where("Token = ?", token).Delete(&amp;UserCartItem{}).Error
+}</span>
+
+func (r *CartRepoDB) UpdateUserCartItem(item *UserCartItem) error <span class="cov0" title="0">{
+        return r.db.Model(&amp;UserCartItem{}).Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).Updates(item).Error
+}</span>
+
+func (r *CartRepoDB) DeleteUserCartItem(item UserCartItem) error <span class="cov0" title="0">{
+        return r.db.Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).Delete(&amp;UserCartItem{}).Error
+}</span>
+
+func (r *CartRepoDB) GetUserCartItem(item UserCartItem) *UserCartItem <span class="cov0" title="0">{
+        var result UserCartItem
+        if err := r.db.Where("Token = ? AND sku_id = ?", item.Token, item.SkuId).First(&amp;result).Error; err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return &amp;result</span>
+}</pre>
+		
+		<pre class="file" id="file21" style="display: none">package cart
+
+import (
+        "log"
+        "strings"
+
+        "bookstore/app/goods"
+)
+
+var cartService *CartService
+
+type CartService struct {
+        goodsRepo goods.SkuRepoIf
+        cr     *CartRepoDB
+}
+
+func NewCartService(goodsRepo goods.SkuRepoIf, cr *CartRepoDB) *CartService <span class="cov0" title="0">{
+        return &amp;CartService{goodsRepo, cr}
+}</span>
+
+func (cs *CartService) PutItemsInCart(token string, skuId string, quantity uint) *CartInfoVM <span class="cov0" title="0">{
+        sku := cs.goodsRepo.First(skuId)
+        if sku == nil </span><span class="cov0" title="0">{
+                log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", skuId)
+                return nil
+        }</span>
+        <span class="cov0" title="0">ci := cs.findCartInfoFor(token)
+        if ci == nil </span><span class="cov0" title="0">{
+                return cs.CreateCartItemFor(token, sku, quantity)
+        }</span>
+
+        <span class="cov0" title="0">item, ip := ci.FindDetailBy(skuId)
+        if item == nil </span><span class="cov0" title="0">{
+                return cs.CreateCartItemFor(token, sku, quantity)
+        }</span>
+
+        <span class="cov0" title="0">item.AddMore(quantity)
+        ip.AddMore(quantity)
+        cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
+
+        ci.caculateRedDot()
+        return ci</span>
+}
+
+func (cs *CartService) findCartInfoFor(token string) *CartInfoVM <span class="cov0" title="0">{
+        ci := cs.fetchCartItems(token)
+        return ci
+}</span>
+func (cs *CartService) ModifyQuantityOfGoodsInCate(token string, gid string, quantity uint) *CartInfoVM <span class="cov0" title="0">{
+
+        gd := cs.goodsRepo.First(gid)
+        if gd == nil </span><span class="cov0" title="0">{
+                log.Printf("～～没有找到 skuId 是 %v 的goodsDetail", gid)
+                return nil
+        }</span>
+        <span class="cov0" title="0">ci := cs.findCartInfoFor(token)
+        if ci == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">item := ci.Modify(gid, quantity)
+        cs.cr.UpdateUserCartItem(cs.fromVMToUCI(token, item))
+        ci.caculateRedDot()
+        return ci</span>
+}
+
+func (cs *CartService) GetCartByToken(token string) *CartInfoVM <span class="cov0" title="0">{
+        ret := cs.fetchCartItems(token)
+        return ret
+}</span>
+func (cs *CartService) fetchCartItems(token string) *CartInfoVM <span class="cov0" title="0">{
+        found := cs.cr.FindUserCartItemsBy(token)
+        if len(found) == 0 </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">ci := cs.fromUCIlistToVM(token, found)
+        return ci</span>
+}
+
+func (cs *CartService) fromUCIlistToVM(token string, found []UserCartItem) *CartInfoVM <span class="cov0" title="0">{
+        ci := &amp;CartInfoVM{token, 0, []CartItemVM{}, []ItemPairVM{}}
+        for _, v := range found </span><span class="cov0" title="0">{
+                item, ip := cs.fromUCIToVM(v)
+                ci.Items = append(ci.Items, item)
+                ci.Pairs = append(ci.Pairs, ip)
+        }</span>
+        <span class="cov0" title="0">ci.caculateRedDot()
+        return ci</span>
+}
+
+func (cs *CartService) fromUCIToVM(uci UserCartItem) (CartItemVM, ItemPairVM) <span class="cov0" title="0">{
+        civm := CartItemVM{
+                uci.SkuId,
+                uci.FullPicStr(),
+                uci.Status,
+                uci.Name,
+                strings.Split(uci.SkuStrs, ","),
+                uci.Price,
+                uci.Quantity,
+                uci.Selected,
+                uci.OptionValueName,
+        }
+        ipvm := ItemPairVM{
+                uci.SkuId,
+                uci.Quantity,
+        }
+        return civm, ipvm
+}</span>
+func (cs *CartService) fromVMToUCI(token string, ci *CartItemVM) *UserCartItem <span class="cov0" title="0">{
+        return &amp;UserCartItem{
+                ID: 0,
+                Token: token,
+                SkuId: ci.Gid,
+                Pic: ci.RetrivePicStr(),
+                Status: ci.Status,
+                Name: ci.Name,
+                SkuStrs: strings.Join(ci.Sku, ","),
+                Price: ci.Price,
+                Quantity: ci.Quantity,
+                Selected: ci.Selected,
+                OptionValueName: ci.OptionValueName,
+        }
+}</span>
+
+func (cs *CartService) CreateCartItemFor(token string, sku *goods.SKU, quantity uint) *CartInfoVM <span class="cov0" title="0">{
+        uci := UserCartItem{
+                ID: 0,
+                Token:           token,
+                SkuId:           sku.SkuId,
+                Pic:             sku.PicStr,
+                Status:          uint(sku.Status),
+                Name:            sku.Name,
+                SkuStrs:         "sku1,sku3",
+                Price:           sku.MinPrice,
+                Quantity:        quantity,
+                Selected:        "1",
+                OptionValueName: "OptionValueName",
+        }
+        err := cs.cr.SaveUserCartItem(uci)
+        if err != nil </span><span class="cov0" title="0">{
+                log.Fatalf("%v \n save db has error:\n%v\n", uci, err)
+                return nil
+        }</span>
+        // 关键：插入/更新后，直接重新从数据库加载购物车项，避免 items/goods 重复
+        <span class="cov0" title="0">return cs.findCartInfoFor(token)</span>
+}
+</pre>
+		
+		<pre class="file" id="file22" style="display: none">package cart
+
+import (
+        "bookstore/app/configs"
+        "bookstore/app/goods"
+)
+
+type CartInfoVM struct {
+        Token  string       `json:"token"`
+        RedDot uint         `json:"number"` //等于用户购物车中SKU的品类个数（京东购物车的逻辑）
+        Items  []CartItemVM `json:"items"`
+        Pairs  []ItemPairVM `json:"goods"`
+}
+
+type CartItemVM struct {
+        Gid             string   `json:"key"`
+        Pic             string   `json:"pic"`
+        Status          uint     `json:"status"` // === 1 【失效】
+        Name            string   `json:"name"`
+        Sku             []string `json:"sku"`
+        Price           string   `json:"price"`
+        Quantity        uint     `json:"number"`
+        Selected        string   `json:"selected"`
+        OptionValueName string   `json:"optionValueName"`
+}
+
+func (civm *CartItemVM) RetrivePicStr() string <span class="cov0" title="0">{
+        l := len(configs.Cfg.GoodsPicPrefix())
+        return civm.Pic[l:]
+}</span>
+
+func (civm *CartItemVM) AddMore(quantity uint) <span class="cov0" title="0">{
+        civm.Quantity += quantity
+}</span>
+
+type ItemPairVM struct {
+        GoodsId string `json:"goodsId"`
+        Volume  uint   `json:"number"`
+}
+
+func (ip *ItemPairVM) AddMore(quantity uint) <span class="cov0" title="0">{
+        ip.Volume = ip.Volume + quantity
+}</span>
+
+func (ci *CartInfoVM) caculateRedDot() <span class="cov0" title="0">{
+        ci.RedDot = uint(len(ci.Items))
+}</span>
+
+func (ci *CartInfoVM) getToken() string <span class="cov0" title="0">{
+        return ci.Token
+}</span>
+func (ci *CartInfoVM) FindDetailBy(skuid string) (*CartItemVM, *ItemPairVM) <span class="cov0" title="0">{
+        return ci.findItemByGid(skuid), ci.findPairByGid(skuid)
+
+}</span>
+
+func (ci *CartInfoVM) findItemByGid(gid string) *CartItemVM <span class="cov0" title="0">{
+        for i := range ci.Items </span><span class="cov0" title="0">{
+                it := &amp;ci.Items[i]
+                if it.Gid == gid </span><span class="cov0" title="0">{
+                        return it
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+func (ci *CartInfoVM) findPairByGid(gid string) *ItemPairVM <span class="cov0" title="0">{
+        for i := range ci.Pairs </span><span class="cov0" title="0">{
+                it := &amp;ci.Pairs[i]
+                if it.GoodsId == gid </span><span class="cov0" title="0">{
+                        return it
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (ci *CartInfoVM) AddMore(prod *goods.GoodsDetail, quantity uint) <span class="cov0" title="0">{
+        item := ci.findItemByGid(prod.Gid)
+        if item != nil </span><span class="cov0" title="0">{
+                updatedQuantity := item.Quantity + quantity
+                item.Quantity = updatedQuantity
+                ip := ci.findPairByGid(prod.Gid)
+                ip.Volume = item.Quantity
+                return
+        }</span>
+        <span class="cov0" title="0">item = ci.createCartItem(prod, quantity)
+        ip := ItemPairVM{prod.Gid, quantity}
+        ci.Items = append(ci.Items, *item)
+        ci.Pairs = append(ci.Pairs, ip)</span>
+}
+
+func (ci *CartInfoVM) Modify(gid string, quantity uint) *CartItemVM <span class="cov0" title="0">{
+        item := ci.findItemByGid(gid)
+        if item != nil </span><span class="cov0" title="0">{
+                item.Quantity = quantity
+                ip := ci.findPairByGid(gid)
+                ip.Volume = item.Quantity
+                return item
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}
+
+func (c *CartInfoVM) getVolumeById(gid string) uint <span class="cov0" title="0">{
+        if len(c.Pairs) == 0 </span><span class="cov0" title="0">{
+                return uint(0)
+        }</span>
+
+        <span class="cov0" title="0">for _, item := range c.Pairs </span><span class="cov0" title="0">{
+                v := item
+                if v.GoodsId == gid </span><span class="cov0" title="0">{
+                        return item.Volume
+                }</span>
+        }
+        <span class="cov0" title="0">return uint(0)</span>
+}
+
+func (ci *CartInfoVM) createCartItem(prod *goods.GoodsDetail, quantity uint) *CartItemVM <span class="cov0" title="0">{
+        sku := []string{"sku1", "sku3"}
+        selected := "1"
+        optionValue := "optionValueName"
+
+        item := CartItemVM{prod.Gid,
+                configs.Cfg.GoodsPicPrefix() + prod.Gid + ".jpeg",
+                0,
+                prod.Name,
+                sku,
+                prod.MinPrice,
+                quantity,
+                selected,
+                optionValue,
+        }
+        return &amp;item
+}</span>
+</pre>
+		
+		<pre class="file" id="file23" style="display: none">package cart
+
+type UserCartItemBuilder struct {
+        item UserCartItem
+}
+
+func NewUCIBuilder() UserCartItemBuilder <span class="cov0" title="0">{
+        return UserCartItemBuilder{UserCartItem{
+                0, // ID
+                "token-13900007997", //Token
+                "g7225946",          //Gid
+                "g7225946.jpeg",     //Pic
+                0,                   //Status
+                "持续交付1.0",           //Name
+                "sku1,sku2",         //SkuStr
+                "66.0",              //Price
+                110,                 //Quantity
+                "1",                 //Selected
+                "OptionValueName",   //OptionValueName
+        }}
+}</span>
+
+func (b UserCartItemBuilder) token(token string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Token = token
+        return b
+}</span>
+
+func (b UserCartItemBuilder) skuId(skuId string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.SkuId = skuId
+        return b
+}</span>
+
+func (b UserCartItemBuilder) name(name string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Name = name
+        return b
+}</span>
+func (b UserCartItemBuilder) optionValueName(value string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.OptionValueName = value
+        return b
+}</span>
+func (b UserCartItemBuilder) status(status uint) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Status = status
+        return b
+}</span>
+func (b UserCartItemBuilder) skuStrs(skuStrs string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.SkuStrs = skuStrs
+        return b
+}</span>
+func (b UserCartItemBuilder) price(price string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Price = price
+        return b
+}</span>
+func (b UserCartItemBuilder) quantity(quantity uint) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Quantity = quantity
+        return b
+}</span>
+func (b UserCartItemBuilder) selected(Selected string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Selected = Selected
+        return b
+}</span>
+func (b UserCartItemBuilder) pic(pic string) UserCartItemBuilder <span class="cov0" title="0">{
+        b.item.Pic = pic
+        return b
+}</span>
+
+func (b UserCartItemBuilder) build() UserCartItem <span class="cov0" title="0">{
+        return b.item
+}</span>
+</pre>
+		
+		<pre class="file" id="file24" style="display: none">package testutils
+
+import (
+        "os"
+        "path/filepath"
+        "testing"
+
+        "bookstore/app/configs"
+
+        "github.com/stretchr/testify/suite"
+)
+
+type SupperSuite struct {
+        suite.Suite
+}
+
+func TestBookstoreTestSuite(t *testing.T) <span class="cov0" title="0">{
+        suite.Run(t, new(SupperSuite))
+}</span>
+
+func (suite *SupperSuite) BeforeTest(suiteName, testName string) {<span class="cov0" title="0">}</span>
+
+func (suite *SupperSuite) AfterTest(suiteName, testName string) {<span class="cov0" title="0">}</span>
+
+func (suite *SupperSuite) SetupSuite() <span class="cov0" title="0">{
+        configs.GetConfigInstance(GetConfigFileForTest())
+        configs.Cfg.DBConnection()
+}</span>
+
+func (suite *SupperSuite) TeardownSuite() <span class="cov0" title="0">{
+        // 测试套件结束后清理所有 test.db 文件
+        suite.cleanupTestDBFiles()
+}</span>
+
+func (suite *SupperSuite) cleanupTestDBFiles() <span class="cov0" title="0">{
+        // 递归查找并删除所有 test.db 文件
+        err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error </span><span class="cov0" title="0">{
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+                <span class="cov0" title="0">if !info.IsDir() &amp;&amp; info.Name() == "test.db" </span><span class="cov0" title="0">{
+                        os.Remove(path)
+                }</span>
+                <span class="cov0" title="0">return nil</span>
+        })
+        <span class="cov0" title="0">if err != nil </span>{<span class="cov0" title="0">
+                // 忽略错误，因为清理失败不应该影响测试结果
+        }</span>
+}
+
+func (suite *SupperSuite) SetupTest() {<span class="cov0" title="0">}</span>
+</pre>
+		
+		<pre class="file" id="file25" style="display: none">package testutils
+
+import (
+        "bytes"
+        "encoding/json"
+        "errors"
+        "fmt"
+        "io/ioutil"
+        "net/http"
+        "net/http/httptest"
+        "net/url"
+
+        "github.com/gin-gonic/gin"
+)
+
+type JsonResult struct {
+        Code string `json:"code"`
+        Msg  string `json:"msg"`
+}
+
+func JsonToStruct(jsonStr string, data interface{}) <span class="cov0" title="0">{
+        err := json.Unmarshal([]byte(jsonStr), &amp;data)
+        if err != nil </span><span class="cov0" title="0">{
+                panic(errors.New("Unmarshal error!!! the jsonStr is :" + jsonStr))</span>
+        }
+
+}
+func GetConfigFileForTest() string <span class="cov0" title="0">{
+        return "../../config-test.yaml"
+}</span>
+
+func HttpPatch1(reqURL string, data map[string]interface{}, r *gin.Engine) string <span class="cov0" title="0">{
+        jsonStr, err := json.Marshal(data)
+        if err != nil </span><span class="cov0" title="0">{
+                return err.Error()
+        }</span>
+        <span class="cov0" title="0">req, err := http.NewRequest("PATCH", reqURL, bytes.NewBuffer(jsonStr))
+        if err != nil </span><span class="cov0" title="0">{
+                return err.Error()
+        }</span>
+        <span class="cov0" title="0">req.Header.Set("X-Custom-Header", "myvalue")
+        req.Header.Set("Content-Type", "application/json")
+        w := httptest.NewRecorder()
+
+        body := doIt(r, w, req, reqURL, nil)
+        return string(body)</span>
+}
+
+func HttpGet(reqURL string, params map[string]string, r *gin.Engine) string <span class="cov0" title="0">{
+        values := ""
+        for key, val := range params </span><span class="cov0" title="0">{
+                values += "&amp;" + key + "=" + val
+        }</span>
+        <span class="cov0" title="0">if len(values) != 0 </span><span class="cov0" title="0">{
+                temp := values[1:]
+                values = "?" + temp
+        }</span>
+        <span class="cov0" title="0">reqURL = reqURL + values
+        httpMethod := "GET"
+        req, _ := http.NewRequest(httpMethod, reqURL, nil)
+        w := httptest.NewRecorder()
+        r.ServeHTTP(w, req)
+        if w.Code != http.StatusOK </span><span class="cov0" title="0">{
+                fmt.Printf("Http Request Error with reqMethod = %v, reqURL = %v, data = %v\n", "GET", reqURL, params)
+        }</span>
+
+        <span class="cov0" title="0">resp := w.Result()
+        defer resp.Body.Close()
+        body, _ := ioutil.ReadAll(resp.Body)
+        return string(body)</span>
+}
+
+func HttpPost(r *gin.Engine, data url.Values, reqURL string) string <span class="cov0" title="0">{
+        HTTPMethod := "POST"
+        return HttpMethod(HTTPMethod, reqURL, data, r)
+}</span>
+func HttpDelete(reqURL string, data url.Values, r *gin.Engine) string <span class="cov0" title="0">{
+        HTTPMethod := "DELETE"
+        return HttpMethod(HTTPMethod, reqURL, data, r)
+}</span>
+
+func HttpMethod(HTTPMethod string, reqURL string, data url.Values, r *gin.Engine) string <span class="cov0" title="0">{
+        req, _ := http.NewRequest(HTTPMethod, reqURL, bytes.NewBufferString(data.Encode()))
+        req.Header.Set("Content-Type", "application/x-www-form-urlencoded; param=value")
+        w := httptest.NewRecorder()
+        body := doIt(r, w, req, reqURL, data)
+        return string(body)
+}</span>
+
+func doIt(r *gin.Engine, w *httptest.ResponseRecorder, req *http.Request, reqURL string, data url.Values) []byte <span class="cov0" title="0">{
+        r.ServeHTTP(w, req)
+        if w.Code != http.StatusOK </span><span class="cov0" title="0">{
+                fmt.Printf("Http Request Error with reqMethod = POST, reqURL = %v, data = %v\n", reqURL, data)
+        }</span>
+        <span class="cov0" title="0">resp := w.Result()
+        defer resp.Body.Close()
+        body, _ := ioutil.ReadAll(resp.Body)
+        return body</span>
+}
+</pre>
+		
+		<pre class="file" id="file26" style="display: none">package user
+
+import (
+        "errors"
+        "log"
+
+        "gorm.io/gorm"
+)
+
+type Address struct {
+        Id            int    `json:"id" gorm:"column:id;primaryKey;autoIncrement"`
+        UserId        string `json:"userId" gorm:"column:user_id"`
+        LinkMan       string `json:"linkMan" gorm:"column:link_man"`
+        Mobile        string `json:"mobile" gorm:"column:mobile"`
+        ProvinceStr   string `json:"provinceStr" gorm:"column:province_str"`
+        CityStr       string `json:"cityStr" gorm:"column:city_str"`
+        AreaStr       string `json:"areaStr" gorm:"column:area_str"`
+        DetailAddress string `json:"detailAddress" gorm:"column:detail_address"`
+        IsDefault     int    `json:"isDefault" gorm:"column:is_default"`
+}
+
+// TableName 指定表名
+func (Address) TableName() string <span class="cov8" title="1">{
+        return "addresses"
+}</span>
+
+type AddressRepository interface {
+        Create(address *Address) error
+        GetByID(id int) (*Address, error)
+        Update(address *Address) error
+        Delete(id int) error
+        ListByUserID(userId string) ([]*Address, error)
+}
+
+// DB 版本实现
+
+type AddressRepositoryDB struct {
+        db *gorm.DB
+}
+
+func NewAddressRepositoryDB(db *gorm.DB) *AddressRepositoryDB <span class="cov8" title="1">{
+        // 自动迁移表结构
+        return &amp;AddressRepositoryDB{db: db}
+}</span>
+
+func (r *AddressRepositoryDB) Create(address *Address) error <span class="cov8" title="1">{
+        log.Printf("[DEBUG] AddressRepositoryDB.Create: 开始创建地址到数据库 - UserId: %s, LinkMan: %s, Mobile: %s",
+                address.UserId, address.LinkMan, address.Mobile)
+
+        err := r.db.Create(address).Error
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] AddressRepositoryDB.Create: 数据库创建失败 - %v", err)
+                return err
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressRepositoryDB.Create: 地址创建成功，数据库ID: %d", address.Id)
+        return nil</span>
+}
+
+func (r *AddressRepositoryDB) GetByID(id int) (*Address, error) <span class="cov0" title="0">{
+        var addr Address
+        if err := r.db.First(&amp;addr, id).Error; err != nil </span><span class="cov0" title="0">{
+                if errors.Is(err, gorm.ErrRecordNotFound) </span><span class="cov0" title="0">{
+                        return nil, ErrAddressNotFound
+                }</span>
+                <span class="cov0" title="0">return nil, err</span>
+        }
+        <span class="cov0" title="0">return &amp;addr, nil</span>
+}
+
+func (r *AddressRepositoryDB) Update(address *Address) error <span class="cov0" title="0">{
+        log.Printf("[DEBUG] AddressRepositoryDB.Update: 开始更新地址 - ID: %d, UserId: %s", address.Id, address.UserId)
+
+        err := r.db.Save(address).Error
+        if err != nil </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] AddressRepositoryDB.Update: 地址更新失败 - ID: %d, 错误: %v", address.Id, err)
+                return err
+        }</span>
+
+        <span class="cov0" title="0">log.Printf("[DEBUG] AddressRepositoryDB.Update: 地址更新成功 - ID: %d", address.Id)
+        return nil</span>
+}
+
+func (r *AddressRepositoryDB) Delete(id int) error <span class="cov8" title="1">{
+        return r.db.Delete(&amp;Address{}, id).Error
+}</span>
+
+func (r *AddressRepositoryDB) ListByUserID(userId string) ([]*Address, error) <span class="cov8" title="1">{
+        log.Printf("[DEBUG] AddressRepositoryDB.ListByUserID: 开始查询用户地址列表 - UserId: %s", userId)
+
+        var result []*Address
+        if err := r.db.Where("user_id = ?", userId).Find(&amp;result).Error; err != nil </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] AddressRepositoryDB.ListByUserID: 查询用户地址列表失败 - UserId: %s, 错误: %v", userId, err)
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressRepositoryDB.ListByUserID: 查询用户地址列表成功 - UserId: %s, 地址数量: %d", userId, len(result))
+        return result, nil</span>
+}
+
+var ErrAddressNotFound = errors.New("address not found")
+</pre>
+		
+		<pre class="file" id="file27" style="display: none">package user
+
+import (
+        "log"
+        "net/http"
+
+        "bookstore/app/common/models"
+        "bookstore/app/utils"
+
+        "github.com/gin-gonic/gin"
+)
+
+// AddShippingAddressRequest defines the request body for adding a shipping address.
+type AddShippingAddressRequest struct {
+        LinkMan     string `json:"linkMan" binding:"required"`     // 联系人姓名
+        Mobile      string `json:"mobile" binding:"required"`      // 手机号
+        Address     string `json:"address" binding:"required"`     // 详细地址
+        IsDefault   bool   `json:"isDefault"`                      // 是否默认地址
+        ProvinceId  string `json:"provinceId" binding:"required"`  // 省份ID
+        CityId      string `json:"cityId" binding:"required"`      // 城市ID
+        DistrictId  string `json:"districtId" binding:"required"`  // 区县ID
+}
+
+// AddressHandler handles address related HTTP requests.
+type AddressHandler struct {
+        addressService AddressService
+}
+
+// NewAddressHandler creates a new AddressHandler.
+func NewAddressHandler(service AddressService) *AddressHandler <span class="cov8" title="1">{
+        return &amp;AddressHandler{
+                addressService: service,
+        }
+}</span>
+
+// AddAddress handles the POST /v1/user/shipping-address/add API.
+func (h *AddressHandler) AddAddress(c *gin.Context) <span class="cov8" title="1">{
+        log.Printf("[DEBUG] AddAddress: 开始处理添加收货地址请求")
+
+        var req AddShippingAddressRequest
+        if err := c.ShouldBindJSON(&amp;req); err != nil </span><span class="cov8" title="1">{
+                log.Printf("[DEBUG] AddAddress: 请求参数绑定失败 - %v", err)
+                c.JSON(http.StatusBadRequest, models.JsonResult{
+                        Code: "400",
+                        Msg:  "Invalid request parameters",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddAddress: 请求参数绑定成功 - LinkMan: %s, Mobile: %s, ProvinceId: %s, CityId: %s, DistrictId: %s, Address: %s, IsDefault: %t",
+                req.LinkMan, req.Mobile, req.ProvinceId, req.CityId, req.DistrictId, req.Address, req.IsDefault)
+
+        // 从认证中间件获取用户ID
+        userID := utils.GetUserIDFromContext(c)
+        if userID == "" </span><span class="cov8" title="1">{
+                log.Printf("[DEBUG] AddAddress: 用户未认证，无法获取用户ID")
+                c.JSON(http.StatusUnauthorized, models.JsonResult{
+                        Code: "401",
+                        Msg:  "User not authenticated",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddAddress: 用户认证成功，用户ID: %s", userID)
+
+        err := h.addressService.AddAddress(userID, req)
+        if err != nil </span><span class="cov8" title="1">{
+                log.Printf("[DEBUG] AddAddress: 服务层处理失败 - %v", err)
+                // TODO: Handle specific error types from service layer (Subtask 2.5)
+                c.JSON(http.StatusInternalServerError, models.JsonResult{
+                        Code: "500",
+                        Msg:  "Failed to add address",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddAddress: 地址添加成功，用户ID: %s", userID)
+
+        c.JSON(http.StatusOK, models.JsonResult{
+                Code: "200",
+                Msg:  "Address added successfully",
+        })</span>
+}
+
+// GetAddressList handles the GET /v1/user/shipping-address/list API.
+func (h *AddressHandler) GetAddressList(c *gin.Context) <span class="cov8" title="1">{
+        // 从认证中间件获取用户ID
+        userID := utils.GetUserIDFromContext(c)
+        if userID == "" </span><span class="cov8" title="1">{
+                c.JSON(http.StatusUnauthorized, models.JsonResult{
+                        Code: "401",
+                        Msg:  "User not authenticated",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">addresses, err := h.addressService.GetAddressList(userID)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, models.JsonResult{
+                        Code: "500",
+                        Msg:  "Failed to get address list",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "code": "200",
+                "data": addresses,
+                "msg":  "Address list retrieved successfully",
+        })</span>
+}
+
+// GetDefaultAddress handles the GET /v1/user/shipping-address/default API.
+func (h *AddressHandler) GetDefaultAddress(c *gin.Context) <span class="cov8" title="1">{
+        // 从认证中间件获取用户ID
+        userID := utils.GetUserIDFromContext(c)
+        if userID == "" </span><span class="cov8" title="1">{
+                c.JSON(http.StatusUnauthorized, models.JsonResult{
+                        Code: "401",
+                        Msg:  "User not authenticated",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">address, err := h.addressService.GetDefaultAddress(userID)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusInternalServerError, models.JsonResult{
+                        Code: "500",
+                        Msg:  "Failed to get default address",
+                })
+                return
+        }</span>
+
+        // 如果没有默认地址，返回空数据
+        <span class="cov8" title="1">if address == nil </span><span class="cov8" title="1">{
+                c.JSON(http.StatusOK, gin.H{
+                        "code": "200",
+                        "data": nil,
+                        "msg":  "No default address found",
+                })
+                return
+        }</span>
+
+        <span class="cov8" title="1">c.JSON(http.StatusOK, gin.H{
+                "code": "200",
+                "data": address,
+                "msg":  "Default address retrieved successfully",
+        })</span>
+}
+</pre>
+		
+		<pre class="file" id="file28" style="display: none">package user
+
+import (
+        "errors"
+        "log"
+
+        "gorm.io/gorm"
+)
+
+var ErrInvalidAddressData = errors.New("invalid address data")
+var ErrUserNotFound = errors.New("user not found")
+
+// AddressService defines the interface for address related business logic.
+type AddressService interface {
+        AddAddress(userID string, req AddShippingAddressRequest) error
+        GetAddressList(userID string) ([]*Address, error)
+        GetDefaultAddress(userID string) (*Address, error)
+}
+
+// addressService implements AddressService interface.
+type addressService struct {
+        addressRepo AddressRepository
+        userRepo    UserRepo // 添加用户仓库依赖
+        db          *gorm.DB // Add DB dependency for transactions
+}
+
+// NewAddressService creates a new AddressService.
+func NewAddressService(repo AddressRepository, userRepo UserRepo, db *gorm.DB) AddressService <span class="cov8" title="1">{
+        return &amp;addressService{
+                addressRepo: repo,
+                userRepo:    userRepo,
+                db:          db,
+        }
+}</span>
+
+// AddAddress adds a new shipping address for a user.
+func (s *addressService) AddAddress(userID string, req AddShippingAddressRequest) error <span class="cov8" title="1">{
+        log.Printf("[DEBUG] AddressService.AddAddress: 开始处理添加地址业务逻辑，用户ID: %s", userID)
+
+        // Basic validation in service layer
+        if userID == "" || req.LinkMan == "" || req.Mobile == "" ||
+                req.Address == "" </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] AddressService.AddAddress: 参数验证失败 - userID: %s, LinkMan: %s, Mobile: %s, Address: %s",
+                        userID, req.LinkMan, req.Mobile, req.Address)
+                return ErrInvalidAddressData
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 参数验证通过")
+
+        // 验证用户是否存在（userID 是用户ID）
+        user := s.userRepo.RetriveUserByID(userID)
+        if user == nil </span><span class="cov8" title="1">{
+                log.Printf("[DEBUG] AddressService.AddAddress: 用户不存在，用户ID: %s", userID)
+                return ErrUserNotFound
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 用户验证成功，用户ID: %s, 用户名: %s", userID, user.Nickname)
+
+        // 直接使用字符串类型的ID
+        provinceStr := req.ProvinceId
+        cityStr := req.CityId
+        areaStr := req.DistrictId
+
+        // 将bool转换为int
+        isDefault := 0
+        if req.IsDefault </span><span class="cov8" title="1">{
+                isDefault = 1
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 准备创建地址对象 - ProvinceStr: %s, CityStr: %s, AreaStr: %s, IsDefault: %d",
+                provinceStr, cityStr, areaStr, isDefault)
+
+        newAddress := &amp;Address{
+                UserId:        user.Id, // 使用用户的真实ID
+                LinkMan:       req.LinkMan,
+                Mobile:        req.Mobile,
+                ProvinceStr:   provinceStr,
+                CityStr:       cityStr,
+                AreaStr:       areaStr,
+                DetailAddress: req.Address,
+                IsDefault:     isDefault,
+        }
+
+        log.Printf("[DEBUG] AddressService.AddAddress: 地址对象创建完成，准备保存到数据库")
+
+        // 如果新地址为默认，则将该用户其他地址的 isDefault 设为 0
+        if isDefault == 1 </span><span class="cov8" title="1">{
+                log.Printf("[DEBUG] AddressService.AddAddress: 新地址设置为默认地址，开始更新其他地址的默认状态")
+                addresses, err := s.addressRepo.ListByUserID(user.Id)
+                if err != nil </span><span class="cov0" title="0">{
+                        log.Printf("[DEBUG] AddressService.AddAddress: 获取用户现有地址列表失败 - %v", err)
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 获取到用户现有地址数量: %d", len(addresses))
+
+                for _, addr := range addresses </span><span class="cov0" title="0">{
+                        if addr.IsDefault == 1 </span><span class="cov0" title="0">{
+                                log.Printf("[DEBUG] AddressService.AddAddress: 更新地址ID %d 为非默认地址", addr.Id)
+                                addr.IsDefault = 0
+                                err := s.addressRepo.Update(addr)
+                                if err != nil </span><span class="cov0" title="0">{
+                                        log.Printf("[DEBUG] AddressService.AddAddress: 更新地址默认状态失败，地址ID: %d, 错误: %v", addr.Id, err)
+                                        return err
+                                }</span>
+                        }
+                }
+                <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 其他地址默认状态更新完成")</span>
+        }
+
+        // 创建新地址
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 开始创建新地址到数据库")
+        if err := s.addressRepo.Create(newAddress); err != nil </span><span class="cov0" title="0">{
+                log.Printf("[DEBUG] AddressService.AddAddress: 创建新地址失败 - %v", err)
+                return err
+        }</span>
+
+        <span class="cov8" title="1">log.Printf("[DEBUG] AddressService.AddAddress: 新地址创建成功，地址ID: %d", newAddress.Id)
+
+        return nil</span>
+}
+
+// GetAddressList retrieves all addresses for a user.
+func (s *addressService) GetAddressList(userID string) ([]*Address, error) <span class="cov8" title="1">{
+        if userID == "" </span><span class="cov0" title="0">{
+                return nil, ErrInvalidAddressData
+        }</span>
+
+        <span class="cov8" title="1">return s.addressRepo.ListByUserID(userID)</span>
+}
+
+// GetDefaultAddress retrieves the default address for a user.
+func (s *addressService) GetDefaultAddress(userID string) (*Address, error) <span class="cov8" title="1">{
+        if userID == "" </span><span class="cov0" title="0">{
+                return nil, ErrInvalidAddressData
+        }</span>
+
+        <span class="cov8" title="1">addresses, err := s.addressRepo.ListByUserID(userID)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // 查找默认地址
+        <span class="cov8" title="1">for _, addr := range addresses </span><span class="cov8" title="1">{
+                if addr.IsDefault == 1 </span><span class="cov8" title="1">{
+                        return addr, nil
+                }</span>
+        }
+
+        // 没有找到默认地址，返回 nil
+        <span class="cov8" title="1">return nil, nil</span>
+}
+</pre>
+		
+		<pre class="file" id="file29" style="display: none">package user
+
+type User struct {
+        Id          string     `json:"id" gorm:"column:id;primaryKey"`
+        Pwd         string     `json:"pwd" gorm:"column:pwd"`
+        Mobile      string     `json:"mobile"`
+        Nickname    string     `json:"nick"`
+        AvatarUrl   string     `json:"avatarUrl" gorm:"column:avatar_url"`
+        Province    string     `json:"province"`
+        City        string     `json:"city"`
+        AutoLogin   uint       `json:"autoLogin" gorm:"column:auto_login"`
+        UserInfo    string     `json:"userInfo" gorm:"column:user_info"`
+        UserLevelId UserType   `json:"-"  gorm:"column:User_Level_Id"`
+        UserLevel   *UserLevel `json:"userLevel" gorm:"-"`
+}
+
+type UserLevel struct {
+        Level UserType `json:"id"`
+        Name  string   `json:"name"`
+}
+
+func (s *User) inflate() <span class="cov0" title="0">{
+        s.UserLevel = &amp;UserLevel{s.UserLevelId, s.UserLevelId.String()}
+}</span>
+
+type UserType int32
+
+const (
+        BLANKTYPE UserType = iota
+        GREENTYPE
+        REDTYPE
+)
+
+func (c UserType) String() string <span class="cov8" title="1">{
+        switch c </span>{
+        case BLANKTYPE:<span class="cov0" title="0">
+                return "NewBee"</span>
+        case GREENTYPE:<span class="cov8" title="1">
+                return "Green"</span>
+        case REDTYPE:<span class="cov0" title="0">
+                return "Red"</span>
+        }
+        <span class="cov0" title="0">return "N/A"</span>
+}
+</pre>
+		
+		<pre class="file" id="file30" style="display: none">package user
+
+import (
+        "fmt"
+        "net/http"
+
+        "github.com/gin-gonic/gin"
+)
+
+// 新增类型：UserHandler，持有 UserService
+
+type UserHandler struct {
+        us *UserService
+}
+
+func NewUserHandler(us *UserService) *UserHandler <span class="cov0" title="0">{
+        return &amp;UserHandler{us: us}
+}</span>
+
+func (h *UserHandler) Login(c *gin.Context) <span class="cov0" title="0">{
+        deviceId := c.PostForm("deviceId")
+        deviceName := c.PostForm("deviceName")
+        mobile := c.PostForm("mobile")
+        pwd := c.PostForm("pwd")
+        user, err := h.us.login(deviceId, deviceName, mobile, pwd)
+        if err != nil </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": user, "msg": "User not found"})
+                return
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "ok"})</span>
+}
+func Logout(c *gin.Context) <span class="cov0" title="0">{
+        token, _ := c.GetQuery("token")
+        GetUserService().logout(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(nil), "msg": "OK"})
+}</span>
+func (h *UserHandler) Register(c *gin.Context) <span class="cov0" title="0">{
+        autoLogin := c.PostForm("autoLogin")
+        code := c.PostForm("code")
+        mobile := c.PostForm("mobile")
+        nick := c.PostForm("nick")
+        pwd := c.PostForm("pwd")
+        if !checkVerifyCode(code) </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "验证码失败，需要返回消息", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">user, error := h.us.RegisterNewUser(mobile, pwd, nick, autoLogin)
+        msg := "OK"
+        if error != nil </span><span class="cov0" title="0">{
+                msg = error.Error()
+        }</span>
+        <span class="cov0" title="0">c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": msg})</span>
+}
+func (h *UserHandler) UpdateUserInfo(c *gin.Context) <span class="cov0" title="0">{
+        token, ok := c.GetQuery("token")
+        if !ok </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">nick := c.Query("nick")
+        avatarUrl := c.Query("avatarUrl")
+        province := c.Query("province")
+        city := c.Query("city")
+        fmt.Println(token, nick, avatarUrl, province, city)
+
+        // 创建用户数据对象
+        userData := User{
+                Nickname:  nick,
+                AvatarUrl: avatarUrl,
+                Province:  province,
+                City:      city,
+        }
+
+        // 使用新添加的UpdateUserByToken方法更新用户信息
+        user := h.us.UpdateUserByToken(token, userData)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})</span>
+}
+
+func (h *UserHandler) GetDeliveryAddressList(c *gin.Context) <span class="cov0" title="0">{
+        token := c.PostForm("token")
+        address := h.us.FindUserByToken(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
+}</span>
+
+func (h *UserHandler) GetDefaultDeliveryAddress(c *gin.Context) <span class="cov0" title="0">{
+        token := c.PostForm("token")
+        address := h.us.GetDefaultDeliveryAddress(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
+}</span>
+
+func AddDeliveryAddress(c *gin.Context) <span class="cov0" title="0">{
+        //TODO:  AddDeliveryAddress
+        token := c.PostForm("token")
+        address := GetUserService().GetDefaultDeliveryAddress(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": address, "msg": "OK"})
+}</span>
+
+func (h *UserHandler) GetUserAmount(c *gin.Context) <span class="cov0" title="0">{
+        token, ok := c.GetQuery("token")
+        if !ok </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">result := fetchUserAmount(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": &amp;result, "msg": "OK"})</span>
+}
+
+
+func fetchUserAmount(token string) interface{} <span class="cov0" title="0">{
+        //TODO:
+        return map[string]string{"token": "fetchUserAmount", "amount": "amount 0"}
+
+}</span>
+func (h *UserHandler) GetUserDetail(c *gin.Context) <span class="cov0" title="0">{
+        token, ok := c.GetQuery("token")
+        if !ok </span><span class="cov0" title="0">{
+                c.JSON(http.StatusOK, gin.H{"code": 0, "data": "NoToken", "msg": "OK"})
+                return
+        }</span>
+        <span class="cov0" title="0">user := h.us.FindUserByToken(token)
+        c.JSON(http.StatusOK, gin.H{"code": 0, "data": userToVM(user), "msg": "OK"})</span>
+}
+func checkVerifyCode(code string) bool <span class="cov0" title="0">{
+        //TODO 需要校验注册的图片验证码
+        return true
+}</span>
+</pre>
+		
+		<pre class="file" id="file31" style="display: none">package user
+
+import (
+        "errors"
+        "fmt"
+        "strconv"
+        "sync"
+
+        "bookstore/app/utils"
+
+        "gorm.io/gorm"
+)
+
+var lockUR = &amp;sync.Mutex{}
+
+type UserRepoMem struct {
+        userlist map[string]*User
+}
+
+func GetUserRepo() *UserRepoMem <span class="cov0" title="0">{
+        return newUserRepo()
+}</span>
+func newUserRepo() *UserRepoMem <span class="cov0" title="0">{
+        return &amp;UserRepoMem{userlist: make(map[string]*User, 10)}
+}</span>
+
+func GetMemoryUserRepo() *UserRepoMem <span class="cov0" title="0">{
+        return newUserRepo()
+}</span>
+
+func (r *UserRepoMem) TotalUsers() int <span class="cov0" title="0">{
+        return len(r.userlist)
+}</span>
+
+func (r *UserRepoMem) DeleteByMobile(mobile string) {<span class="cov0" title="0">
+        //TODO: 未实现
+}</span>
+
+func (r *UserRepoMem) findUser(mobile string, pwd string) *User <span class="cov0" title="0">{
+        found := r.RetriveUserByMobile(mobile)
+        if found == nil || found.Pwd != pwd </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return found</span>
+}
+func (r *UserRepoMem) RetriveUserByMobile(mobile string) *User <span class="cov0" title="0">{
+        return r.userlist[mobile]
+}</span>
+
+func (r *UserRepoMem) RetriveUserByID(userID string) *User <span class="cov0" title="0">{
+        for _, user := range r.userlist </span><span class="cov0" title="0">{
+                if user.Id == userID </span><span class="cov0" title="0">{
+                        return user
+                }</span>
+        }
+        <span class="cov0" title="0">return nil</span>
+}
+
+type UserIdGen func() string
+
+func genUId() string <span class="cov8" title="1">{
+        return fmt.Sprintf("userId%v", utils.RandomImpl{}.GenStr())
+}</span>
+
+func (r *UserRepoMem) CreateUser(mobile string, pwd string, nickname string, autologin string, genUserId UserIdGen) (user *User, err error) <span class="cov0" title="0">{
+        if r.findUser(mobile, pwd) != nil </span><span class="cov0" title="0">{
+                return nil, errors.New("hello,error")
+        }</span>
+        <span class="cov0" title="0">al, _ := strconv.Atoi(autologin)
+        userId := genUserId()
+        avatarUrl := utils.RandomMock{}.GenAavatarStr()
+        r.userlist[mobile] = &amp;User{
+                Id:          userId,
+                Pwd:    pwd,
+                Mobile:      mobile,
+                Nickname:    nickname,
+                AvatarUrl:   avatarUrl,
+                Province:    "未知",
+                City:        "未知",
+                AutoLogin:   uint(al),
+                UserInfo:    "FakeUserInfo",
+                UserLevelId: GREENTYPE,
+                UserLevel:   &amp;UserLevel{GREENTYPE, GREENTYPE.String()},
+        }
+        return r.userlist[mobile], nil</span>
+}
+func (r *UserRepoMem) CreateAdmin(mobile string, pwd string) <span class="cov0" title="0">{
+        r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
+}</span>
+
+func (r *UserRepoMem) updateUser(user *User) <span class="cov0" title="0">{
+        if user == nil || user.Mobile == "" </span><span class="cov0" title="0">{
+                return
+        }</span>
+        // 在内存实现中，直接更新map中的用户信息
+        <span class="cov0" title="0">r.userlist[user.Mobile] = user</span>
+}
+
+// UserRepo 接口
+//go:generate mockgen -source=userRepo.go -destination=mock_userRepo.go -package=user
+// 方便后续 mock
+//
+type UserRepo interface {
+        TotalUsers() int
+        DeleteByMobile(mobile string)
+        findUser(mobile, pwd string) *User
+        RetriveUserByMobile(mobile string) *User
+        RetriveUserByID(userID string) *User
+        CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error)
+        CreateAdmin(mobile, pwd string)
+        updateUser(user *User) // 添加更新用户信息的方法
+}
+
+// UserRepoDB 实现
+
+// UserRepoDB 用于数据库实现
+//
+type UserRepoDB struct {
+        db *gorm.DB
+}
+
+func NewUserRepoDB(db *gorm.DB) *UserRepoDB <span class="cov8" title="1">{
+        return &amp;UserRepoDB{db: db}
+}</span>
+
+func (r *UserRepoDB) TotalUsers() int <span class="cov0" title="0">{
+        var count int64
+        r.db.Model(&amp;User{}).Count(&amp;count)
+        return int(count)
+}</span>
+
+func (r *UserRepoDB) DeleteByMobile(mobile string) <span class="cov0" title="0">{
+        r.db.Where("mobile = ?", mobile).Delete(&amp;User{})
+}</span>
+
+func (r *UserRepoDB) findUser(mobile, pwd string) *User <span class="cov0" title="0">{
+        var user User
+        if err := r.db.Where("mobile = ? AND pwd = ?", mobile, pwd).First(&amp;user).Error; err != nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return &amp;user</span>
+}
+
+func (r *UserRepoDB) RetriveUserByMobile(mobile string) *User <span class="cov8" title="1">{
+        var user User
+        if err := r.db.Where("mobile = ?", mobile).First(&amp;user).Error; err != nil </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return &amp;user</span>
+}
+
+func (r *UserRepoDB) RetriveUserByID(userID string) *User <span class="cov8" title="1">{
+        var user User
+        if err := r.db.Where("id = ?", userID).First(&amp;user).Error; err != nil </span><span class="cov8" title="1">{
+                return nil
+        }</span>
+        <span class="cov8" title="1">return &amp;user</span>
+}
+
+func (r *UserRepoDB) CreateUser(mobile, pwd, nickname, autologin string, genUserId UserIdGen) (*User, error) <span class="cov8" title="1">{
+        if r.RetriveUserByMobile(mobile) != nil </span><span class="cov0" title="0">{
+                return nil, errors.New("hello,error")
+        }</span>
+        <span class="cov8" title="1">al, _ := strconv.Atoi(autologin)
+        userId := genUId()
+        avatarUrl := "default_avatar.jpeg"
+        if mock, ok := interface{}(utils.RandomMock{}).(interface{ GenAavatarStr() string }); ok </span><span class="cov8" title="1">{
+                if v := mock.GenAavatarStr(); v != "" </span><span class="cov8" title="1">{
+                        avatarUrl = v
+                }</span>
+        }
+        <span class="cov8" title="1">user := &amp;User{
+                Id:          userId,
+                Pwd:         pwd,
+                Mobile:      mobile,
+                Nickname:    nickname,
+                AvatarUrl:   avatarUrl,
+                Province:    "未知",
+                City:        "未知",
+                AutoLogin:   uint(al),
+                UserInfo:    "FakeUserInfo",
+                UserLevelId: GREENTYPE,
+                UserLevel:   &amp;UserLevel{GREENTYPE, GREENTYPE.String()},
+        }
+        if err := r.db.Create(user).Error; err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+        <span class="cov8" title="1">return user, nil</span>
+}
+
+func (r *UserRepoDB) CreateAdmin(mobile, pwd string) <span class="cov0" title="0">{
+        r.CreateUser(mobile, pwd, "超级塞亚人", "1", genUId)
+}</span>
+
+func (r *UserRepoDB) updateUser(user *User) <span class="cov0" title="0">{
+        if user == nil || user.Mobile == "" </span><span class="cov0" title="0">{
+                return
+        }</span>
+        // 在数据库实现中，使用GORM更新用户信息
+        <span class="cov0" title="0">r.db.Save(user)</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file32" style="display: none">package user
+
+import (
+        "errors"
+        "sync"
+)
+
+var lockUS = &amp;sync.Mutex{}
+var userService *UserService
+
+func GetUserService() *UserService <span class="cov0" title="0">{
+        lockUS.Lock()
+        defer lockUS.Unlock()
+        if userService == nil </span><span class="cov0" title="0">{
+                userService = newUserService(false)
+        }</span>
+        <span class="cov0" title="0">return userService</span>
+}
+
+type UserService struct {
+        cache map[string]string
+        ur    UserRepo
+}
+
+func NewUserServiceWithRepo(repo UserRepo) *UserService <span class="cov0" title="0">{
+        return &amp;UserService{make(map[string]string, 0), repo}
+}</span>
+
+func newUserService(persistance bool) *UserService <span class="cov0" title="0">{
+        return &amp;UserService{make(map[string]string, 0), newUserRepo()}
+}</span>
+func (s *UserService) logout(token string) <span class="cov0" title="0">{
+        if _, ok := s.cache[token]; !ok </span><span class="cov0" title="0">{
+                delete(s.cache, token)
+        }</span>
+}
+func (s *UserService) login(deviceId string, deviceName string, mobile string, pwd string) (*User, error) <span class="cov0" title="0">{
+        //TODO: not check device info yet.
+        user := s.findUser(mobile, pwd)
+        if user == nil </span><span class="cov0" title="0">{
+                return nil, errors.New("can not find user, which have mobile:" + mobile + "  pwd:" + pwd)
+        }</span>
+        <span class="cov0" title="0">user.inflate()
+        s.cache[mobile] = mobile //take moble as a token
+        return user, nil</span>
+}
+func (s *UserService) isOnline(token string) bool <span class="cov0" title="0">{
+        _, ok := s.cache[token]
+        return ok
+}</span>
+func (s *UserService) FindUserByToken(token string) *User <span class="cov0" title="0">{
+        //TODO: 现在的token 就是用户的手机号码。这里应该使用更好的TOKEN加密机制
+        mobileNumber := token
+        if mobileNumber == "" </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">return s.ur.RetriveUserByMobile(mobileNumber)</span>
+}
+
+func (s *UserService) findUser(mobile string, pwd string) *User <span class="cov0" title="0">{
+        user := s.ur.findUser(mobile, pwd)
+        return user
+}</span>
+func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string, autologin string) (*User, error) <span class="cov0" title="0">{
+        //TODO: not check device info yet.
+        if s.ur.findUser(mobile, pwd) != nil </span><span class="cov0" title="0">{
+                return nil, errors.New("该用户已注册！")
+        }</span>
+        <span class="cov0" title="0">newUser, err := s.ur.CreateUser(mobile, pwd, nickname, autologin, genUId)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, errors.New("注册失败，内部错误。请重新尝试。")
+        }</span>
+        <span class="cov0" title="0">s.cache[mobile] = mobile
+        return newUser, nil</span>
+}
+func (s *UserService) GetDeliveryAddressesFor(token string) []Address <span class="cov0" title="0">{
+        //TODO: Not implemented yet.
+        return nil
+}</span>
+
+func (s *UserService) GetDefaultDeliveryAddress(token string) []Address <span class="cov0" title="0">{
+        //TODO: Not implemented yet.
+        return nil
+}</span>
+
+func (s *UserService) UpdateUserByToken(token string, data User) *User <span class="cov0" title="0">{
+        // 通过token找到用户
+        user := s.FindUserByToken(token)
+        if user == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+
+        // 更新用户信息
+        <span class="cov0" title="0">if data.Nickname != "" </span><span class="cov0" title="0">{
+                user.Nickname = data.Nickname
+        }</span>
+        <span class="cov0" title="0">if data.AvatarUrl != "" </span><span class="cov0" title="0">{
+                user.AvatarUrl = data.AvatarUrl
+        }</span>
+        <span class="cov0" title="0">if data.Province != "" </span><span class="cov0" title="0">{
+                user.Province = data.Province
+        }</span>
+        <span class="cov0" title="0">if data.City != "" </span><span class="cov0" title="0">{
+                user.City = data.City
+        }</span>
+
+        // 保存更新后的用户信息
+        <span class="cov0" title="0">s.ur.updateUser(user)
+
+        return user</span>
+}
+
+</pre>
+		
+		<pre class="file" id="file33" style="display: none">package user
+
+import "bookstore/app/configs"
+
+type UserVM struct {
+        Token     string    `json:"token"`
+        UserInfo  User      `json:"base"`
+        UserLevel UserLevel `json:"userLevel"`
+}
+
+func userToVM(user *User) *UserVM <span class="cov0" title="0">{
+        if user == nil </span><span class="cov0" title="0">{
+                return nil
+        }</span>
+        <span class="cov0" title="0">user.AvatarUrl = configs.Cfg.AvatarPicPrefix() + user.AvatarUrl
+
+        // 确保 UserLevel 不为 nil
+        if user.UserLevel == nil </span><span class="cov0" title="0">{
+                user.inflate() // 调用 inflate 方法初始化 UserLevel
+        }</span>
+
+        <span class="cov0" title="0">return &amp;UserVM{
+                user.Mobile,
+                *user,
+                *user.UserLevel,
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file34" style="display: none">package utils
+
+import (
+        "github.com/gin-gonic/gin"
+)
+
+// GetUserIDFromContext 从gin上下文中获取用户ID
+func GetUserIDFromContext(c *gin.Context) string <span class="cov0" title="0">{
+        if userID, exists := c.Get("userID"); exists </span><span class="cov0" title="0">{
+                if id, ok := userID.(string); ok </span><span class="cov0" title="0">{
+                        return id
+                }</span>
+        }
+        <span class="cov0" title="0">return ""</span>
+}
+
+// GetMobileFromContext 从gin上下文中获取手机号
+func GetMobileFromContext(c *gin.Context) string <span class="cov0" title="0">{
+        if mobile, exists := c.Get("mobile"); exists </span><span class="cov0" title="0">{
+                if m, ok := mobile.(string); ok </span><span class="cov0" title="0">{
+                        return m
+                }</span>
+        }
+        <span class="cov0" title="0">return ""</span>
+}
+
+// GetAuthContextFromContext 从gin上下文中获取完整的认证上下文
+func GetAuthContextFromContext(c *gin.Context) interface{} <span class="cov0" title="0">{
+        if authContext, exists := c.Get("authContext"); exists </span><span class="cov0" title="0">{
+                return authContext
+        }</span>
+        <span class="cov0" title="0">return nil</span>
+}</pre>
+		
+		<pre class="file" id="file35" style="display: none">package utils
+
+import (
+        "math/rand"
+
+        "github.com/rs/xid"
+)
+
+type ShopRandom interface {
+        GenStr() string
+        GenAavatarStr() string
+}
+
+type RandomMock struct{}
+
+func (i RandomMock) GenStr() string <span class="cov0" title="0">{
+        str := "0123456789abcdefghijklmnopqrstuvwxyz"
+        bytes := []byte(str)
+        var result []byte
+        for i := 0; i &lt; 10; i++ </span><span class="cov0" title="0">{
+                result = append(result, bytes[rand.Intn(len(bytes))])
+        }</span>
+        <span class="cov0" title="0">return string(result)</span>
+}
+func (i RandomMock) GenAavatarStr() string <span class="cov0" title="0">{
+        return avatar()
+}</span>
+
+type RandomImpl struct{}
+
+func (i RandomImpl) GenStr() string <span class="cov0" title="0">{
+        return xid.New().String()
+}</span>
+func (i RandomImpl) GenAavatarStr() string <span class="cov0" title="0">{
+        return avatar()
+}</span>
+
+func avatar() string <span class="cov0" title="0">{
+        str := "abcdefghijkl"
+        bytes := []byte(str)
+        var result []byte
+        result = append(result, bytes[rand.Intn(len(bytes))])
+        return string(result) + ".jpeg"
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

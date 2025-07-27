@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS users;
 CREATE TABLE users (
   id TEXT PRIMARY KEY,
   pwd TEXT NOT NULL,
-  mobile TEXT,
+  mobile TEXT NOT NULL,
   nickname TEXT,
   avatar_url TEXT,
   province TEXT,

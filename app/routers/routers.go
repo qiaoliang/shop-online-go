@@ -1,6 +1,7 @@
 package routers
 
 import (
+	"log"
 	"net/http"
 
 	banner "bookstore/app/banner"
@@ -74,12 +75,22 @@ func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler
 	authenticated.POST("/shopping-cart/add", cartHandler.PutIntoCart)
 	authenticated.POST("/shopping-cart/modifyNumber", cartHandler.ModifyNumberOfGoodsInCart)
 
-		// 收货地址相关接口 - 需要认证
-	authenticated.GET("/user/shipping-address/list", addressHandler.GetAddressList)
-	authenticated.GET("/user/shipping-address/default", addressHandler.GetDefaultAddress)
-
-	// 添加地址接口 - 通过请求体中的token认证
-	v1.POST("/user/shipping-address/add", addressHandler.AddAddress)
+	// 收货地址相关接口 - 需要认证
+	authenticated.GET("/user/shipping-address/list", func(c *gin.Context) {
+		log.Printf("[DEBUG] Router: 路由到获取地址列表 - 路径: %s, 方法: %s, 用户ID: %s",
+			c.Request.URL.Path, c.Request.Method, c.GetString("userID"))
+		addressHandler.GetAddressList(c)
+	})
+	authenticated.GET("/user/shipping-address/default", func(c *gin.Context) {
+		log.Printf("[DEBUG] Router: 路由到获取默认地址 - 路径: %s, 方法: %s, 用户ID: %s",
+			c.Request.URL.Path, c.Request.Method, c.GetString("userID"))
+		addressHandler.GetDefaultAddress(c)
+	})
+	authenticated.POST("/user/shipping-address/add", func(c *gin.Context) {
+		log.Printf("[DEBUG] Router: 路由到添加地址 - 路径: %s, 方法: %s, 用户ID: %s",
+			c.Request.URL.Path, c.Request.Method, c.GetString("userID"))
+		addressHandler.AddAddress(c)
+	})
 
 	// 订单相关接口 - 需要认证
 	authenticated.GET("/order/statistics", order.GetOrderStatistics)
@@ -102,9 +113,9 @@ func allowCrossDomainAccess() gin.HandlerFunc {
 			//接收客户端发送的origin （重要！）
 			c.Writer.Header().Set("Access-Control-Allow-Origin", origin)
 			//服务器支持的所有跨域请求的方法
-			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE,UPDATE")
+			c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, UPDATE")
 			//允许跨域设置可以返回其他子段，可以自定义字段
-			c.Header("Access-Control-Allow-Headers", "Authorization, Content-Length, X-CSRF-Token, Token,session")
+			c.Header("Access-Control-Allow-Headers", "Authorization, Content-Length, X-CSRF-Token, Token, session, Content-Type")
 			// 允许浏览器（客户端）可以解析的头部 （重要）
 			c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers")
 			//设置缓存时间
@@ -116,6 +127,8 @@ func allowCrossDomainAccess() gin.HandlerFunc {
 		//允许类型校验
 		if method == "OPTIONS" {
 			c.JSON(http.StatusOK, "ok!")
+			c.Abort() // 阻止继续执行后续中间件
+			return
 		}
 
 		defer func() {

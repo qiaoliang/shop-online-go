@@ -36,11 +36,10 @@
 
     SQLITE:
         DB_FILE: data/bookstore.db
-        DB_MEMORY: file::memory:?cache=shared # 内存数据库连接字符串
     ```
 
-    -   **使用内存数据库 (推荐快速启动)**:
-        将 `PERSISTANCE` 设置为 `false`。此时，应用程序将使用 SQLite 内存数据库，无需额外配置 MySQL。每次应用程序重启，数据都会重置。
+    -   **使用 SQLite 文件数据库 (推荐)**:
+        应用程序将使用 SQLite 文件数据库，数据会持久化保存在 `data/bookstore.db` 文件中。每次应用程序重启，数据都会保留。
 
     -   **使用 MySQL 数据库 (数据持久化)**:
         将 `PERSISTANCE` 设置为 `true`。您需要确保 `MYSQL` 部分的配置（`DB_USERNAME`, `DB_PASSWORD`, `BASE_URL`, `DB_PORT`, `DB_NAME`）与您的 MySQL 数据库设置匹配。
@@ -56,8 +55,8 @@
     在项目根目录下执行以下命令下载依赖包，并编译应用程序：
 
     ```bash
-	go mod tidy -compat=2.17    
-	go build -o shop-online-go main.go
+    go mod tidy -compat=2.17
+    go build -o shop-online-go main.go
     ```
 
     这将在当前目录生成一个名为 `shop-online-go` 的可执行文件。

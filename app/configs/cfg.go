@@ -19,9 +19,8 @@ type Config struct {
 	Host        string
 	Port        int
 
-	SQLiteDBFile   string
-	SQLiteDBMemory string
-	MigrationDir   string
+	SQLiteDBFile string
+	MigrationDir string
 
 	StaticPic  string
 	BannerPath string
@@ -66,7 +65,6 @@ func GetConfigInstance(cfgfile string) *Config {
 		Host:           viper.Get("HOST").(string),
 		Port:           viper.Get("PORT").(int),
 		SQLiteDBFile:   viper.GetString("SQLITE.DB_FILE"),
-		SQLiteDBMemory: viper.GetString("SQLITE.DB_MEMORY"),
 		MigrationDir:   migrationDir,
 		StaticPic:      viper.Get("RESOURCES.STATIC_PIC_URI").(string),
 		GoodsPath:      viper.Get("RESOURCES.GOODS_RELETIVE_PATH").(string),
@@ -103,7 +101,7 @@ func (cfg *Config) AvatarPicPrefix() string {
 }
 
 func (cfg *Config) runMigrations() {
-	err := migrations.MigrateUp(cfg.SQLiteDBMemory, cfg.MigrationDir)
+	err := migrations.MigrateUp(cfg.SQLiteDBFile, cfg.MigrationDir)
 	if err != nil {
 		panic("Database migration failed: " + err.Error())
 	}
@@ -111,7 +109,13 @@ func (cfg *Config) runMigrations() {
 
 func (cfg *Config) DBConnection() *gorm.DB {
 	if cfg.dbConn == nil {
-		cfg.dbConn, err = gorm.Open(sqlite.Open(cfg.SQLiteDBMemory), &gorm.Config{})
+		// 确保数据库文件目录存在
+		dbDir := filepath.Dir(cfg.SQLiteDBFile)
+		if err := os.MkdirAll(dbDir, 0755); err != nil {
+			panic("Failed to create database directory: " + err.Error())
+		}
+
+		cfg.dbConn, err = gorm.Open(sqlite.Open(cfg.SQLiteDBFile), &gorm.Config{})
 		if err != nil {
 			panic("Failed to connect database: " + err.Error())
 		}
