@@ -6,8 +6,6 @@ import (
 	banner "bookstore/app/banner"
 	cart "bookstore/app/shoppingcart"
 
-	"bookstore/app/addresses"
-
 	"bookstore/app/goods"
 	"bookstore/app/order"
 	"bookstore/app/security"
@@ -17,7 +15,7 @@ import (
 )
 
 // 依赖注入说明：所有 handler 需在 main.go 实例化后传入 SetupRouter
-func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *addresses.AddressHandler, goodsHandler *goods.GoodsHandler, authMiddleware *security.AuthMiddleware) {
+func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler *user.UserHandler, cartHandler *cart.CartHandler, addressHandler *user.AddressHandler, goodsHandler *goods.GoodsHandler, authMiddleware *security.AuthMiddleware) {
 
 	// 添加跨域访问中间件
 	r.Use(allowCrossDomainAccess())
@@ -76,10 +74,12 @@ func SetupRouter(r *gin.Engine, bannerHandler *banner.BannerHandler, userHandler
 	authenticated.POST("/shopping-cart/add", cartHandler.PutIntoCart)
 	authenticated.POST("/shopping-cart/modifyNumber", cartHandler.ModifyNumberOfGoodsInCart)
 
-	// 收货地址相关接口 - 需要认证
-	authenticated.POST("/user/shipping-address/list", userHandler.GetDeliveryAddressList)
-	authenticated.GET("/user/shipping-address/default", userHandler.GetDefaultDeliveryAddress)
-	authenticated.POST("/user/shipping-address/add", addressHandler.AddAddress)
+		// 收货地址相关接口 - 需要认证
+	authenticated.GET("/user/shipping-address/list", addressHandler.GetAddressList)
+	authenticated.GET("/user/shipping-address/default", addressHandler.GetDefaultAddress)
+
+	// 添加地址接口 - 通过请求体中的token认证
+	v1.POST("/user/shipping-address/add", addressHandler.AddAddress)
 
 	// 订单相关接口 - 需要认证
 	authenticated.GET("/order/statistics", order.GetOrderStatistics)

@@ -1,6 +1,9 @@
 package security
 
 import (
+	"bytes"
+	"encoding/json"
+	"io"
 	"net/http"
 	"strings"
 
@@ -123,11 +126,19 @@ func extractTokenFromRequest(c *gin.Context) string {
 
 	// 4. 从JSON body中提取token（如果Content-Type是application/json）
 	if c.ContentType() == "application/json" {
-		var body map[string]interface{}
-		if err := c.ShouldBindJSON(&body); err == nil {
-			if token, ok := body["token"].(string); ok && token != "" {
-				return token
+		// 读取请求体但不消耗它
+		bodyBytes, err := c.GetRawData()
+		if err == nil && len(bodyBytes) > 0 {
+			var body map[string]interface{}
+			if err := json.Unmarshal(bodyBytes, &body); err == nil {
+				if token, ok := body["token"].(string); ok && token != "" {
+					// 重新设置请求体，以便后续handler可以读取
+					c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
+					return token
+				}
 			}
+			// 重新设置请求体
+			c.Request.Body = io.NopCloser(bytes.NewBuffer(bodyBytes))
 		}
 	}
 

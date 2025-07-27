@@ -5,7 +5,6 @@ import (
 	"bookstore/app/routers"
 	"bookstore/app/security"
 
-	"bookstore/app/addresses"
 	ad "bookstore/app/banner"
 	"bookstore/app/goods"
 	cart "bookstore/app/shoppingcart"
@@ -47,10 +46,10 @@ func main() {
 	bannerService := ad.NewBannerService(bannerRepo)
 	bannerHandler := ad.NewBannerHandler(bannerService)
 
-	// address
-	addressRepo := addresses.NewAddressRepositoryDB(db)
-	addressService := addresses.NewAddressService(addressRepo, db)
-	addressHandler := addresses.NewAddressHandler(addressService)
+	// address (now part of user package)
+	addressRepo := user.NewAddressRepositoryDB(db)
+	addressService := user.NewAddressService(addressRepo, userRepo, db)
+	addressHandler := user.NewAddressHandler(addressService)
 
 	// 依赖注入
 	r := gin.Default()

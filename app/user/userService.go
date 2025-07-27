@@ -3,8 +3,6 @@ package user
 import (
 	"errors"
 	"sync"
-
-	"bookstore/app/addresses"
 )
 
 var lockUS = &sync.Mutex{}
@@ -75,12 +73,12 @@ func (s *UserService) RegisterNewUser(mobile string, pwd string, nickname string
 	s.cache[mobile] = mobile
 	return newUser, nil
 }
-func (s *UserService) GetDeliveryAddressesFor(token string) []addresses.Address {
+func (s *UserService) GetDeliveryAddressesFor(token string) []Address {
 	//TODO: Not implemented yet.
 	return nil
 }
 
-func (s *UserService) GetDefaultDeliveryAddress(token string) []addresses.Address {
+func (s *UserService) GetDefaultDeliveryAddress(token string) []Address {
 	//TODO: Not implemented yet.
 	return nil
 }
