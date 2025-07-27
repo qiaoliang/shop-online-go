@@ -1,6 +1,8 @@
 package configs
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -63,3 +65,22 @@ func (s *ConfigTestSuite) SetupSuite() {
 
 // This will run before each test in the suite
 func (s *ConfigTestSuite) SetupTest() {}
+
+// This will run after all tests in the suite are run
+func (s *ConfigTestSuite) TeardownSuite() {
+	// 清理 test.db 文件
+	s.cleanupTestDBFiles()
+}
+
+func (s *ConfigTestSuite) cleanupTestDBFiles() {
+	// 递归查找并删除所有 test.db 文件
+	filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() && info.Name() == "test.db" {
+			os.Remove(path)
+		}
+		return nil
+	})
+}

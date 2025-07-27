@@ -34,7 +34,7 @@ func (st *UserHandlerSuite) SetupSuite() {
 	st.repo = NewUserRepoDB(st.db)
 	st.us = NewUserServiceWithRepo(st.repo)
 	userHandler := NewUserHandler(st.us)
-	st.router = setupTestRouter(userHandler)
+	st.router = setupUserTestRouter(userHandler)
 	// 调试：打印 users 表所有内容
 	var users []User
 	st.db.Find(&users)
@@ -103,7 +103,7 @@ func (st *UserHandlerSuite) Test_GetUserDetail() {
 	st.Contains(body, `"mobile":"13900007997"`, "应返回正确的手机号")
 }
 
-func setupTestRouter(userHandler *UserHandler) *gin.Engine {
+func setupUserTestRouter(userHandler *UserHandler) *gin.Engine {
 	gin.SetMode(gin.TestMode)
 	router := gin.New()
 	v1 := router.Group("/v1")
