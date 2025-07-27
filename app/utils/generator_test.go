@@ -1,21 +1,29 @@
 package utils
 
 import (
-	"bookstore/app/configs"
-	"os"
+	"bookstore/app/testutils"
 	"regexp"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/suite"
 )
 
-func TestMain(m *testing.M) {
-	configs.GetConfigInstance("../../config-test.yaml")
-	os.Exit(m.Run())
+type GeneratorTestSuite struct {
+	testutils.SupperSuite
 }
 
-func Test_generate_Aavatar(t *testing.T) {
+func TestGeneratorTestSuite(t *testing.T) {
+	suite.Run(t, new(GeneratorTestSuite))
+}
+
+
+
+func (suite *GeneratorTestSuite) SetupSuite() {
+	suite.SupperSuite.SetupSuite()
+}
+
+func (suite *GeneratorTestSuite) TestGenerateAvatar() {
 	str := RandomMock{}.GenAavatarStr()
 	reg, _ := regexp.Compile(`^[a-l]\.jpeg$`)
-	assert.True(t, reg.MatchString(str), "Should be a jpeg file")
+	suite.True(reg.MatchString(str), "Should be a jpeg file")
 }

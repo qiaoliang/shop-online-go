@@ -1,118 +1,118 @@
-# BMad Document Template Specification
+# BMad 文档模板规范(BMad Document Template Specification)
 
-## Overview
+## 概述(Overview)
 
-BMad document templates are defined in YAML format to drive interactive document generation and agent interaction. Templates separate structure definition from content generation, making them both human and LLM-agent-friendly.
+BMad 文档模板以 YAML 格式定义，用于驱动交互式文档生成和 agent 交互。模板将结构定义与内容生成分离，使其既适合人类阅读，也适合 LLM-agent 使用。
 
-## Template Structure
+## 模板结构(Template Structure)
 
 ```yaml
 template:
-  id: template-identifier
-  name: Human Readable Template Name
-  version: 1.0
-  output:
-    format: markdown
-    filename: default-path/to/{{filename}}.md
-    title: "{{variable}} Document Title"
+    id: template-identifier
+    name: Human Readable Template Name
+    version: 1.0
+    output:
+        format: markdown
+        filename: default-path/to/{{filename}}.md
+        title: "{{variable}} Document Title"
 
 workflow:
-  mode: interactive
-  elicitation: advanced-elicitation
+    mode: interactive
+    elicitation: advanced-elicitation
 
 sections:
-  - id: section-id
-    title: Section Title
-    instruction: |
-      Detailed instructions for the LLM on how to handle this section
-    # ... additional section properties
+    - id: section-id
+      title: Section Title
+      instruction: |
+          Detailed instructions for the LLM on how to handle this section
+      # ... additional section properties
 ```
 
-## Core Fields
+## 核心字段(Core Fields)
 
-### Template Metadata
+### 模板元数据(Template Metadata)
 
-- **id**: Unique identifier for the template
-- **name**: Human-readable name displayed in UI
-- **version**: Template version for tracking changes
-- **output.format**: Default "markdown" for document templates
-- **output.filename**: Default output file path (can include variables)
-- **output.title**: Document title (becomes H1 in markdown)
+- **id**: 模板的唯一标识符
+- **name**: 在 UI 中显示的人类可读名称
+- **version**: 用于跟踪变更的模板版本
+- **output.format**: 文档模板默认为 "markdown"
+- **output.filename**: 默认输出文件路径（可包含变量）
+- **output.title**: 文档标题（在 markdown 中成为 H1）
 
-### Workflow Configuration
+### 工作流配置(Workflow Configuration)
 
-- **workflow.mode**: Default interaction mode ("interactive" or "yolo")
-- **workflow.elicitation**: Elicitation task to use ("advanced-elicitation")
+- **workflow.mode**: 默认交互模式（"interactive" 或 "yolo"）
+- **workflow.elicitation**: 要使用的启发式任务（"advanced-elicitation"）
 
-## Section Properties
+## 章节属性(Section Properties)
 
-### Required Fields
+### 必需字段(Required Fields)
 
-- **id**: Unique section identifier
-- **title**: Section heading text
-- **instruction**: Detailed guidance for LLM on handling this section
+- **id**: 唯一的章节标识符
+- **title**: 章节标题文本
+- **instruction**: 为 LLM 处理此章节提供的详细指导
 
-### Optional Fields
+### 可选字段(Optional Fields)
 
-#### Content Control
+#### 内容控制(Content Control)
 
-- **type**: Content type hint for structured sections
-- **template**: Fixed template text for section content
-- **item_template**: Template for repeatable items within section
-- **prefix**: Prefix for numbered items (e.g., "FR", "NFR")
+- **type**: 结构化章节的内容类型提示
+- **template**: 章节内容的固定模板文本
+- **item_template**: 章节内可重复项目的模板
+- **prefix**: 编号项目的前缀（例如，"FR"，"NFR"）
 
-#### Behavior Flags
+#### 行为标志(Behavior Flags)
 
-- **elicit**: Boolean - Apply elicitation after section rendered
-- **repeatable**: Boolean - Section can be repeated multiple times
-- **condition**: String - Condition for including section (e.g., "has ui requirements")
+- **elicit**: 布尔值 - 在章节渲染后应用启发式
+- **repeatable**: 布尔值 - 章节可以重复多次
+- **condition**: 字符串 - 包含章节的条件（例如，"has ui requirements"）
 
-#### Agent Permissions
+#### Agent 权限(Agent Permissions)
 
-- **owner**: String - Agent role that initially creates/populates this section
-- **editors**: Array - List of agent roles allowed to modify this section
-- **readonly**: Boolean - Section cannot be modified after initial creation
+- **owner**: 字符串 - 最初创建/填充此章节的 agent 角色
+- **editors**: 数组 - 允许修改此章节的 agent 角色列表
+- **readonly**: 布尔值 - 章节在初始创建后无法修改
 
-#### Content Guidance
+#### 内容指导(Content Guidance)
 
-- **examples**: Array of example content (not included in output)
-- **choices**: Object with choice options for common decisions
-- **placeholder**: Default placeholder text
+- **examples**: 示例内容数组（不包含在输出中）
+- **choices**: 包含常见决策选择选项的对象
+- **placeholder**: 默认占位符文本
 
-#### Structure
+#### 结构(Structure)
 
-- **sections**: Array of nested child sections
+- **sections**: 嵌套子章节数组
 
-## Supported Types
+## 支持的类型(Supported Types)
 
-### Content Types
+### 内容类型(Content Types)
 
-- **bullet-list**: Unordered list items
-- **numbered-list**: Ordered list with optional prefix
-- **paragraphs**: Free-form paragraph text
-- **table**: Structured table data
-- **code-block**: Code or configuration blocks
-- **template-text**: Fixed template with variable substitution
-- **mermaid**: Mermaid diagram with specified type and details
+- **bullet-list**: 无序列表项目
+- **numbered-list**: 有序列表，带可选前缀
+- **paragraphs**: 自由格式段落文本
+- **table**: 结构化表格数据
+- **code-block**: 代码或配置块
+- **template-text**: 带变量替换的固定模板
+- **mermaid**: 具有指定类型和详情的 Mermaid 图表
 
-### Special Types
+### 特殊类型(Special Types)
 
-- **repeatable-container**: Container for multiple instances
-- **conditional-block**: Content shown based on conditions
-- **choice-selector**: Present choices to user
+- **repeatable-container**: 多个实例的容器
+- **conditional-block**: 基于条件显示的内容
+- **choice-selector**: 向用户呈现选择
 
-## Advanced Features
+## 高级功能(Advanced Features)
 
-### Variable Substitution
+### 变量替换(Variable Substitution)
 
-Use `{{variable_name}}` in titles, templates, and content:
+在标题、模板和内容中使用 `{{variable_name}}`：
 
 ```yaml
 title: "Epic {{epic_number}} {{epic_title}}"
 template: "As a {{user_type}}, I want {{action}}, so that {{benefit}}."
 ```
 
-### Conditional Sections
+### 条件章节(Conditional Sections)
 
 ```yaml
 - id: ui-section
@@ -121,15 +121,15 @@ template: "As a {{user_type}}, I want {{action}}, so that {{benefit}}."
   instruction: Only include if project has UI components
 ```
 
-### Choice Integration
+### 选择集成(Choice Integration)
 
 ```yaml
 choices:
-  architecture: [Monolith, Microservices, Serverless]
-  testing: [Unit Only, Unit + Integration, Full Pyramid]
+    architecture: [Monolith, Microservices, Serverless]
+    testing: [Unit Only, Unit + Integration, Full Pyramid]
 ```
 
-### Mermaid Diagrams
+### Mermaid 图表(Mermaid Diagrams)
 
 ```yaml
 - id: system-architecture
@@ -138,44 +138,44 @@ choices:
   instruction: Create a system architecture diagram showing key components and data flow
   mermaid_type: flowchart
   details: |
-    Show the following components:
-    - User interface layer
-    - API gateway
-    - Core services
-    - Database layer
-    - External integrations
+      Show the following components:
+      - User interface layer
+      - API gateway
+      - Core services
+      - Database layer
+      - External integrations
 ```
 
-**Supported mermaid_type values:**
+**支持的 mermaid_type 值：**
 
-**Core Diagram Types:**
+**核心图表类型：**
 
-- `flowchart` - Flow charts and process diagrams
-- `sequenceDiagram` - Sequence diagrams for interactions
-- `classDiagram` - Class relationship diagrams (UML)
-- `stateDiagram` - State transition diagrams
-- `erDiagram` - Entity relationship diagrams
-- `gantt` - Gantt charts for timelines
-- `pie` - Pie charts for data visualization
+- `flowchart` - 流程图和过程图
+- `sequenceDiagram` - 交互的序列图
+- `classDiagram` - 类关系图（UML）
+- `stateDiagram` - 状态转换图
+- `erDiagram` - 实体关系图
+- `gantt` - 时间线的甘特图
+- `pie` - 数据可视化的饼图
 
-**Advanced Diagram Types:**
+**高级图表类型：**
 
-- `journey` - User journey maps
-- `mindmap` - Mindmaps for brainstorming
-- `timeline` - Timeline diagrams for chronological events
-- `quadrantChart` - Quadrant charts for data categorization
-- `xyChart` - XY charts (bar charts, line charts)
-- `sankey` - Sankey diagrams for flow visualization
+- `journey` - 用户旅程图
+- `mindmap` - 头脑风暴的思维导图
+- `timeline` - 时间事件的时序图
+- `quadrantChart` - 数据分类的四象限图
+- `xyChart` - XY 图表（条形图、折线图）
+- `sankey` - 流程可视化的桑基图
 
-**Specialized Types:**
+**专业类型：**
 
-- `c4Context` - C4 context diagrams (experimental)
-- `requirement` - Requirement diagrams
-- `packet` - Network packet diagrams
-- `block` - Block diagrams
-- `kanban` - Kanban boards
+- `c4Context` - C4 上下文图（实验性）
+- `requirement` - 需求图
+- `packet` - 网络数据包图
+- `block` - 块图
+- `kanban` - 看板
 
-### Agent Permissions Example
+### Agent 权限示例(Agent Permissions Example)
 
 ```yaml
 - id: story-details
@@ -184,142 +184,142 @@ choices:
   editors: [scrum-master]
   readonly: false
   sections:
-    - id: dev-notes
-      title: Dev Notes
-      owner: dev-agent
-      editors: [dev-agent]
-      readonly: false
-      instruction: Implementation notes and technical details
-    - id: qa-results
-      title: QA Results
-      owner: qa-agent
-      editors: [qa-agent]
-      readonly: true
-      instruction: Quality assurance test results
+      - id: dev-notes
+        title: Dev Notes
+        owner: dev-agent
+        editors: [dev-agent]
+        readonly: false
+        instruction: Implementation notes and technical details
+      - id: qa-results
+        title: QA Results
+        owner: qa-agent
+        editors: [qa-agent]
+        readonly: true
+        instruction: Quality assurance test results
 ```
 
-### Repeatable Sections
+### 可重复章节(Repeatable Sections)
 
 ```yaml
 - id: epic-details
   title: Epic {{epic_number}} {{epic_title}}
   repeatable: true
   sections:
-    - id: story
-      title: Story {{epic_number}}.{{story_number}} {{story_title}}
-      repeatable: true
-      sections:
-        - id: criteria
-          title: Acceptance Criteria
-          type: numbered-list
-          item_template: "{{criterion_number}}: {{criteria}}"
-          repeatable: true
+      - id: story
+        title: Story {{epic_number}}.{{story_number}} {{story_title}}
+        repeatable: true
+        sections:
+            - id: criteria
+              title: Acceptance Criteria
+              type: numbered-list
+              item_template: "{{criterion_number}}: {{criteria}}"
+              repeatable: true
 ```
 
-### Examples with Code Blocks
+### 代码块示例(Examples with Code Blocks)
 
 ````yaml
 examples:
-  - "FR6: The system must authenticate users within 2 seconds"
-  - |
-    ```mermaid
-    sequenceDiagram
-        participant User
-        participant API
-        participant DB
-        User->>API: POST /login
-        API->>DB: Validate credentials
-        DB-->>API: User data
-        API-->>User: JWT token
-    ```
-  - |
-    **Architecture Decision Record**
+    - "FR6: The system must authenticate users within 2 seconds"
+    - |
+        ```mermaid
+        sequenceDiagram
+            participant User
+            participant API
+            participant DB
+            User->>API: POST /login
+            API->>DB: Validate credentials
+            DB-->>API: User data
+            API-->>User: JWT token
+        ```
+    - |
+        **Architecture Decision Record**
 
-    **Decision**: Use PostgreSQL for primary database
-    **Rationale**: ACID compliance and JSON support needed
-    **Consequences**: Requires database management expertise
+        **Decision**: Use PostgreSQL for primary database
+        **Rationale**: ACID compliance and JSON support needed
+        **Consequences**: Requires database management expertise
 ````
 
-## Section Hierarchy
+## 章节层次结构(Section Hierarchy)
 
-Templates define the complete document structure starting with the first H2 - each level in is the next H#:
+模板定义从第一个 H2 开始的完整文档结构 - 每个级别都是下一个 H#：
 
 ```yaml
 sections:
-  - id: overview
-    title: Project Overview
-    sections:
-      - id: goals
-        title: Goals
-      - id: scope
-        title: Scope
-        sections:
-          - id: in-scope
-            title: In Scope
-          - id: out-scope
-            title: Out of Scope
+    - id: overview
+      title: Project Overview
+      sections:
+          - id: goals
+            title: Goals
+          - id: scope
+            title: Scope
+            sections:
+                - id: in-scope
+                  title: In Scope
+                - id: out-scope
+                  title: Out of Scope
 ```
 
-## Processing Flow
+## 处理流程(Processing Flow)
 
-1. **Parse Template**: Load and validate YAML structure
-2. **Initialize Workflow**: Set interaction mode and elicitation
-3. **Process Sections**: Handle each section in order:
-   - Check conditions
-   - Apply instructions
-   - Generate content
-   - Handle choices and variables
-   - Apply elicitation if specified
-   - Process nested sections
-4. **Generate Output**: Create clean markdown document
+1. **解析模板**: 加载并验证 YAML 结构
+2. **初始化工作流**: 设置交互模式和启发式
+3. **处理章节**: 按顺序处理每个章节：
+    - 检查条件
+    - 应用指令
+    - 生成内容
+    - 处理选择和变量
+    - 如果指定则应用启发式
+    - 处理嵌套章节
+4. **生成输出**: 创建干净的 markdown 文档
 
-## Best Practices
+## 最佳实践(Best Practices)
 
-### Template Design
+### 模板设计(Template Design)
 
-- Keep instructions clear and specific
-- Use examples for complex content
-- Structure sections logically
-- Include all necessary guidance for LLM
+- 保持指令清晰具体
+- 为复杂内容使用示例
+- 逻辑地构建章节
+- 包含 LLM 所需的所有必要指导
 
-### Content Instructions
+### 内容指令(Content Instructions)
 
-- Be explicit about expected format
-- Include reasoning for decisions
-- Specify interaction patterns
-- Reference other documents when needed
+- 明确说明预期格式
+- 包含决策的理由
+- 指定交互模式
+- 在需要时引用其他文档
 
-### Variable Naming
+### 变量命名(Variable Naming)
 
-- Use descriptive variable names
-- Follow consistent naming conventions
-- Document expected variable values
+- 使用描述性变量名
+- 遵循一致的命名约定
+- 记录预期的变量值
 
-### Examples Usage
+### 示例使用(Examples Usage)
 
-- Provide concrete examples for complex sections
-- Include both simple and complex cases
-- Use realistic project scenarios
-- Include code blocks and diagrams when helpful
+- 为复杂章节提供具体示例
+- 包含简单和复杂的情况
+- 使用现实的项目场景
+- 在有用时包含代码块和图表
 
-## Validation
+## 验证(Validation)
 
-Templates should be validated for:
+模板应验证：
 
-- Valid YAML syntax
-- Required fields present
-- Consistent section IDs
-- Proper nesting structure
-- Valid variable references
+- 有效的 YAML 语法
+- 存在必需字段
+- 一致的章节 ID
+- 正确的嵌套结构
+- 有效的变量引用
 
-## Migration from Legacy
+## 从旧版本迁移(Migration from Legacy)
 
-When converting from markdown+frontmatter templates:
+从 markdown+frontmatter 模板转换时：
 
-1. Extract embedded `[[LLM:]]` instructions to `instruction` fields
-2. Convert `<<REPEAT>>` blocks to `repeatable: true` sections
-3. Extract `^^CONDITIONS^^` to `condition` fields
-4. Move `@{examples}` to `examples` arrays
-5. Convert `{{placeholders}}` to proper variable syntax
+1. 将嵌入的 `[[LLM:]]` 指令提取到 `instruction` 字段
+2. 将 `<<REPEAT>>` 块转换为 `repeatable: true` 章节
+3. 将 `^^CONDITIONS^^` 提取到 `condition` 字段
+4. 将 `@{examples}` 移动到 `examples` 数组
+5. 将 `{{placeholders}}` 转换为正确的变量语法
 
-This specification ensures templates are both human-readable and machine-processable while maintaining the flexibility needed for complex document generation.
+此规范确保模板既适合人类阅读又适合机器处理，同时保持复杂文档生成所需的灵活性。

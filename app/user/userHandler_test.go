@@ -8,7 +8,6 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -27,12 +26,7 @@ func TestUserHandlerSuite(t *testing.T) {
 	suite.Run(t, new(UserHandlerSuite))
 }
 
-func TestMain(m *testing.M) {
-	configs.GetConfigInstance("../../config-test.yaml")
-	code := m.Run()
-	os.Remove("./test.db")
-	os.Exit(code)
-}
+
 
 func (st *UserHandlerSuite) SetupSuite() {
 	st.SupperSuite.SetupSuite()

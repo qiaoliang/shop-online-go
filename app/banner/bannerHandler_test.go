@@ -5,7 +5,6 @@ import (
 
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
-	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/suite"
@@ -16,12 +15,7 @@ type BannerHandlerSuite struct {
 	router *gin.Engine
 }
 
-func TestMain(m *testing.M) {
-	configs.GetConfigInstance("../../config-test.yaml")
-	code := m.Run()
-	os.Remove("./test.db")
-	os.Exit(code)
-}
+
 
 func TestBannerHandlerSuite(t *testing.T) {
 	suite.Run(t, new(BannerHandlerSuite))

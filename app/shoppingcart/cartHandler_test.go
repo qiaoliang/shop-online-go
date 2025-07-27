@@ -10,7 +10,6 @@ import (
 	"bookstore/app/configs"
 	"bookstore/app/testutils"
 	"bookstore/app/utils"
-	"os"
 
 	"bookstore/app/goods"
 
@@ -29,17 +28,7 @@ type ShoppingCartHandlerSuite struct {
 	service *CartService
 }
 
-func TestMain(m *testing.M) {
-	fmt.Println("[TestMain] 加载 config-test.yaml ...")
-	configs.GetConfigInstance("../../config-test.yaml")
-	fmt.Println("[TestMain] 调用 DBConnection，准备 migration ...")
-	configs.Cfg.DBConnection()
-	fmt.Println("[TestMain] migration 初始化完成，开始测试 ...")
-	code := m.Run()
-	fmt.Println("[TestMain] 测试结束，删除 test.db ...")
-	os.Remove("./test.db")
-	os.Exit(code)
-}
+
 
 func TestShoppingCartHandlerSuite(t *testing.T) {
 	suite.Run(t, new(ShoppingCartHandlerSuite))

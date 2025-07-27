@@ -1,6 +1,7 @@
 package testutils
 
 import (
+	"os"
 	"testing"
 
 	"bookstore/app/configs"
@@ -24,6 +25,9 @@ func (suite *SupperSuite) SetupSuite() {
 	configs.GetConfigInstance(GetConfigFileForTest())
 	configs.Cfg.DBConnection()
 }
-func (suite *SupperSuite) TeardownSuite() {}
+func (suite *SupperSuite) TeardownSuite() {
+	// 测试套件结束后清理test.db
+	os.Remove("./test.db")
+}
 
 func (suite *SupperSuite) SetupTest() {}

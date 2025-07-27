@@ -638,10 +638,10 @@ shop-online-go/
 
 #### Unit Tests
 
--   **Framework:** Go 的内置 `testing` 包。
+-   **Framework:** 使用 `testify/suite` 包进行测试套件管理，结合 Go 的内置 `testing` 包。
 -   **File Convention:** `_test.go` 文件，与被测试的源文件在同一包下。
 -   **Location:** 与源文件相同的目录。
--   **Mocking Library:** gomock
+-   **Mocking Library:** 不使用 mock 技术，直接使用真实依赖进行测试
 -   **Coverage Requirement:** 核心业务逻辑单元测试覆盖率目标 80% 以上。
 
 **AI Agent Requirements:**
@@ -649,7 +649,8 @@ shop-online-go/
 -   为所有公共方法生成测试。
 -   覆盖边缘情况和错误条件。
 -   遵循 AAA 模式 (Arrange, Act, Assert)。
--   模拟所有外部依赖。
+-   使用 testify/suite 包组织测试套件，提高测试代码的可维护性。
+-   不使用 mock 技术，直接使用真实依赖进行测试。
 
 ##### Integration Tests
 

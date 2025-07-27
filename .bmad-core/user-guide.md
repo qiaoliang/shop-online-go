@@ -1,47 +1,47 @@
-# BMad-Method BMAd 代码用户指南
+# BMad-Method BMAd 代码用户指南(BMad-Method BMAd Code User Guide)
 
-本指南将帮助您理解并有效使用 BMad 方法进行敏捷 AI 驱动的规划和开发。
+本指南将帮助您理解并有效使用 BMad Method 进行敏捷 AI 驱动的规划和开发。
 
-## BMad 规划和执行工作流
+## BMad 规划和执行工作流(The BMad Plan and Execute Workflow)
 
-首先，这是完整的标准绿地规划 + 执行工作流。棕地项目非常相似，但建议在处理棕地项目之前，即使是简单的项目，也要先理解这个绿地项目。BMad 方法需要安装到新项目文件夹的根目录。对于规划阶段，您可以选择使用强大的 Web 代理来执行，这可能会以更低的成本获得更高质量的结果，而无需在某些代理工具中提供您自己的 API 密钥或积分。对于规划，强大的思维模型和更大的上下文——以及与代理作为合作伙伴——将获得最佳结果。
+首先，这是完整的标准 Greenfield 规划 + 执行工作流。Brownfield 非常相似，但建议先理解这个 greenfield，即使是在简单项目上，然后再处理 brownfield 项目。BMad Method 需要安装到您新项目文件夹的根目录。对于规划阶段，您可以选择使用强大的 web agents 来执行，可能会以比在某些 Agentic 工具中提供自己的 API 密钥或积分完成所需成本的一小部分获得更高质量的结果。对于规划，强大的思维模型和更大的上下文 - 以及与 agents 作为合作伙伴工作将获得最佳结果。
 
-如果您打算将 BMad 方法用于棕地项目（现有项目），请查看 [在棕地中工作](./working-in-the-brownfield.md)
+如果您要使用 BMad Method 处理 Brownfield 项目（现有项目），请查看 [在 Brownfield 中工作](./working-in-the-brownfield.md)
 
-如果您没有看到以下渲染的图表，您可以安装 Markdown All in One 以及 Markdown Preview Mermaid Support 插件到 VSCode（或其中一个分叉克隆）。使用这些插件，如果您在打开时右键单击选项卡，应该会有一个“打开预览”选项，或者查看 IDE 文档。
+如果您看不到以下图表的渲染，可以在 VSCode（或其分支克隆之一）中安装 Markdown All in One 以及 Markdown Preview Mermaid Support 插件。使用这些插件，当打开时右键单击选项卡，应该有一个 Open Preview 选项，或查看 IDE 文档。
 
-### 规划工作流（Web UI 或强大的 IDE 代理）
+### 规划工作流(Web UI 或强大的 IDE Agents)(The Planning Workflow (Web UI or Powerful IDE Agents))
 
-在开发开始之前，BMad 遵循一个结构化的规划工作流，理想情况下在 Web UI 中完成以提高成本效率：
+在开发开始之前，BMad 遵循结构化规划工作流，理想情况下在 web UI 中完成以提高成本效益：
 
 ```mermaid
 graph TD
-    A["开始：项目构想"] --> B{"可选：分析师研究"}
-    B -->|是| C["分析师：头脑风暴（可选）"]
-    B -->|否| G{"项目简报可用？"}
-    C --> C2["分析师：市场研究（可选）"]
-    C2 --> C3["分析师：竞争对手分析（可选）"]
-    C3 --> D["分析师：创建项目简报"]
+    A["Start: Project Idea"] --> B{"Optional: Analyst Research"}
+    B -->|Yes| C["Analyst: Brainstorming (Optional)"]
+    B -->|No| G{"Project Brief Available?"}
+    C --> C2["Analyst: Market Research (Optional)"]
+    C2 --> C3["Analyst: Competitor Analysis (Optional)"]
+    C3 --> D["Analyst: Create Project Brief"]
     D --> G
-    G -->|是| E["PM：从简报创建 PRD（快速通道）"]
-    G -->|否| E2["PM：交互式 PRD 创建（更多问题）"]
-    E --> F["已创建包含 FR、NFR、史诗和故事的 PRD"]
+    G -->|Yes| E["PM: Create PRD from Brief (Fast Track)"]
+    G -->|No| E2["PM: Interactive PRD Creation (More Questions)"]
+    E --> F["PRD Created with FRs, NFRs, Epics & Stories"]
     E2 --> F
-    F --> F2{"需要 UX 吗？"}
-    F2 -->|是| F3["UX 专家：创建前端规范"]
-    F2 -->|否| H["架构师：从 PRD 创建架构"]
-    F3 --> F4["UX 专家：为 Lovable/V0 生成 UI 提示（可选）"]
-    F4 --> H2["架构师：从 PRD + UX 规范创建架构"]
-    H --> I["PO：运行主清单"]
+    F --> F2{"UX Required?"}
+    F2 -->|Yes| F3["UX Expert: Create Front End Spec"]
+    F2 -->|No| H["Architect: Create Architecture from PRD"]
+    F3 --> F4["UX Expert: Generate UI Prompt for Lovable/V0 (Optional)"]
+    F4 --> H2["Architect: Create Architecture from PRD + UX Spec"]
+    H --> I["PO: Run Master Checklist"]
     H2 --> I
-    I --> J{"文档对齐？"}
-    J -->|是| K["规划完成"]
-    J -->|否| L["PO：更新史诗和故事"]
-    L --> M["根据需要更新 PRD/架构"]
+    I --> J{"Documents Aligned?"}
+    J -->|Yes| K["Planning Complete"]
+    J -->|No| L["PO: Update Epics & Stories"]
+    L --> M["Update PRD/Architecture as needed"]
     M --> I
-    K --> N["📁 切换到 IDE（如果在 Web 代理平台中）"]
-    N --> O["PO：分片文档"]
-    O --> P["准备好进行 SM/开发周期"]
+    K --> N["📁 Switch to IDE (If in a Web Agent Platform)"]
+    N --> O["PO: Shard Documents"]
+    O --> P["Ready for SM/Dev Cycle"]
 
     style A fill:#f5f5f5,color:#000
     style B fill:#e3f2fd,color:#000
@@ -68,42 +68,42 @@ graph TD
     style P fill:#34a853,color:#fff
 ```
 
-#### Web UI 到 IDE 的过渡
+#### Web UI 到 IDE 转换(Web UI to IDE Transition)
 
-**关键过渡点**：一旦 PO 确认文档对齐，您必须从 Web UI 切换到 IDE 以开始开发工作流：
+**关键转换点**：一旦 PO 确认文档对齐，您必须从 web UI 切换到 IDE 开始开发工作流：
 
-1. **将文档复制到项目**：确保 `docs/prd.md` 和 `docs/architecture.md` 位于您项目的 docs 文件夹中（或您在安装期间可以指定的自定义位置）
+1. **复制文档到项目**：确保 `docs/prd.md` 和 `docs/architecture.md` 在您项目的 docs 文件夹中（或您可以在安装期间指定的自定义位置）
 2. **切换到 IDE**：在您首选的 Agentic IDE 中打开您的项目
-3. **文档分片**：使用 PO 代理分片 PRD，然后分片架构
-4. **开始开发**：开始后续的核心开发周期
+3. **文档分片**：使用 PO agent 分片 PRD，然后分片 Architecture
+4. **开始开发**：启动后续的核心开发周期
 
-### 核心开发周期（IDE）
+### 核心开发周期(IDE)(The Core Development Cycle (IDE))
 
-一旦规划完成且文档分片，BMad 将遵循结构化的开发工作流：
+一旦规划完成且文档已分片，BMad 遵循结构化开发工作流：
 
 ```mermaid
 graph TD
-    A["开发阶段开始"] --> B["SM：审查先前的故事开发/QA 备注"]
-    B --> B2["SM：从分片史诗 + 架构草拟下一个故事"]
-    B2 --> B3{"QA：审查故事草稿（可选）"}
-    B3 -->|请求审查| B4["QA：根据工件审查故事"]
-    B3 -->|跳过审查| C{"用户批准"}
+    A["Development Phase Start"] --> B["SM: Reviews Previous Story Dev/QA Notes"]
+    B --> B2["SM: Drafts Next Story from Sharded Epic + Architecture"]
+    B2 --> B3{"QA: Review Story Draft (Optional)"}
+    B3 -->|Review Requested| B4["QA: Review Story Against Artifacts"]
+    B3 -->|Skip Review| C{"User Approval"}
     B4 --> C
-    C -->|已批准| D["开发：顺序任务执行"]
-    C -->|需要更改| B2
-    D --> E["开发：实施任务 + 测试"]
-    E --> F["开发：运行所有验证"]
-    F --> G["开发：标记为准备审查 + 添加备注"]
-    G --> H{"用户验证"}
-    H -->|请求 QA 审查| I["QA：高级开发审查 + 主动重构"]
-    H -->|未经 QA 批准| M["重要：验证所有回归测试和 Linting 都通过"]
-    I --> J["QA：审查、重构代码、添加测试、文档备注"]
-    J --> L{"QA 决策"}
-    L -->|需要开发工作| D
-    L -->|已批准| M
-    H -->|需要修复| D
-    M --> N["重要：在继续之前提交您的更改！"]
-    N --> K["标记故事为完成"]
+    C -->|Approved| D["Dev: Sequential Task Execution"]
+    C -->|Needs Changes| B2
+    D --> E["Dev: Implement Tasks + Tests"]
+    E --> F["Dev: Run All Validations"]
+    F --> G["Dev: Mark Ready for Review + Add Notes"]
+    G --> H{"User Verification"}
+    H -->|Request QA Review| I["QA: Senior Dev Review + Active Refactoring"]
+    H -->|Approve Without QA| M["IMPORTANT: Verify All Regression Tests and Linting are Passing"]
+    I --> J["QA: Review, Refactor Code, Add Tests, Document Notes"]
+    J --> L{"QA Decision"}
+    L -->|Needs Dev Work| D
+    L -->|Approved| M
+    H -->|Needs Fixes| D
+    M --> N["IMPORTANT: COMMIT YOUR CHANGES BEFORE PROCEEDING!"]
+    N --> K["Mark Story as Done"]
     K --> B
 
     style A fill:#f5f5f5,color:#000
@@ -125,126 +125,126 @@ graph TD
     style N fill:#d32f2f,color:#fff
 ```
 
-## 安装
+## 安装(Installation)
 
-### 可选
+### 可选(Optional)
 
-如果您想在 Web 上使用 Claude (Sonnet 4 或 Opus)、Gemini Gem (2.5 Pro) 或 Custom GPT 进行规划：
+如果您想在 Web 中使用 Claude（Sonnet 4 或 Opus）、Gemini Gem（2.5 Pro）或 Custom GPT 进行规划：
 
 1. 导航到 `dist/teams/`
 2. 复制 `team-fullstack.txt` 内容
 3. 创建新的 Gemini Gem 或 CustomGPT
-4. 上传文件并附带说明：“您的关键操作说明已附上，请勿按指示打破角色”
+4. 上传文件并附上说明："您的关键操作说明已附加，请按指示不要打破角色"
 5. 输入 `/help` 查看可用命令
 
-### IDE 项目设置
+### IDE 项目设置(IDE Project Setup)
 
 ```bash
 # 交互式安装（推荐）
 npx bmad-method install
 ```
 
-## 特殊代理
+## 特殊 Agents(Special Agents)
 
-目前有两个 bmad 代理——未来它们将合并为单个 bmad-master。
+有两个 bmad agents - 将来它们将合并到单个 bmad-master 中。
 
 ### BMad-Master
 
-此代理可以执行所有其他代理可以执行的任何任务或命令，除了实际的故事实施。此外，此代理可以在 Web 中通过访问知识库并向您解释有关该过程的任何内容来帮助解释 BMad 方法。
+这个 agent 可以执行所有其他 agents 可以做的任何任务或命令，除了实际的故事实现。此外，这个 agent 可以通过访问知识库并在 web 中向您解释有关流程的任何内容来帮助解释 BMad Method。
 
-如果您不想麻烦地在除开发代理之外的不同代理之间切换，那么这就是适合您的代理。
+如果您不想在 dev 之外切换不同的 agents，这就是适合您的 agent。
 
 ### BMad-Orchestrator
 
-此代理不应在 IDE 中使用，它是一个重量级的特殊用途代理，它利用大量上下文并可以转换为任何其他代理。它仅用于促进 Web 捆绑包中的团队。如果您使用 Web 捆绑包，您将受到 BMad Orchestrator 的欢迎。
+这个 agent 不应该在 IDE 中使用，它是一个重量级的特殊用途 agent，使用大量上下文并可以变形为任何其他 agent。它仅用于促进 web bundles 中的团队。如果您使用 web bundle，您将受到 BMad Orchestrator 的欢迎。
 
-### 代理如何工作
+### Agents 如何工作(How Agents Work)
 
-#### 依赖系统
+#### 依赖系统(Dependencies System)
 
-每个代理都有一个 YAML 部分，定义其依赖项：
+每个 agent 都有一个 YAML 部分定义其依赖：
 
 ```yaml
 dependencies:
-  templates:
-    - prd-template.md
-    - user-story-template.md
-  tasks:
-    - create-doc.md
-    - shard-doc.md
-  data:
-    - bmad-kb.md
+    templates:
+        - prd-template.md
+        - user-story-template.md
+    tasks:
+        - create-doc.md
+        - shard-doc.md
+    data:
+        - bmad-kb.md
 ```
 
-**关键点：**
+**要点**：
 
-- 代理只加载它们需要的资源（精简上下文）
-- 依赖项在捆绑期间自动解析
-- 资源在代理之间共享以保持一致性
+- Agents 只加载它们需要的资源（精简上下文）
+- 依赖在打包期间自动解析
+- 资源在 agents 之间共享以保持一致性
 
-#### 代理交互
+#### Agent 交互(Agent Interaction)
 
-**在 IDE 中：**
+**在 IDE 中**：
 
 ```bash
-# 某些 IDE，例如 Cursor 或 Windsurf，使用手动规则，因此交互使用“@”符号
-@pm 为任务管理应用程序创建 PRD
-@architect 设计系统架构
-@dev 实施用户身份验证
+# 一些 IDE，如 Cursor 或 Windsurf 等，使用手动规则，因此交互使用 '@' 符号完成
+@pm Create a PRD for a task management app
+@architect Design the system architecture
+@dev Implement the user authentication
 
-# 某些，例如 Claude Code，则使用斜杠命令
-/pm 创建用户故事
-/dev 修复登录错误
+# 一些，如 Claude Code 使用斜杠命令
+/pm Create user stories
+/dev Fix the login bug
 ```
 
-#### 交互模式
+#### 交互模式(Interactive Modes)
 
-- **增量模式**：逐步与用户交互
+- **增量模式**：逐步进行，需要用户输入
 - **YOLO 模式**：快速生成，交互最少
 
-## IDE 集成
+## IDE 集成(IDE Integration)
 
-### IDE 最佳实践
+### IDE 最佳实践(IDE Best Practices)
 
-- **上下文管理**：仅在上下文中保留相关文件，使文件尽可能精简和专注
-- **代理选择**：为任务使用适当的代理
-- **迭代开发**：以小而专注的任务进行工作
+- **上下文管理**：只在上下文中保留相关文件，保持文件尽可能精简和专注
+- **Agent 选择**：为任务使用适当的 agent
+- **迭代开发**：在小型、专注的任务中工作
 - **文件组织**：维护干净的项目结构
 
-## 技术偏好系统
+## 技术偏好系统(Technical Preferences System)
 
-BMad 包含一个通过位于 `.bmad-core/data/` 中的 `technical-preferences.md` 文件实现的个性化系统——这有助于偏向 PM 和架构师推荐您对设计模式、技术选择或您希望在此处放置的任何其他内容的偏好。
+BMad 通过位于 `.bmad-core/data/` 的 `technical-preferences.md` 文件包含个性化系统 - 这可以帮助偏向 PM 和 Architect 推荐您的设计模式、技术选择或您想要放在这里的任何其他内容的偏好。
 
-### 与 Web 捆绑包一起使用
+### 与 Web Bundles 一起使用(Using with Web Bundles)
 
-创建自定义 Web 捆绑包或上传到 AI 平台时，包含您的 `technical-preferences.md` 内容，以确保代理从任何对话开始就拥有您的偏好。
+在创建自定义 web bundles 或上传到 AI 平台时，包含您的 `technical-preferences.md` 内容，以确保 agents 从任何对话开始就有您的偏好。
 
-## 核心配置
+## 核心配置(Core Configuration)
 
-`bmad-core/core-config.yaml` 文件是一个关键配置，它使 BMad 能够与不同的项目结构无缝协作，未来将提供更多选项。目前最重要的是 yaml 中的 `devLoadAlwaysFiles` 列表部分。
+`bmad-core/core-config.yaml` 文件是一个关键配置，使 BMad 能够与不同的项目结构无缝工作，未来将提供更多选项。目前最重要的是 yaml 中的 devLoadAlwaysFiles 列表部分。
 
-### 开发者上下文文件
+### 开发者上下文文件(Developer Context Files)
 
-定义开发代理应始终加载哪些文件：
+定义 dev agent 应该始终加载的文件：
 
 ```yaml
 devLoadAlwaysFiles:
-  - docs/architecture/coding-standards.md
-  - docs/architecture/tech-stack.md
-  - docs/architecture/project-structure.md
+    - docs/architecture/coding-standards.md
+    - docs/architecture/tech-stack.md
+    - docs/architecture/project-structure.md
 ```
 
-您需要通过分片架构来验证这些文档是否存在，它们是否尽可能精简，并且包含您希望开发代理始终加载到其上下文中的确切信息。这些是代理将遵循的规则。
+您需要从分片架构中验证这些文档存在，它们尽可能精简，并包含您希望 dev agent 始终加载到其上下文中的确切信息。这些是 agent 将遵循的规则。
 
-随着项目的增长和代码开始建立一致的模式，编码标准应该只减少到代理仍然会犯错的项目——对于更好的模型，它们会查看文件中的周围代码，而不需要该文件中的规则来指导它们。
+随着您的项目增长和代码开始建立一致的模式，编码标准应该减少到只是 agent 仍然会犯错误的项目 - 使用更好的模型，它们会查看文件中的周围代码，不需要该文件中的规则来指导它们。
 
-## 获取帮助
+## 获取帮助(Getting Help)
 
 - **Discord 社区**：[加入 Discord](https://discord.gg/gk8jAdXWmj)
-- **GitHub 问题**：[报告错误](https://github.com/bmadcode/bmad-method/issues)
+- **GitHub Issues**：[报告错误](https://github.com/bmadcode/bmad-method/issues)
 - **文档**：[浏览文档](https://github.com/bmadcode/bmad-method/docs)
 - **YouTube**：[BMadCode 频道](https://www.youtube.com/@BMadCode)
 
-## 结论
+## 结论(Conclusion)
 
-请记住：BMad 旨在增强您的开发过程，而不是取代您的专业知识。将其作为一个强大的工具，加速您的项目，同时保持对设计决策和实施细节的控制。
+记住：BMad 旨在增强您的开发过程，而不是取代您的专业知识。将其用作加速项目的强大工具，同时保持对设计决策和实现细节的控制。
