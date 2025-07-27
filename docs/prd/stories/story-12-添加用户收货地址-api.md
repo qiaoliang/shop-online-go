@@ -54,6 +54,7 @@ Draft
 
 -   **Endpoint:** `POST /v1/user/shipping-address/add`
 -   **Request Body (JSON):**
+
     ```json
     {
       "linkMan": "string",
@@ -65,7 +66,9 @@ Draft
       "isDefault": "boolean" (default: false)
     }
     ```
+
 -   **Response (JSON):**
+
     ```json
     {
         "code": 0,
@@ -73,7 +76,9 @@ Draft
         "data": {}
     }
     ```
+
     或错误响应：
+
     ```json
     {
         "code": 400,
@@ -81,6 +86,7 @@ Draft
         "data": {}
     }
     ```
+
 -   **认证:** API 需要用户认证，通过 Token 识别用户。
     [Source: architecture.md#rest-api-spec]
 
@@ -145,7 +151,7 @@ List Relevant Testing Standards from Architecture the Developer needs to conform
     -   覆盖输入参数校验的失败场景。
     -   覆盖数据库操作失败的场景。
 
-**Integration Verification**
+### Integration Verification
 
 1.  IV1: 现有用户认证机制正常工作，能够通过 Token 识别用户。
 2.  IV2: 现有用户详情查询 API 正常工作.
